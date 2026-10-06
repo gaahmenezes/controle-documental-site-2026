@@ -130,6 +130,43 @@ main{flex:1;padding:32px 24px 100px;max-width:1040px;width:100%;margin:0 auto}
 .pct-badge.reinsp b,.pct-badge.reinsp .rot{color:var(--flag)}
 .pct-badge.concluida-reinsp b,.pct-badge.concluida-reinsp .rot{color:var(--warn)}
 
+.hub-head{margin:2px 0 22px}
+.hub-head h2{font-size:28px}
+.hub-head p{color:var(--ink2);margin:6px 0 0}
+.hub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.hub-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;font:inherit;color:inherit;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:18px 18px 16px;box-shadow:var(--shadow);cursor:pointer;min-height:172px;transition:border-color .15s,transform .1s}
+.hub-card:hover{border-color:var(--seal)}
+.hub-card:active{transform:translateY(1px)}
+.hub-ico{width:42px;height:42px;border-radius:8px;display:grid;place-items:center;background:var(--seal-soft);color:var(--seal);margin-bottom:6px}
+.hub-ico svg{width:22px;height:22px}
+.hub-tit{font-family:"IBM Plex Serif",serif;font-size:18px;font-weight:500;line-height:1.2;background:none;border:0;padding:0;margin:0;text-align:left;color:inherit;cursor:pointer}
+.hub-tit::after{content:"";position:absolute;inset:0;border-radius:6px}
+.hub-tit:focus-visible{outline:none}
+.hub-tit:focus-visible::after{outline:2px solid var(--seal);outline-offset:2px}
+.hub-card.destaque .hub-tit:focus-visible::after{outline-color:#fff}
+.hub-link{position:relative;z-index:1;display:inline-flex;align-items:baseline;gap:8px;background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.hub-link span{text-decoration:underline;text-underline-offset:3px}
+.hub-link:hover span{text-decoration-thickness:2px}
+.hub-alerta.hub-link{padding:2px 8px;display:inline-block}
+.hub-alerta.hub-link:hover{text-decoration:underline}
+.hub-desc{font-size:13px;color:var(--ink2);line-height:1.4}
+.hub-num{margin-top:auto;padding-top:10px;font-size:12.5px;color:var(--ink3);display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}
+.hub-num b{font-family:"IBM Plex Serif",serif;font-size:22px;font-weight:600;color:var(--ink)}
+.hub-alerta{font-style:normal;font-size:11.5px;font-weight:600;color:var(--flag);background:var(--flag-soft);padding:2px 8px;border-radius:10px}
+.hub-tag{position:absolute;top:14px;right:14px;font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--laranja);border:1px solid var(--laranja);border-radius:10px;padding:1px 8px}
+.hub-card.destaque{grid-column:span 2;background:var(--seal);border-color:var(--seal);color:#fff}
+.hub-card.destaque .hub-ico{background:rgba(255,255,255,.16);color:#fff}
+.hub-card.destaque .hub-desc,.hub-card.destaque .hub-num{color:#DCE6F4}
+.hub-card.destaque .hub-num b{color:#fff}
+.hub-card.destaque:hover{border-color:#fff;box-shadow:0 0 0 2px var(--seal)}
+.secao-bar{background:var(--paper);border-bottom:1px solid var(--line);padding:10px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.secao-bar .voltar{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--paper);border-radius:var(--radius);padding:8px 14px;font-weight:500;cursor:pointer;color:var(--ink)}
+.secao-bar .voltar:hover{border-color:var(--seal);color:var(--seal)}
+.secao-bar .trilha{font-size:13px;color:var(--ink3)}
+.secao-bar .trilha b{color:var(--ink);font-weight:500}
+#app .brand-logo{cursor:pointer}
+@media (max-width:820px){.hub-grid{grid-template-columns:repeat(2,1fr)}.secao-bar{padding:8px 12px}}
+@media (max-width:480px){.hub-grid{gap:10px}.hub-card{min-height:0;padding:14px 14px 12px}.hub-desc{display:none}.hub-card.destaque .hub-desc{display:block}.hub-tit{font-size:16px}.hub-num b{font-size:19px}.hub-head h2{font-size:24px}.hub-tag{top:12px;right:12px;font-size:9.5px}}
 .painel-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
 .pn-card{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--ink3);border-radius:var(--radius);padding:16px 16px 14px;box-shadow:var(--shadow)}
 button.pn-card{cursor:pointer}
@@ -470,21 +507,31 @@ table.editor textarea{min-height:60px;resize:vertical}
     </div>
   </header>
 
-  <nav class="tabs" role="tablist">
-    <button role="tab" aria-selected="true" data-view="painel">Painel</button>
-    <button role="tab" aria-selected="false" data-view="fill">Preencher</button>
-    <button role="tab" aria-selected="false" data-view="meus">Preenchimentos</button>
-    <button role="tab" aria-selected="false" data-view="repo" data-controle>Repositório</button>
-    <button role="tab" aria-selected="false" data-view="modelos" data-controle>Modelos</button>
-    <button role="tab" aria-selected="false" data-view="relatorio" data-controle>Relatório</button>
-    <button role="tab" aria-selected="false" data-view="db">Base de dados</button>
+  <nav class="secao-bar" id="secaoBar" style="display:none" aria-label="Navegação">
+    <button type="button" class="voltar" id="btnVoltar">← Início</button>
+    <span class="trilha" id="secaoTrilha"></span>
+    <span class="hub-tag" id="secaoTag" style="position:static;display:none">Controle</span>
   </nav>
 
   <main>
+    <!-- INÍCIO (dashboard) -->
+    <section class="view active" id="view-inicio">
+      <div class="hub-head"><h2 id="hubSaudacao">Início</h2><p id="hubObra"></p></div>
+      <div class="hub-grid" id="hubGrid">
+    <div class="hub-card destaque"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v3H9z"/><path d="M8 4.5H6a1 1 0 0 0-1 1V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5.5a1 1 0 0 0-1-1h-2"/><path d="m9 14 2 2 4-4.5"/></svg></span><button type="button" class="hub-tit" data-ir="fill">Preencher ficha</button><span class="hub-desc">Abrir ou iniciar uma FVS numa casa da obra</span><span class="hub-num" id="hubNumFill">—</span></div>
+    <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg></span><button type="button" class="hub-tit" data-ir="painel">Painel da obra</button><span class="hub-desc">Indicadores, reinspeções pendentes e mapa das casas</span><span class="hub-num" id="hubNumPainel">—</span></div>
+    <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></span><button type="button" class="hub-tit" data-ir="meus">Preenchimentos</button><span class="hub-desc">Todas as fichas da obra, com filtros por FVS, status e casa</span><span class="hub-num" id="hubNumMeus">—</span></div>
+    <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M6 17v-6M11 17V6M16 17v-9M21 17v-4"/></svg></span><button type="button" class="hub-tit" data-ir="relatorio">Relatório</button><span class="hub-desc">Relatório para download e índice de reprovações por item</span><span class="hub-num" id="hubNumRelatorio">—</span></div>
+    <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg></span><button type="button" class="hub-tit" data-ir="repo">Repositório</button><span class="hub-desc">Documentos originais das FVS e suas versões</span><span class="hub-num" id="hubNumRepo">—</span></div>
+    <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span><button type="button" class="hub-tit" data-ir="modelos">Modelos</button><span class="hub-desc">Questionários gerados a partir das FVS</span><span class="hub-num" id="hubNumModelos">—</span></div>
+    <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span><button type="button" class="hub-tit" data-ir="db">Base de dados</button><span class="hub-desc">Armazenamento, backup e registro de operações</span><span class="hub-num" id="hubNumDb">—</span></div>
+      </div>
+    </section>
+
     <!-- PAINEL -->
-    <section class="view active" id="view-painel">
+    <section class="view" id="view-painel">
       <div class="view-head">
-        <h2>Painel</h2>
+        <h2>Painel da obra</h2>
         <p id="painelObra"></p>
       </div>
       <div class="painel-stats" id="painelStats"></div>
@@ -497,6 +544,7 @@ table.editor textarea{min-height:60px;resize:vertical}
         <h2 style="font-size:20px">Cobertura da obra</h2>
         <p>Cada quadrado é uma casa. Toque para abrir a ficha — ou, nas casas sem ficha, para iniciar uma. Considera que cada FVS se aplica a todas as casas da obra.</p>
       </div>
+      <div class="toolbar"><select id="painelFvsSel" aria-label="Escolher a FVS" style="flex:1 1 320px;min-width:0;max-width:100%"></select></div>
       <div id="painelCobertura"></div>
     </section>
 
@@ -1335,16 +1383,66 @@ async function escolherObra(o){
   $("#obras").style.display="none";
   $("#app").style.display="flex";
   document.querySelectorAll("[data-controle]").forEach(b=>b.style.display=ehControle?"":"none");
-  irPara("painel");
+  irPara("inicio",{reset:true});
   await registrar("Obra selecionada", o.id+" — "+o.nome);
   await render();
 }
-function irPara(v){
-  document.querySelectorAll("nav.tabs button").forEach(x=>x.setAttribute("aria-selected",String(x.dataset.view===v)));
-  document.querySelectorAll(".view").forEach(s=>s.classList.toggle("active",s.id==="view-"+v));
-  if(v==="painel") renderPainel();
-  window.scrollTo(0,0);
+const VIEWS_CONTROLE=new Set(["repo","modelos","relatorio","db"]);
+const NOMES_VIEW={inicio:"Início",painel:"Painel da obra",fill:"Preencher ficha",meus:"Preenchimentos",repo:"Repositório",modelos:"Modelos",relatorio:"Relatório",db:"Base de dados"};
+// Navegação integrada ao histórico do navegador: o botão voltar do celular
+// volta para a tela anterior do site (e fecha o documento aberto), em vez de sair dele.
+let histViews=["inicio"], navIdx=0, viewAtual="inicio";
+const scrollPorIdx={};
+try{ if("scrollRestoration" in history) history.scrollRestoration="manual"; }catch(e){}
+function marcarHistorico(estado,substituir){
+  try{ if(substituir) history.replaceState(estado,""); else history.pushState(estado,""); }catch(e){}
 }
+function irPara(v,opt){
+  opt=opt||{};
+  if(!NOMES_VIEW[v]) v="inicio";
+  if(VIEWS_CONTROLE.has(v)&&!ehControle){ toast("Esta seção é restrita à conta de controle."); v="inicio"; }
+  if(v==="inicio"){
+    if(!opt.reset&&navIdx>0){
+      // volta todas as telas de uma vez; o popstate desenha o Início
+      scrollPorIdx[0]=0; history.go(-navIdx);
+      setTimeout(()=>{ if(viewAtual!=="inicio"){ histViews=["inicio"]; navIdx=0; aplicarView("inicio",0); } },450);
+      return;
+    }
+    histViews=["inicio"]; navIdx=0; marcarHistorico({cd:1,idx:0},true);
+  } else if(v!==viewAtual){
+    scrollPorIdx[navIdx]=window.scrollY;
+    navIdx++; histViews=histViews.slice(0,navIdx); histViews[navIdx]=v;
+    marcarHistorico({cd:1,idx:navIdx},false);
+  }
+  aplicarView(v,0);
+}
+function aplicarView(v,scrollY){
+  viewAtual=v;
+  document.querySelectorAll(".view").forEach(s=>s.classList.toggle("active",s.id==="view-"+v));
+  const bar=$("#secaoBar");
+  if(v==="inicio"){ bar.style.display="none"; renderHub(); }
+  else{
+    bar.style.display="";
+    const ant=navIdx>0?(histViews[navIdx-1]||"inicio"):"inicio";
+    $("#btnVoltar").textContent="← "+NOMES_VIEW[ant];
+    $("#secaoTrilha").innerHTML="Início"+(ant!=="inicio"?" › "+esc(NOMES_VIEW[ant]):"")+" › <b>"+esc(NOMES_VIEW[v])+"</b>";
+    $("#secaoTag").style.display=VIEWS_CONTROLE.has(v)?"":"none";
+  }
+  if(v==="painel") renderPainel();
+  // a barra Fechar/Salvar/Gerar só faz sentido em Preencher, com uma ficha aberta
+  $("#rodape").classList.toggle("show",v==="fill"&&!!fichaAtiva);
+  window.scrollTo(0,scrollY||0);
+}
+window.addEventListener("popstate",e=>{
+  const ov=$("#overlay");
+  if(ov&&ov.classList.contains("show")){ ov.classList.remove("show"); return; }
+  const s=e.state;
+  if(!s||!s.cd||$("#app").style.display!=="flex") return;
+  navIdx=Math.max(0,Math.min(s.idx,histViews.length-1));
+  let v=histViews[navIdx]||"inicio";
+  if(VIEWS_CONTROLE.has(v)&&!ehControle) v="inicio";
+  aplicarView(v,scrollPorIdx[navIdx]||0);
+});
 /* ---------------- Repositório (upload em massa + leitura automática) ---------------- */
 async function receber(files){
   if(!ehControle) return toast("Somente a conta de controle pode enviar ou editar documentos.");
@@ -1421,7 +1519,7 @@ async function render(){
   docs=(await DB.listar("documentos")).sort((a,b)=>b.atualizadoEm.localeCompare(a.atualizadoEm));
   modelos=(await DB.listar("modelos")).sort((a,b)=>(a.titulo||"").localeCompare(b.titulo||"","pt-BR"));
   preenchimentos=(await DB.listar("preenchimentos")).sort((a,b)=>b.atualizadoEm.localeCompare(a.atualizadoEm));
-  renderRepo(); renderModelos(); renderSetup(); renderMeus(); renderDB(); renderTodosQuestionarios(); renderGraficoReprovacoes(); renderPainel(); await renderLog();
+  renderRepo(); renderModelos(); renderSetup(); renderMeus(); renderDB(); renderTodosQuestionarios(); renderGraficoReprovacoes(); renderPainel(); renderHub(); await renderLog();
 }
 
 function renderRepo(){
@@ -2126,7 +2224,8 @@ async function gerarDocumento(p,m){
     '<div class="legenda">Documento gerado em '+dataHora(new Date().toISOString())+' pelo Controle Documental — reproduz o documento original preenchido conforme as respostas do questionário.</div>'+
   '</div>';
   ov.classList.add("show");
-  $("#ovFechar").addEventListener("click",()=>ov.classList.remove("show"));
+  marcarHistorico({cd:1,idx:navIdx,overlay:1},false);
+  $("#ovFechar").addEventListener("click",()=>{ if(history.state&&history.state.overlay) history.back(); else ov.classList.remove("show"); });
   $("#ovImprimir").addEventListener("click",()=>window.print());
   $("#ovPdf").addEventListener("click",e=>baixarPDFDocumento(p,m,e.currentTarget));
   await registrar("Documento gerado",m.titulo+" · casa "+p.unidade); await renderLog();
@@ -2148,18 +2247,13 @@ function diasDesde(iso){
    Responde "como está a obra e o que preciso resolver agora?": indicadores,
    reinspeções pendentes (itens, não fichas) e cobertura por FVS com mapa das casas.
    A lista de fichas e os filtros ficam na aba Preenchimentos. */
-const painelMapaFechado=new Set();
+let painelFvsEscolhida=null;
 const PRIO_STATUS={concluida:1,aberto:2,reinsp:3};
 const ROT_STATUS={concluida:"Concluída",aberto:"Em aberto",reinsp:"Aguardando reinspeção",sem:"Sem ficha"};
 function numeroDaCasa(u){ const s=String(u==null?"":u).trim(); return /^\d+$/.test(s)?parseInt(s,10):null; }
 function statusCasaFicha(p,m){ const s=saudeFicha(p,m); return s.aberto?(s.classe==="reinsp"?"reinsp":"aberto"):"concluida"; }
 
-function renderPainel(){
-  const elStats=$("#painelStats"); if(!elStats) return;
-  if(!obra){ elStats.innerHTML=""; $("#painelCobertura").innerHTML=""; return; }
-  if(!$("#view-painel").classList.contains("active")) return;   // só desenha quando a aba está visível
-  $("#painelObra").textContent="Obra "+obra.id+" — "+obra.nome+" · "+obra.casas+" casas";
-
+function resumoObra(){
   const fichas=preenchimentos.filter(p=>p.obraId===obra.id)
     .map(p=>({p,m:modelos.find(x=>x.id===p.modeloId)})).filter(x=>x.m);
 
@@ -2188,6 +2282,38 @@ function renderPainel(){
     if(x&&x.resultado==="R") pend.push({p,m,it,x,dias:diasDesde(x.data)});
   }));
   pend.sort((u,v)=>(v.dias==null?-1:v.dias)-(u.dias==null?-1:u.dias));
+  return {fichas,modelosOrd,cobertura,totConc,totalPrevisto,pend};
+}
+
+/* ---------------- Início: dashboard de entrada da obra ---------------- */
+function pl(n,s,p){ return n===1?s:p; }
+function renderHub(){
+  if(!obra||!$("#view-inicio").classList.contains("active")) return;
+  const primeiro=user&&user.nome?String(user.nome).trim().split(/\s+/)[0]:"";
+  $("#hubSaudacao").textContent=primeiro?"Olá, "+primeiro.charAt(0).toUpperCase()+primeiro.slice(1):"Início";
+  $("#hubObra").textContent="Obra "+obra.id+" — "+obra.nome+" · "+obra.casas+" casas";
+  const r=resumoObra();
+  const abertas=r.fichas.filter(({p,m})=>saudeFicha(p,m).aberto).length;
+  let reprov=0;
+  r.fichas.forEach(({p,m})=>itensRespondiveis(m).forEach(it=>{ const x=p.respostas[it.n]; if(x&&(x.resultado==="R"||x.resultado==="AR")) reprov++; }));
+  const set=(id,html)=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; };
+  set("hubNumFill",abertas?'<button type="button" class="hub-link" data-irfiltro="aberto" title="Ver as fichas em aberto"><b>'+abertas+'</b><span>'+pl(abertas,"ficha em aberto","fichas em aberto")+' nesta obra ›</span></button>':'Nenhuma ficha em aberto · toque para começar');
+  set("hubNumPainel",(r.totalPrevisto?'<b>'+Math.round(r.totConc/r.totalPrevisto*100)+'%</b> de cobertura':'<b>—</b> sem modelos')+
+    (r.pend.length?'<button type="button" class="hub-alerta hub-link" data-irpend="1" title="Ver as reinspeções pendentes">'+r.pend.length+' '+pl(r.pend.length,"reinspeção pendente","reinspeções pendentes")+' ›</button>':''));
+  set("hubNumMeus",'<b>'+r.fichas.length+'</b> '+pl(r.fichas.length,"ficha","fichas")+' nesta obra');
+  set("hubNumRelatorio",'<b>'+reprov+'</b> '+pl(reprov,"reprovação registrada","reprovações registradas"));
+  set("hubNumRepo",'<b>'+docs.length+'</b> '+pl(docs.length,"documento","documentos"));
+  set("hubNumModelos",'<b>'+modelos.length+'</b> '+pl(modelos.length,"modelo de FVS","modelos de FVS"));
+  set("hubNumDb",esc(DB.motor));
+}
+
+function renderPainel(){
+  const elStats=$("#painelStats"); if(!elStats) return;
+  if(!obra){ elStats.innerHTML=""; $("#painelCobertura").innerHTML=""; return; }
+  if(!$("#view-painel").classList.contains("active")) return;   // só desenha quando a aba está visível
+  $("#painelObra").textContent="Obra "+obra.id+" — "+obra.nome+" · "+obra.casas+" casas";
+
+  const {fichas,modelosOrd,cobertura,totConc,totalPrevisto,pend}=resumoObra();
 
   // ---- aprovados de primeira no mês corrente: A / (A + R + AR) ----
   const ym=hojeLocalISO().slice(0,7);
@@ -2227,33 +2353,37 @@ function renderPainel(){
     '<div class="row-actions"><button class="icon-btn" data-pnabrir="'+p.id+'" data-pnitem="'+esc(it.n)+'">Abrir item</button></div></div></li>'
   ).join("");
 
-  // ---- cobertura: um painel por FVS, com barra de proporção e mapa das casas ----
-  const cont=$("#painelCobertura");
+  // ---- cobertura: a FVS escolhida na lista suspensa, com barra de proporção e mapa das casas ----
+  const cont=$("#painelCobertura"), sel=$("#painelFvsSel");
   if(!cobertura.length){
+    sel.innerHTML=""; sel.style.display="none";
     cont.innerHTML='<div class="panel empty"><b>Nenhum modelo de FVS</b>Quando houver modelos cadastrados, a cobertura de cada um aparece aqui.</div>';
     return;
   }
+  sel.style.display="";
+  const anterior=painelFvsEscolhida;
+  sel.innerHTML=cobertura.map(({m})=>'<option value="'+esc(m.id)+'">'+esc(m.codigo?m.codigo+" — "+m.titulo:m.titulo)+'</option>').join("");
+  painelFvsEscolhida=cobertura.some(x=>x.m.id===anterior)?anterior:cobertura[0].m.id;
+  sel.value=painelFvsEscolhida;
+
   const pct=n=>(n/obra.casas*100).toFixed(2);
-  cont.innerHTML=cobertura.map(({m,porCasa,fora,c,a,r,sem})=>{
-    let casas="";
-    for(let n=1;n<=obra.casas;n++){
-      const x=porCasa[n], st=x?x.st:"sem";
-      const rot="Casa "+n+" — "+ROT_STATUS[st]+" ("+(m.codigo||m.titulo)+")";
-      casas+='<button type="button" class="mp '+(x?st:"")+'" data-pncasa="'+n+'" data-pnmodelo="'+esc(m.id)+'"'+(x?' data-pnficha="'+esc(x.p.id)+'"':'')+' title="'+esc(rot)+'" aria-label="'+esc(rot)+'">'+n+'</button>';
-    }
-    return '<div class="panel"><div class="panel-head"><h3>'+esc(m.titulo)+'</h3><span class="count">'+esc(m.codigo||"")+' · '+c+' de '+obra.casas+' casas concluídas</span></div>'+
-      '<div class="panel-body">'+
-        '<div class="cob-barra"><i class="c" style="width:'+pct(c)+'%"></i><i class="r" style="width:'+pct(r)+'%"></i><i class="a" style="width:'+pct(a)+'%"></i></div>'+
-        '<div class="cob-leg"><span class="c">'+c+' concluídas</span><span class="r">'+r+' aguardando reinspeção</span><span class="a">'+a+' em aberto</span><span class="s">'+sem+' sem ficha</span></div>'+
-        (fora?'<p class="note" style="margin:10px 0 0">'+fora+(fora===1?' ficha com unidade':' fichas com unidade')+' que não é um número de 1 a '+obra.casas+' — não aparece no mapa.</p>':'')+
-        '<details class="cob-det" data-pnmodelo="'+esc(m.id)+'"'+(painelMapaFechado.has(m.id)?'':' open')+'><summary>Mapa das '+obra.casas+' casas</summary><div class="mapa">'+casas+'</div></details>'+
-      '</div></div>';
-  }).join("");
+  const {m,porCasa,fora,c,a,r,sem}=cobertura.find(x=>x.m.id===painelFvsEscolhida);
+  let casas="";
+  for(let n=1;n<=obra.casas;n++){
+    const x=porCasa[n], st=x?x.st:"sem";
+    const rot="Casa "+n+" — "+ROT_STATUS[st]+" ("+(m.codigo||m.titulo)+")";
+    casas+='<button type="button" class="mp '+(x?st:"")+'" data-pncasa="'+n+'" data-pnmodelo="'+esc(m.id)+'"'+(x?' data-pnficha="'+esc(x.p.id)+'"':'')+' title="'+esc(rot)+'" aria-label="'+esc(rot)+'">'+n+'</button>';
+  }
+  cont.innerHTML='<div class="panel"><div class="panel-head"><h3>'+esc(m.titulo)+'</h3><span class="count">'+esc(m.codigo||"")+' · '+c+' de '+obra.casas+' casas concluídas</span></div>'+
+    '<div class="panel-body">'+
+      '<div class="cob-barra"><i class="c" style="width:'+pct(c)+'%"></i><i class="r" style="width:'+pct(r)+'%"></i><i class="a" style="width:'+pct(a)+'%"></i></div>'+
+      '<div class="cob-leg"><span class="c">'+c+' concluídas</span><span class="r">'+r+' aguardando reinspeção</span><span class="a">'+a+' em aberto</span><span class="s">'+sem+' sem ficha</span></div>'+
+      (fora?'<p class="note" style="margin:10px 0 0">'+fora+(fora===1?' ficha com unidade':' fichas com unidade')+' que não é um número de 1 a '+obra.casas+' — não aparece no mapa.</p>':'')+
+      '<div class="mapa">'+casas+'</div>'+
+    '</div></div>';
 }
-$("#painelCobertura").addEventListener("toggle",e=>{
-  const d=e.target; if(!d||!d.dataset||!d.dataset.pnmodelo) return;
-  if(d.open) painelMapaFechado.delete(d.dataset.pnmodelo); else painelMapaFechado.add(d.dataset.pnmodelo);
-},true);
+$("#painelFvsSel").addEventListener("change",e=>{ painelFvsEscolhida=e.target.value; renderPainel(); });
+
 $("#view-painel").addEventListener("click",async e=>{
   const t=e.target.closest("[data-pnabrir],[data-pnancora],[data-pncasa]"); if(!t) return;
   if(t.dataset.pnabrir){
@@ -2477,7 +2607,28 @@ $("#email").addEventListener("keydown",e=>{if(e.key==="Enter")entrarEmail()});
 $("#btnOut").addEventListener("click",sair);
 $("#btnOut2").addEventListener("click",sair);
 $("#btnTrocarObra").addEventListener("click",()=>{fecharFicha();telaObras()});
-document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>irPara(b.dataset.view)));
+$("#hubGrid").addEventListener("click",e=>{
+  const f=e.target.closest("[data-irfiltro]");
+  if(f){
+    $("#filtroModeloPre").value=""; $("#filtroUnidadePre").value=""; $("#filtroStatusPre").value=f.dataset.irfiltro;
+    irPara("meus"); renderMeus(); return;
+  }
+  if(e.target.closest("[data-irpend]")){
+    irPara("painel");
+    setTimeout(()=>{ const s=$("#painelPend").closest(".panel"); if(s) s.scrollIntoView({behavior:"smooth",block:"start"}); },60);
+    return;
+  }
+  const c=e.target.closest("[data-ir]"); if(c) irPara(c.dataset.ir);
+});
+$("#btnVoltar").addEventListener("click",()=>{
+  const antes=navIdx; history.back();
+  // se o navegador não tiver a entrada (caso raro), volta na mão
+  setTimeout(()=>{ if(navIdx===antes&&viewAtual!=="inicio"){ navIdx=Math.max(0,navIdx-1); aplicarView(histViews[navIdx]||"inicio",scrollPorIdx[navIdx]||0); } },450);
+});
+(()=>{ const logo=document.querySelector("#app .brand-logo"); if(!logo) return;
+  logo.setAttribute("role","button"); logo.setAttribute("tabindex","0"); logo.title="Ir para o início";
+  logo.addEventListener("click",()=>irPara("inicio"));
+  logo.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); irPara("inicio"); } }); })();
 
 /* ---------------- Eventos: repositório ---------------- */
 const drop=$("#drop"),file=$("#file");
