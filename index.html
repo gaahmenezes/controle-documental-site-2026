@@ -263,6 +263,27 @@ button.pn-card:hover{border-color:var(--ink2)}
   .mp:hover{transform:scale(1.14);box-shadow:0 6px 14px -4px rgba(14,28,36,.45);position:relative;z-index:2;outline:none}
   .mp:focus-visible{transform:scale(1.14);position:relative;z-index:2}
 }
+/* ---- Implantação (mapa no formato da planta da obra) ---- */
+.impl-scroll{margin-top:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.impl{--rua:18px;display:grid;grid-template-columns:46px var(--rua) 1fr;min-width:1060px;background:#EEF1EC;border:1px solid var(--line);border-radius:8px;padding:10px 10px 10px 8px}
+.impl-main{display:grid;grid-template-columns:repeat(23,minmax(0,1fr)) var(--rua) repeat(20,minmax(0,1fr)) var(--rua);row-gap:0}
+.impl-rua{position:relative;background:#D9DDD8;color:#6E7B80;font-size:9px;font-weight:700;letter-spacing:.14em;display:flex;align-items:center;justify-content:center;white-space:nowrap;min-height:var(--rua)}
+.impl-rua.h{grid-column:1/-1}
+.impl-rua.h::before{content:"";position:absolute;left:8px;right:8px;top:50%;border-top:1px dashed #F7F8F5}
+.impl-rua.h span{position:relative;background:#D9DDD8;padding:0 8px}
+.impl-rua.v{writing-mode:vertical-rl;transform:rotate(180deg)}
+.impl-qd{display:grid;grid-template-rows:auto 13px auto;gap:2px;background:#fff;border:1px solid #C9CFCB;border-radius:10px;padding:5px 6px;margin:5px 3px}
+.impl-qd .fila{display:grid;gap:2px}
+.impl-qd .qd-nome{font-size:8.5px;font-weight:700;letter-spacing:.16em;color:#9AA6AA;text-align:center;line-height:13px;border-top:1px solid #E3E7E4;border-bottom:1px solid #E3E7E4}
+.impl-faixa{display:grid;grid-template-rows:auto 1fr;gap:3px;background:#fff;border:1px solid #C9CFCB;border-radius:10px;padding:5px 4px;margin:0 3px 0 0}
+.impl-faixa .qd-nome{font-size:8.5px;font-weight:700;letter-spacing:.1em;color:#9AA6AA;text-align:center}
+.impl-faixa .fila{display:grid;grid-auto-rows:1fr;gap:2px}
+.impl .mp{aspect-ratio:auto;min-height:26px;font-size:9.5px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;border-radius:2px;line-height:1;padding:0}
+.impl-dica{display:none;font-size:12px;color:var(--ink3);margin:10px 0 0}
+@media (max-width:1180px){.impl-dica{display:block}}
+/* no computador grande, o painel com a planta usa a largura da tela */
+@media (min-width:1200px){main:has(.view.active .impl){max-width:1440px}}
+.impl-faixa .mp{min-height:0}
 .mp.concluida{background:var(--ok);border-color:var(--ok);color:#fff}
 .mp.reinsp{background:var(--flag);border-color:var(--flag);color:#fff}
 .mp.aberto{background:#F1DFA6;border-color:#B08A1E;color:#5C4508}
@@ -2624,21 +2645,68 @@ function renderPainel(){
 
   const pct=n=>(n/obra.casas*100).toFixed(2);
   const {m,porCasa,fora,c,a,r,sem}=cobertura.find(x=>x.m.id===painelFvsEscolhida);
+  const impl=IMPLANTACAO[String(obra.id)];
+  const quadraDe=impl?quadrasPorCasa(impl):{};
+  const botaoCasa=(n,ordem)=>{
+    const x=porCasa[n], st=x?x.st:"sem", q=quadraDe[n];
+    const rot="Casa "+n+(q?" (Quadra "+q+")":"")+" — "+ROT_STATUS[st]+" ("+(m.codigo||m.titulo)+")";
+    return '<button type="button" class="mp '+(x?st:"")+'" style="--d:'+Math.min((ordem||n)*2,720)+'ms" data-pncasa="'+n+'" data-pnmodelo="'+esc(m.id)+'"'+(q?' data-quadra="'+esc(q)+'"':'')+(x?' data-pnficha="'+esc(x.p.id)+'"':'')+' aria-label="'+esc(rot)+'">'+n+'</button>';
+  };
   let casas="";
-  for(let n=1;n<=obra.casas;n++){
-    const x=porCasa[n], st=x?x.st:"sem";
-    const rot="Casa "+n+" — "+ROT_STATUS[st]+" ("+(m.codigo||m.titulo)+")";
-    casas+='<button type="button" class="mp '+(x?st:"")+'" style="--d:'+Math.min(n*2,720)+'ms" data-pncasa="'+n+'" data-pnmodelo="'+esc(m.id)+'"'+(x?' data-pnficha="'+esc(x.p.id)+'"':'')+' aria-label="'+esc(rot)+'">'+n+'</button>';
-  }
+  if(!impl) for(let n=1;n<=obra.casas;n++) casas+=botaoCasa(n);
   cont.innerHTML='<div class="panel"><div class="panel-head"><h3>'+esc(m.titulo)+'</h3><span class="count">'+esc(m.codigo||"")+' · '+c+' de '+obra.casas+' casas concluídas</span></div>'+
     '<div class="panel-body">'+
       '<div class="cob-barra"><i class="c" style="width:'+pct(c)+'%"></i><i class="r" style="width:'+pct(r)+'%"></i><i class="a" style="width:'+pct(a)+'%"></i></div>'+
       '<div class="cob-leg"><span class="c">'+c+' concluídas</span><span class="r">'+r+' aguardando reinspeção</span><span class="a">'+a+' em aberto</span><span class="s">'+sem+' sem ficha</span></div>'+
       (fora?'<p class="note" style="margin:10px 0 0">'+fora+(fora===1?' ficha com unidade':' fichas com unidade')+' que não é um número de 1 a '+obra.casas+' — não aparece no mapa.</p>':'')+
-      '<div class="mapa">'+casas+'</div>'+
+      (impl?mapaImplantacao(impl,botaoCasa):'<div class="mapa">'+casas+'</div>')+
     '</div></div>';
 }
 $("#painelFvsSel").addEventListener("change",e=>{ painelFvsEscolhida=e.target.value; renderPainel(); });
+/* ---------------- Implantação: mapa das casas no formato da planta ----------------
+   Viva Mais Barra (obra 58) segue a planta VMB-ARQ-PE-03/21 IMP R02:
+   Quadra A em faixa ao longo da Rua A (casa 01 embaixo, 22 em cima) e
+   oito quadras em pares (B|C, D|E, F|G, H|I) separadas pelas Ruas B a F,
+   com a Rua G no meio e a Rua H à direita. Em cada quadra, a fila de cima
+   numera da esquerda para a direita e a de baixo volta da direita para a
+   esquerda. Obras sem planta cadastrada usam a grade simples. */
+const faixaNum=(a,b)=>{ const r=[]; if(a<=b) for(let i=a;i<=b;i++) r.push(i); else for(let i=a;i>=b;i--) r.push(i); return r; };
+const quadraPar=(nome,ini,porFila)=>({nome, cima:faixaNum(ini,ini+porFila-1), baixo:faixaNum(ini+2*porFila-1,ini+porFila)});
+const IMPLANTACAO={
+  "58":{
+    faixa:{nome:"A", rua:"RUA A", casas:faixaNum(22,1)},
+    ruas:["RUA B","RUA C","RUA D","RUA E","RUA F"], ruaMeio:"RUA G", ruaDireita:"RUA H",
+    pares:[
+      {esq:quadraPar("B",23,22),  dir:quadraPar("C",67,20)},
+      {esq:quadraPar("D",107,22), dir:quadraPar("E",151,20)},
+      {esq:quadraPar("F",191,23), dir:quadraPar("G",237,20)},
+      {esq:quadraPar("H",277,23), dir:quadraPar("I",323,20)}
+    ]
+  }
+};
+function quadrasPorCasa(impl){
+  const r={};
+  impl.faixa.casas.forEach(n=>r[n]=impl.faixa.nome);
+  impl.pares.forEach(pp=>[pp.esq,pp.dir].forEach(q=>q.cima.concat(q.baixo).forEach(n=>r[n]=q.nome)));
+  return r;
+}
+function mapaImplantacao(impl,botao){
+  let ordem=0;
+  const fila=(lista,col)=>'<div class="fila" style="grid-template-columns:repeat('+col+',minmax(0,1fr))">'+lista.map(n=>botao(n,++ordem)).join("")+'</div>';
+  const quadra=(q,colIni,colFim)=>'<div class="impl-qd" style="grid-column:'+colIni+'/'+colFim+'">'+fila(q.cima,q.cima.length)+'<div class="qd-nome">QUADRA '+esc(q.nome)+'</div>'+fila(q.baixo,q.baixo.length)+'</div>';
+  const ruaH=nome=>'<div class="impl-rua h"><span>'+esc(nome)+'</span></div>';
+  let main=ruaH(impl.ruas[0]);
+  impl.pares.forEach((pp,i)=>{
+    const nEsq=pp.esq.cima.length;               // a quadra da esquerda encosta na Rua G
+    main+=quadra(pp.esq,24-nEsq,24);
+    main+='<div class="impl-rua v" style="grid-column:24">'+(i===0||i===2?esc(impl.ruaMeio):"")+'</div>';
+    main+=quadra(pp.dir,25,25+pp.dir.cima.length);
+    main+='<div class="impl-rua v" style="grid-column:45">'+(i===1?esc(impl.ruaDireita):"")+'</div>';
+    main+=ruaH(impl.ruas[i+1]);
+  });
+  const faixa='<div class="impl-faixa"><div class="qd-nome">QD A</div><div class="fila" style="grid-template-rows:repeat('+impl.faixa.casas.length+',1fr)">'+impl.faixa.casas.map(n=>botao(n,++ordem)).join("")+'</div></div>';
+  return '<p class="impl-dica">Arraste para o lado para ver a planta inteira.</p><div class="impl-scroll"><div class="impl" role="group" aria-label="Implantação da obra — casas por quadra">'+faixa+'<div class="impl-rua v">'+esc(impl.faixa.rua)+'</div><div class="impl-main">'+main+'</div></div></div>';
+}
 /* ---------------- Cartão flutuante das casas (computador, ao passar o mouse) ---------------- */
 const mpTip=document.createElement("div");
 mpTip.id="mpTip"; mpTip.setAttribute("role","tooltip"); document.body.appendChild(mpTip);
@@ -2648,7 +2716,7 @@ function ultimaInspecao(p){
 }
 function conteudoTipCasa(el){
   const m=modelos.find(x=>x.id===el.dataset.pnmodelo); if(!m) return "";
-  const n=el.dataset.pncasa, cod=esc(m.codigo||m.titulo);
+  const n=el.dataset.pncasa, cod=(el.dataset.quadra?"Quadra "+esc(el.dataset.quadra)+" · ":"")+esc(m.codigo||m.titulo);
   if(!el.dataset.pnficha){
     return '<div class="tip-top"><b>Casa '+esc(n)+'</b><span>'+cod+'</span></div>'+
       '<div class="tip-st sem">Sem ficha</div><div class="tip-acao">Clique para iniciar a ficha</div>';
