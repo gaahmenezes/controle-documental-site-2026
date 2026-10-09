@@ -860,8 +860,13 @@ document.querySelectorAll("img[data-logo]").forEach(i=>{ i.src=i.dataset.logo===
 
 const CONFIG = {
   organizacao: "Viva Construções",
+  // Login Microsoft 365 (Entra ID). Preencha com os códigos que o TI devolver:
+  // "Application (client) ID" e "Directory (tenant) ID". Com o client ID
+  // preenchido, o site passa a entrar só pelo 365 (some a entrada por e-mail).
   msalClientId: "",
-  msalTenantId: "common",
+  msalTenantId: "",
+  // Escopo da API exposto no Entra ID. Vazio = "api://<client-id>/acesso_usuario".
+  msalEscopoApi: "",
   dominiosPermitidos: ["vivaconstrucoes.com.br"],
   tamanhoMaxMB: 20,
   contasControle: ["gabriel.carvalho@vivaconstrucoes.com.br"],
@@ -946,7 +951,23 @@ const DB = (() => {
 
   /* ---- backend próprio (Node.js + Postgres), configurado em CONFIG.apiBaseUrl ---- */
   function urlApi(caminho){ return CONFIG.apiBaseUrl.replace(/\/$/,"") + caminho; }
-  const headersJson = () => ({ "Content-Type":"application/json", "X-Api-Key": CONFIG.apiKey||"" });
+  // Cabeçalhos de autenticação: a chave antiga (enquanto existir no CONFIG) e,
+  // se houver login 365, o token da Microsoft. O servidor decide qual aceita.
+  async function headersAuth(){
+    const h={};
+    if(CONFIG.apiKey) h["X-Api-Key"]=CONFIG.apiKey;
+    const t=(typeof Auth365!=="undefined")?await Auth365.token():null;
+    if(t) h["Authorization"]="Bearer "+t;
+    return h;
+  }
+  async function apiFetch(caminho,opts){
+    opts=opts||{};
+    const json=opts.body!=null && !(opts.body instanceof FormData);
+    const headers=Object.assign({}, json?{"Content-Type":"application/json"}:{}, await headersAuth(), opts.headers||{});
+    const r=await fetch(urlApi(caminho),Object.assign({},opts,{headers}));
+    if(r.status===401 && typeof Auth365!=="undefined") Auth365.respostaNaoAutorizada(r.clone());
+    return r;
+  }
   async function tentarRemoto(timeoutMs){
     if(!CONFIG.apiBaseUrl) return false;
     const controlador=new AbortController();
@@ -982,44 +1003,44 @@ const DB = (() => {
   async function remotoListarJson(l,filtro){
     // o servidor novo filtra pela obra; o antigo ignora o parâmetro e o filtro é refeito aqui
     const qs=filtro?Object.keys(filtro).filter(k=>filtro[k]!=null).map(k=>encodeURIComponent(k)+"="+encodeURIComponent(filtro[k])).join("&"):"";
-    const r=await fetch(urlApi("/api/colecoes/"+l+(qs?"?"+qs:"")),{headers:headersJson()});
+    const r=await apiFetch("/api/colecoes/"+l+(qs?"?"+qs:""));
     if(!r.ok) throw new Error("Falha ao listar "+l+" ("+r.status+")");
     return r.json();
   }
   async function remotoCriarJson(l,reg){
     // "If-None-Match: *" = só cria se ainda não existir (o servidor novo responde 409 se já existir)
-    const r=await fetch(urlApi("/api/colecoes/"+l+"/"+encodeURIComponent(reg.id)),{method:"PUT",headers:Object.assign(headersJson(),{"If-None-Match":"*"}),body:JSON.stringify(reg)});
+    const r=await apiFetch("/api/colecoes/"+l+"/"+encodeURIComponent(reg.id),{method:"PUT",headers:{"If-None-Match":"*"},body:JSON.stringify(reg)});
     if(r.status===409){ let ex=null; try{ const j=await r.json(); ex=j&&j.existente?j.existente:null; }catch(e){} return {criado:false,existente:ex}; }
     if(!r.ok) throw new Error("Falha ao criar "+l+" ("+r.status+")");
     return {criado:true};
   }
   async function remotoObterJson(l,id){
-    const r=await fetch(urlApi("/api/colecoes/"+l+"/"+encodeURIComponent(id)),{headers:headersJson()});
+    const r=await apiFetch("/api/colecoes/"+l+"/"+encodeURIComponent(id));
     if(r.status===404) return undefined;
     if(!r.ok) throw new Error("Falha ao obter "+l+" ("+r.status+")");
     return r.json();
   }
   async function remotoGravarJson(l,reg){
-    const r=await fetch(urlApi("/api/colecoes/"+l+"/"+encodeURIComponent(reg.id)),{method:"PUT",headers:headersJson(),body:JSON.stringify(reg)});
+    const r=await apiFetch("/api/colecoes/"+l+"/"+encodeURIComponent(reg.id),{method:"PUT",body:JSON.stringify(reg)});
     if(!r.ok) throw new Error("Falha ao gravar "+l+" ("+r.status+")");
     return reg.id;
   }
   async function remotoRemoverJson(l,id){
-    const r=await fetch(urlApi("/api/colecoes/"+l+"/"+encodeURIComponent(id)),{method:"DELETE",headers:headersJson()});
+    const r=await apiFetch("/api/colecoes/"+l+"/"+encodeURIComponent(id),{method:"DELETE"});
     if(!r.ok) throw new Error("Falha ao remover "+l+" ("+r.status+")");
   }
   async function remotoAuditoriaListar(){
-    const r=await fetch(urlApi("/api/auditoria"),{headers:headersJson()});
+    const r=await apiFetch("/api/auditoria");
     if(!r.ok) throw new Error("Falha ao ler auditoria ("+r.status+")");
     return r.json();
   }
   async function remotoAuditoriaGravar(evento){
-    const r=await fetch(urlApi("/api/auditoria"),{method:"POST",headers:headersJson(),body:JSON.stringify(evento)});
+    const r=await apiFetch("/api/auditoria",{method:"POST",body:JSON.stringify(evento)});
     if(!r.ok) throw new Error("Falha ao gravar evento ("+r.status+")");
     return evento.id;
   }
   async function remotoBlobListarMeta(loja){
-    const r=await fetch(urlApi("/api/arquivos-bin/"+loja),{headers:headersJson()});
+    const r=await apiFetch("/api/arquivos-bin/"+loja);
     if(!r.ok) throw new Error("Falha ao listar arquivos de "+loja+" ("+r.status+")");
     return r.json();
   }
@@ -1035,18 +1056,18 @@ const DB = (() => {
     const {id,blob}=registro;
     const fd=new FormData();
     fd.append("id",id); fd.append("nome",blob.name||""); fd.append("arquivo",blob,blob.name||id);
-    const r=await fetch(urlApi("/api/arquivos-bin/"+loja),{method:"POST",headers:{"X-Api-Key":CONFIG.apiKey||""},body:fd});
+    const r=await apiFetch("/api/arquivos-bin/"+loja,{method:"POST",body:fd});
     if(!r.ok) throw new Error("Falha ao enviar arquivo ("+r.status+")");
     return id;
   }
   async function remotoBlobObter(loja,id){
-    const r=await fetch(urlApi("/api/arquivos-bin/"+loja+"/"+encodeURIComponent(id)),{headers:headersJson()});
+    const r=await apiFetch("/api/arquivos-bin/"+loja+"/"+encodeURIComponent(id));
     if(r.status===404) return undefined;
     if(!r.ok) throw new Error("Falha ao consultar arquivo ("+r.status+")");
     return remotoBlobBaixar(await r.json());
   }
   async function remotoBlobRemover(loja,id){
-    const r=await fetch(urlApi("/api/arquivos-bin/"+loja+"/"+encodeURIComponent(id)),{method:"DELETE",headers:headersJson()});
+    const r=await apiFetch("/api/arquivos-bin/"+loja+"/"+encodeURIComponent(id),{method:"DELETE"});
     if(!r.ok) throw new Error("Falha ao remover arquivo ("+r.status+")");
   }
 
@@ -1256,7 +1277,7 @@ const DB = (() => {
 })();
 
 /* ---------------- Estado ---------------- */
-let user=null, msal=null, obra=null, ehControle=false;
+let user=null, obra=null, ehControle=false;
 let docs=[], modelos=[], preenchimentos=[], fichaAtiva=null;
 
 /* ---------------- Utilidades ---------------- */
@@ -1416,24 +1437,61 @@ function modeloFVS111(docId){
 }
 
 /* ---------------- Autenticação ---------------- */
-const msalPronto=()=>CONFIG.msalClientId&&window.msal;
+// Login Microsoft 365 com redirecionamento (funciona melhor no celular do que
+// janela pop-up). A conta fica guardada pelo MSAL neste navegador; o token da
+// API é renovado em silêncio e enviado ao servidor em cada pedido.
+const msalPronto=()=>!!(CONFIG.msalClientId&&window.msal);
+const Auth365=(()=>{
+  let app=null, conta=null, avisouExpirado=false;
+  const escopo=()=>CONFIG.msalEscopoApi||("api://"+CONFIG.msalClientId+"/acesso_usuario");
+  const urlVolta=()=>location.origin+location.pathname;
+  async function iniciar(){
+    if(!msalPronto()) return null;
+    try{
+      app=new window.msal.PublicClientApplication({
+        auth:{clientId:CONFIG.msalClientId, authority:"https://login.microsoftonline.com/"+(CONFIG.msalTenantId||"organizations"), redirectUri:urlVolta(), postLogoutRedirectUri:urlVolta()},
+        cache:{cacheLocation:"localStorage"}
+      });
+      if(app.initialize) await app.initialize();
+      const r=await app.handleRedirectPromise();
+      if(r&&r.account){ conta=r.account; return {conta, voltouDoLogin:true}; }
+      const contas=app.getAllAccounts();
+      if(contas.length){ conta=contas[0]; return {conta, voltouDoLogin:false}; }
+    }catch(e){ console.warn("Login 365:",e); return {erro:e}; }
+    return null;
+  }
+  async function entrar(){
+    if(!app) await iniciar();
+    await app.loginRedirect({scopes:[escopo()], prompt:"select_account"});
+  }
+  async function token(){
+    if(!app||!conta) return null;
+    try{
+      const r=await app.acquireTokenSilent({scopes:[escopo()], account:conta});
+      return r.accessToken;
+    }catch(e){ return null; } // sem token: o servidor responde 401 e o site pede novo login
+  }
+  async function sairMsal(){
+    if(!app||!conta) return;
+    const c=conta; conta=null;
+    // limpa só a sessão deste site, sem desconectar a pessoa do Outlook/Teams no aparelho
+    try{ await app.logoutRedirect({account:c, onRedirectNavigate:()=>false}); }catch(e){}
+  }
+  async function respostaNaoAutorizada(r){
+    let j=null; try{ j=await r.json(); }catch(e){}
+    if(!j||!/^login_/.test(j.codigo||"")||avisouExpirado||!user) return;
+    avisouExpirado=true;
+    toast("Sua sessão expirou. Entre de novo com a conta Microsoft 365.");
+    setTimeout(()=>{ avisouExpirado=false; sair(); },1500);
+  }
+  return { iniciar, entrar, token, sair: sairMsal, respostaNaoAutorizada, get conta(){return conta;}, get ativo(){return msalPronto();} };
+})();
+function contaParaUsuario(c){ return {nome:c.name||c.username, email:String(c.username||"").toLowerCase(), via:"Microsoft 365"}; }
 async function entrarMicrosoft(){
   const m=$("#loginMsg");
-  if(!msalPronto()) return aviso(m,"Login Microsoft 365 ainda não configurado neste servidor. Use o e-mail corporativo ou informe o ID do aplicativo no início do arquivo.","error");
-  try{
-    if(!msal){
-      msal=new window.msal.PublicClientApplication({auth:{clientId:CONFIG.msalClientId,authority:"https://login.microsoftonline.com/"+CONFIG.msalTenantId,redirectUri:location.origin+location.pathname},cache:{cacheLocation:"sessionStorage"}});
-      if(msal.initialize) await msal.initialize();
-    }
-    const r=await msal.loginPopup({scopes:["User.Read"]});
-    const email=r.account.username;
-    if(!domInioPermitido(email)){
-      aviso(m,"Acesso restrito a contas "+CONFIG.dominiosPermitidos.map(d=>"@"+d).join(", ")+". A conta "+email+" não tem permissão.","error");
-      msal.logoutPopup().catch(()=>{});
-      return;
-    }
-    entrar({nome:r.account.name||email,email,via:"Microsoft 365"});
-  }catch(e){ aviso(m,"Não foi possível concluir o login Microsoft: "+(e.errorCode||e.message||"erro"),"error"); }
+  if(!msalPronto()) return aviso(m,"Login Microsoft 365 ainda não configurado neste servidor. Use o e-mail corporativo.","error");
+  try{ aviso(m,"Abrindo o login da Microsoft…","info"); await Auth365.entrar(); }
+  catch(e){ aviso(m,"Não foi possível abrir o login Microsoft: "+(e.errorCode||e.message||"erro"),"error"); }
 }
 let pendingEmail=null;
 function entrarEmail(){
@@ -1485,6 +1543,7 @@ async function entrar(u,restaurando){
   ["#avatar","#avatar2"].forEach(s=>$(s).textContent=(u.nome||u.email).trim().slice(0,2).toUpperCase());
   ["#userEmail","#userEmail2"].forEach(s=>$(s).textContent=u.nome?u.nome+" ("+u.email+")":u.email);
   salvarSessao(u);
+  await prepararBase();
   await registrar(restaurando?"Sessão restaurada":"Entrada no sistema", u.via+(ehControle?" · perfil de controle":" · perfil de campo"));
   $("#login").style.display="none";
   telaObras();
@@ -1495,12 +1554,12 @@ async function entrar(u,restaurando){
   else toast("Base compartilhada não configurada: gravando apenas no armazenamento local deste navegador.");
 }
 async function sair(){
-  await registrar("Saída do sistema","");
+  try{ await registrar("Saída do sistema",""); }catch(e){} // sem conexão ou sessão vencida: sai mesmo assim
   user=null;obra=null;fichaAtiva=null;pendingEmail=null;
   apagarSessaoSalva();
   $("#app").style.display="none";$("#obras").style.display="none";$("#verificacao").style.display="none";$("#login").style.display="grid";
   $("#email").value="";limpaAviso($("#loginMsg"));
-  if(msal) msal.logoutPopup().catch(()=>{});
+  if(Auth365.conta) Auth365.sair();
 }
 
 /* ---------------- Obras ---------------- */
@@ -3193,20 +3252,47 @@ async function semear(){
     await registrar("Documento e questionário FVS.111 carregados na base", FVS111_NOME);
   }
 }
+let basePreparada=false;
+async function prepararBase(){
+  if(basePreparada) return;
+  try{
+    await semear();
+    docs=await DB.listar("documentos");
+    $("#ledgerDocs").textContent=docs.length;
+    basePreparada=true;
+  }catch(e){ console.warn("Base ainda não acessível (aguardando login):",e); }
+}
 (async()=>{
   $("#orgLabel").textContent=CONFIG.organizacao;
   $("#dominioTag").textContent="Acesso restrito a "+CONFIG.dominiosPermitidos.map(d=>"@"+d).join(", ");
   if(CONFIG.apiBaseUrl) $("#cfgNote").textContent="Conectando à base compartilhada…";
 
-  await DB.init(); await semear();
+  // Com o 365 configurado, o login é só pela Microsoft: some a entrada por e-mail.
+  if(msalPronto()) document.querySelectorAll(".login-card .sep, .login-card .field, #btnEmail").forEach(el=>el.style.display="none");
+  const login=await Auth365.iniciar();
+
+  await DB.init();
+  // Sem login 365 configurado (ou já logado), a base é preparada agora; senão, depois do login.
+  if(!msalPronto() || (login&&login.conta)) await prepararBase();
 
   $("#cfgNote").textContent=msalPronto()
-    ? "Anexação e edição de documentos são exclusivas da conta de controle."
-    : "Login Microsoft 365 pendente de configuração: informe o ID do aplicativo (Entra ID) no início do arquivo. Enquanto isso, use o e-mail corporativo.";
+    ? "Use a sua conta Microsoft 365 da empresa (a mesma do Outlook e do Teams)."
+    : "Login Microsoft 365 pendente de configuração. Enquanto isso, use o e-mail corporativo.";
   if(CONFIG.apiBaseUrl && !DB.compartilhado) $("#cfgNote").textContent="O servidor da base compartilhada está iniciando (pode levar até 1 minuto na primeira vez). Você já pode entrar normalmente — a conexão completa em segundo plano.";
-  docs=await DB.listar("documentos");
-  $("#ledgerDocs").textContent=docs.length;
 
+  if(msalPronto()){
+    if(login&&login.erro) aviso($("#loginMsg"),"Não foi possível concluir o login Microsoft: "+(login.erro.errorCode||login.erro.message||"erro"),"error");
+    if(login&&login.conta){
+      const u=contaParaUsuario(login.conta);
+      if(!domInioPermitido(u.email)){
+        aviso($("#loginMsg"),"Acesso restrito a contas "+CONFIG.dominiosPermitidos.map(d=>"@"+d).join(", ")+". A conta "+u.email+" não tem permissão.","error");
+        await Auth365.sair();
+        return;
+      }
+      await entrar(u, !login.voltouDoLogin);
+    }
+    return;
+  }
   const sessaoSalva=lerSessaoSalva();
   if(sessaoSalva && sessaoSalva.email && domInioPermitido(sessaoSalva.email)){
     await entrar(sessaoSalva, true);
