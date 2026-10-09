@@ -7,8 +7,8 @@
 | Código do site | Este repositório (`main`) | Conta do Gabriel |
 | Código da API | `gaahmenezes/controle-documental-backend-2026` (`master`, privado) | Conta do Gabriel |
 | Site (`index.html`) | Render — Static Site `controle-documental-site-2026` | Conta Render |
-| Backend (API) | Render — serviço `controle-documental-api` | Conta Render |
-| Banco | Neon (Postgres) | Conta Neon |
+| Backend (API) | Render — Web Service `controle-documental-api` (Ohio), `https://controle-documental-api-vrbc.onrender.com` | Conta Render |
+| Banco | Neon (Postgres, Ohio, branch `production`) | Conta Neon |
 | Despertador do Render | cron-job.org chamando `/api/status` a cada ~10 min | Conta cron-job.org |
 
 Mantenha uma segunda pessoa da empresa com acesso a GitHub, Render e Neon
@@ -42,7 +42,7 @@ As tabelas e índices são criados sozinhos quando o servidor sobe (`src/db.js` 
 
 ## Verificação rápida
 
-- `https://controle-documental-api.onrender.com/api/status` → `{"ok":true,...}`
+- `https://controle-documental-api-vrbc.onrender.com/api/status` → `{"ok":true,...}`
 - No site: abrir uma obra, criar uma ficha de teste em um celular e ver se aparece no computador.
 
 ## Problemas comuns
