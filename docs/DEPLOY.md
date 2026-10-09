@@ -4,8 +4,9 @@
 
 | Peça | Onde | Quem acessa |
 |---|---|---|
-| Código | Este repositório no GitHub | Conta do Gabriel |
-| Site (`index.html`) | Publicado a partir deste repositório | — |
+| Código do site | Este repositório (`main`) | Conta do Gabriel |
+| Código da API | `gaahmenezes/controle-documental-backend-2026` (`master`, privado) | Conta do Gabriel |
+| Site (`index.html`) | Render — Static Site `controle-documental-site-2026` | Conta Render |
 | Backend (API) | Render — serviço `controle-documental-api` | Conta Render |
 | Banco | Neon (Postgres) | Conta Neon |
 | Despertador do Render | cron-job.org chamando `/api/status` a cada ~10 min | Conta cron-job.org |
@@ -16,7 +17,7 @@ Mantenha uma segunda pessoa da empresa com acesso a GitHub, Render e Neon
 ## Atualizar o site
 
 1. Edite `index.html` (direto aqui, pelo Claude, ou pelo Manus).
-2. Faça o commit na branch `main`. A publicação acontece a partir dela.
+2. Faça o commit na branch `main`. Se o Render não publicar sozinho, use **Manual Deploy → Deploy latest commit** no Static Site.
 3. Abra o site, force a atualização (Ctrl+F5) e confira.
 
 > Se o Manus também envia commits para este repositório, ele precisa partir da
@@ -25,10 +26,9 @@ Mantenha uma segunda pessoa da empresa com acesso a GitHub, Render e Neon
 
 ## Atualizar o backend
 
-Os arquivos ficam em `backend/`. No Render, o serviço precisa apontar para
-este repositório com **Root Directory = `backend`**, Build `npm install`,
-Start `npm start`. Com o auto-deploy ligado, cada commit em `backend/`
-publica sozinho.
+O código fica no repositório `controle-documental-backend-2026`. No Render, o Web Service
+aponta para ele (branch `master`), Build `npm install`, Start `npm start`. Com o
+auto-deploy ligado, cada commit publica sozinho; senão, use Manual Deploy.
 
 Variáveis de ambiente (painel do Render, **nunca** no repositório):
 
@@ -38,7 +38,7 @@ Variáveis de ambiente (painel do Render, **nunca** no repositório):
 | `API_KEY` | Mesma chave que está em `CONFIG.apiKey` no `index.html` |
 | `CORS_ORIGIN` | `*` (ou o endereço do site, para restringir) |
 
-As tabelas e índices são criados sozinhos quando o servidor sobe (`backend/src/db.js`).
+As tabelas e índices são criados sozinhos quando o servidor sobe (`src/db.js` do repositório da API).
 
 ## Verificação rápida
 

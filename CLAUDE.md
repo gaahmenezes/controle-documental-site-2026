@@ -14,10 +14,10 @@
 - Listagens filtram por obra (`?obraId=`). Não recarregar listas inteiras depois de salvar.
 - Melhorias visuais de computador ficam em `@media (min-width:821px)` / `(hover:hover) and (pointer:fine)`; respeitar `prefers-reduced-motion`.
 
-## Backend (`backend/`)
-- Node 18+, Express, `pg`. Tabela `colecoes(colecao, id, dados JSONB, atualizado_em)` e `arquivos_binarios`.
-- Filtros aceitos no GET: `obraId`, `modeloId` (sempre parametrizados).
+## Backend
+- Fica em outro repositório: `gaahmenezes/controle-documental-backend-2026` (branch `master`).
+- Mudanças na API precisam continuar compatíveis com o site publicado, e vice-versa.
 
 ## Antes de publicar
-- `node -c` nos arquivos do backend; abrir o site e conferir que não há erro no console.
+- Abrir o site e conferir que não há erro no console.
 - Commits pequenos, com mensagem dizendo o que mudou para o usuário.
