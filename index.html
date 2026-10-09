@@ -265,22 +265,34 @@ button.pn-card:hover{border-color:var(--ink2)}
 }
 /* ---- Implantação (mapa no formato da planta da obra) ---- */
 .impl-scroll{margin-top:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
-.impl{--rua:18px;display:grid;grid-template-columns:46px var(--rua) 1fr;min-width:1060px;background:#EEF1EC;border:1px solid var(--line);border-radius:8px;padding:10px 10px 10px 8px}
+.impl{--rua:20px;display:grid;grid-template-columns:54px var(--rua) 1fr;min-width:1300px;background:#EEF1EC;border:1px solid var(--line);border-radius:8px;padding:10px 10px 10px 8px}
 .impl-main{display:grid;grid-template-columns:repeat(23,minmax(0,1fr)) var(--rua) repeat(20,minmax(0,1fr)) var(--rua);row-gap:0}
 .impl-rua{position:relative;background:#D9DDD8;color:#6E7B80;font-size:9px;font-weight:700;letter-spacing:.14em;display:flex;align-items:center;justify-content:center;white-space:nowrap;min-height:var(--rua)}
 .impl-rua.h{grid-column:1/-1}
 .impl-rua.h::before{content:"";position:absolute;left:8px;right:8px;top:50%;border-top:1px dashed #F7F8F5}
 .impl-rua.h span{position:relative;background:#D9DDD8;padding:0 8px}
 .impl-rua.v{writing-mode:vertical-rl;transform:rotate(180deg)}
-.impl-qd{display:grid;grid-template-rows:auto 13px auto;gap:2px;background:#fff;border:1px solid #C9CFCB;border-radius:10px;padding:5px 6px;margin:5px 3px}
+.impl-qd{display:grid;grid-template-rows:auto 14px auto;gap:3px;background:#fff;border:1px solid #C9CFCB;border-radius:10px;padding:6px 6px;margin:6px 3px}
 .impl-qd .fila{display:grid;gap:2px}
-.impl-qd .qd-nome{font-size:8.5px;font-weight:700;letter-spacing:.16em;color:#9AA6AA;text-align:center;line-height:13px;border-top:1px solid #E3E7E4;border-bottom:1px solid #E3E7E4}
+.impl-qd .qd-nome{font-size:9px;font-weight:700;letter-spacing:.16em;color:#9AA6AA;text-align:center;line-height:13px;border-top:1px solid #E3E7E4;border-bottom:1px solid #E3E7E4}
 .impl-faixa{display:grid;grid-template-rows:auto 1fr;gap:3px;background:#fff;border:1px solid #C9CFCB;border-radius:10px;padding:5px 4px;margin:0 3px 0 0}
 .impl-faixa .qd-nome{font-size:8.5px;font-weight:700;letter-spacing:.1em;color:#9AA6AA;text-align:center}
-.impl-faixa .fila{display:grid;grid-auto-rows:1fr;gap:2px}
-.impl .mp{aspect-ratio:auto;min-height:26px;font-size:9.5px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;border-radius:2px;line-height:1;padding:0}
+.impl-faixa .fila{display:grid;grid-auto-rows:1fr;gap:3px}
+.impl .mp{aspect-ratio:auto;min-height:34px;font-size:11px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;border-radius:2px;line-height:1;padding:0}
 .impl-dica{display:none;font-size:12px;color:var(--ink3);margin:10px 0 0}
-@media (max-width:1180px){.impl-dica{display:block}}
+@media (max-width:1340px){.impl-dica{display:block}}
+/* celular: uma quadra por vez, empilhadas, sem arrastar para o lado */
+.impl-cel{display:none;margin-top:12px;gap:10px}
+.qd-card{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden}
+.qd-card-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:10px 12px;background:var(--line2);border-bottom:1px solid var(--line)}
+.qd-card-head b{font-size:14px;color:var(--ink)}
+.qd-card-head span{font-size:12px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.qd-frente{padding:9px 12px 11px}
+.qd-frente+.qd-frente{border-top:1px dashed var(--line)}
+.qd-frente h4{font-family:inherit;margin:0 0 7px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.qd-frente .fila{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:5px}
+.impl-cel .mp{aspect-ratio:auto;min-height:40px;font-size:13px;border-radius:4px;font-variant-numeric:tabular-nums}
+@media (max-width:820px){.impl-dica,.impl-scroll{display:none}.impl-cel{display:grid}}
 /* no computador grande, o painel com a planta usa a largura da tela */
 @media (min-width:1200px){main:has(.view.active .impl){max-width:1440px}}
 .impl-faixa .mp{min-height:0}
@@ -2659,7 +2671,7 @@ function renderPainel(){
       '<div class="cob-barra"><i class="c" style="width:'+pct(c)+'%"></i><i class="r" style="width:'+pct(r)+'%"></i><i class="a" style="width:'+pct(a)+'%"></i></div>'+
       '<div class="cob-leg"><span class="c">'+c+' concluídas</span><span class="r">'+r+' aguardando reinspeção</span><span class="a">'+a+' em aberto</span><span class="s">'+sem+' sem ficha</span></div>'+
       (fora?'<p class="note" style="margin:10px 0 0">'+fora+(fora===1?' ficha com unidade':' fichas com unidade')+' que não é um número de 1 a '+obra.casas+' — não aparece no mapa.</p>':'')+
-      (impl?mapaImplantacao(impl,botaoCasa):'<div class="mapa">'+casas+'</div>')+
+      (impl?mapaImplantacao(impl,botaoCasa,n=>porCasa[n]&&porCasa[n].st==="concluida"):'<div class="mapa">'+casas+'</div>')+
     '</div></div>';
 }
 $("#painelFvsSel").addEventListener("change",e=>{ painelFvsEscolhida=e.target.value; renderPainel(); });
@@ -2671,16 +2683,16 @@ $("#painelFvsSel").addEventListener("change",e=>{ painelFvsEscolhida=e.target.va
    numera da esquerda para a direita e a de baixo volta da direita para a
    esquerda. Obras sem planta cadastrada usam a grade simples. */
 const faixaNum=(a,b)=>{ const r=[]; if(a<=b) for(let i=a;i<=b;i++) r.push(i); else for(let i=a;i>=b;i--) r.push(i); return r; };
-const quadraPar=(nome,ini,porFila)=>({nome, cima:faixaNum(ini,ini+porFila-1), baixo:faixaNum(ini+2*porFila-1,ini+porFila)});
+const quadraPar=(nome,ini,porFila,ruaCima,ruaBaixo)=>({nome, cima:faixaNum(ini,ini+porFila-1), baixo:faixaNum(ini+2*porFila-1,ini+porFila), ruaCima, ruaBaixo});
 const IMPLANTACAO={
   "58":{
     faixa:{nome:"A", rua:"RUA A", casas:faixaNum(22,1)},
     ruas:["RUA B","RUA C","RUA D","RUA E","RUA F"], ruaMeio:"RUA G", ruaDireita:"RUA H",
     pares:[
-      {esq:quadraPar("B",23,22),  dir:quadraPar("C",67,20)},
-      {esq:quadraPar("D",107,22), dir:quadraPar("E",151,20)},
-      {esq:quadraPar("F",191,23), dir:quadraPar("G",237,20)},
-      {esq:quadraPar("H",277,23), dir:quadraPar("I",323,20)}
+      {esq:quadraPar("B",23,22,"Rua B","Rua C"),  dir:quadraPar("C",67,20,"Rua B","Rua C")},
+      {esq:quadraPar("D",107,22,"Rua C","Rua D"), dir:quadraPar("E",151,20,"Rua C","Rua D")},
+      {esq:quadraPar("F",191,23,"Rua D","Rua E"), dir:quadraPar("G",237,20,"Rua D","Rua E")},
+      {esq:quadraPar("H",277,23,"Rua E","Rua F"), dir:quadraPar("I",323,20,"Rua E","Rua F")}
     ]
   }
 };
@@ -2690,7 +2702,7 @@ function quadrasPorCasa(impl){
   impl.pares.forEach(pp=>[pp.esq,pp.dir].forEach(q=>q.cima.concat(q.baixo).forEach(n=>r[n]=q.nome)));
   return r;
 }
-function mapaImplantacao(impl,botao){
+function mapaImplantacao(impl,botao,concluida){
   let ordem=0;
   const fila=(lista,col)=>'<div class="fila" style="grid-template-columns:repeat('+col+',minmax(0,1fr))">'+lista.map(n=>botao(n,++ordem)).join("")+'</div>';
   const quadra=(q,colIni,colFim)=>'<div class="impl-qd" style="grid-column:'+colIni+'/'+colFim+'">'+fila(q.cima,q.cima.length)+'<div class="qd-nome">QUADRA '+esc(q.nome)+'</div>'+fila(q.baixo,q.baixo.length)+'</div>';
@@ -2705,7 +2717,18 @@ function mapaImplantacao(impl,botao){
     main+=ruaH(impl.ruas[i+1]);
   });
   const faixa='<div class="impl-faixa"><div class="qd-nome">QD A</div><div class="fila" style="grid-template-rows:repeat('+impl.faixa.casas.length+',1fr)">'+impl.faixa.casas.map(n=>botao(n,++ordem)).join("")+'</div></div>';
-  return '<p class="impl-dica">Arraste para o lado para ver a planta inteira.</p><div class="impl-scroll"><div class="impl" role="group" aria-label="Implantação da obra — casas por quadra">'+faixa+'<div class="impl-rua v">'+esc(impl.faixa.rua)+'</div><div class="impl-main">'+main+'</div></div></div>';
+  // versão do celular: quadras empilhadas na ordem da planta, casas em ordem crescente por frente de rua
+  const crescente=l=>l.slice().sort((a,b)=>a-b);
+  const frente=(rua,lista)=>'<div class="qd-frente"><h4>Frente para a '+esc(rua)+'</h4><div class="fila">'+crescente(lista).map(n=>botao(n,0)).join("")+'</div></div>';
+  const cartao=(nome,frentes)=>{
+    const todas=frentes.reduce((t,f)=>t.concat(f[1]),[]);
+    const feitas=todas.filter(n=>concluida&&concluida(n)).length;
+    return '<section class="qd-card"><div class="qd-card-head"><b>Quadra '+esc(nome)+'</b><span>'+feitas+' de '+todas.length+' concluídas</span></div>'+frentes.map(f=>frente(f[0],f[1])).join("")+'</section>';
+  };
+  let cel=cartao(impl.faixa.nome,[[impl.faixa.rua.replace(/^RUA/,"Rua"),impl.faixa.casas]]);
+  impl.pares.forEach(pp=>[pp.esq,pp.dir].forEach(q=>{ cel+=cartao(q.nome,[[q.ruaCima,q.cima],[q.ruaBaixo,q.baixo]]); }));
+  return '<p class="impl-dica">Arraste para o lado para ver a planta inteira.</p><div class="impl-scroll"><div class="impl" role="group" aria-label="Implantação da obra — casas por quadra">'+faixa+'<div class="impl-rua v">'+esc(impl.faixa.rua)+'</div><div class="impl-main">'+main+'</div></div></div>'+
+    '<div class="impl-cel">'+cel+'</div>';
 }
 /* ---------------- Cartão flutuante das casas (computador, ao passar o mouse) ---------------- */
 const mpTip=document.createElement("div");
