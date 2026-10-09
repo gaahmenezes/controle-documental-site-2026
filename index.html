@@ -25,7 +25,7 @@ body{background:var(--canvas);color:var(--ink);font-family:"IBM Plex Sans",syste
 h1,h2,h3,h4{font-family:"IBM Plex Serif",Georgia,serif;font-weight:500;margin:0;letter-spacing:-.01em}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--seal);outline-offset:2px}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
 /* login */
 #login{min-height:100svh;display:grid;grid-template-columns:1.05fr .95fr}
@@ -100,7 +100,20 @@ nav.tabs button{background:none;border:none;border-bottom:2px solid transparent;
 nav.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--seal)}
 main{flex:1;padding:32px 24px 100px;max-width:1040px;width:100%;margin:0 auto}
 .view{display:none}
-.view.active{display:block}
+.view.active{display:block;animation:telaEntra .22s cubic-bezier(.2,.7,.3,1) both}
+.view.active.volta{animation-name:telaVolta}
+@keyframes telaEntra{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes telaVolta{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.hub-grid .hub-card{animation:cardEntra .28s cubic-bezier(.2,.7,.3,1) both}
+.hub-grid .hub-card:nth-child(2){animation-delay:.03s}
+.hub-grid .hub-card:nth-child(3){animation-delay:.06s}
+.hub-grid .hub-card:nth-child(4){animation-delay:.09s}
+.hub-grid .hub-card:nth-child(5){animation-delay:.12s}
+.hub-grid .hub-card:nth-child(6){animation-delay:.15s}
+.hub-grid .hub-card:nth-child(7){animation-delay:.18s}
+@keyframes cardEntra{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+.secao-bar{animation:barraEntra .2s ease both}
+@keyframes barraEntra{from{opacity:0}to{opacity:1}}
 .view-head{margin-bottom:24px}
 .view-head h2{font-size:26px}
 .view-head p{color:var(--ink2);margin:6px 0 0;max-width:64ch}
@@ -333,7 +346,9 @@ table.editor textarea{min-height:60px;resize:vertical}
 
 /* documento gerado */
 #overlay{position:fixed;inset:0;background:rgba(14,28,36,.55);display:none;z-index:50;overflow:auto;padding:24px}
-#overlay.show{display:block}
+#overlay.show{display:block;animation:fundoEntra .2s ease both}
+#overlay.show .folha,#overlay.show .folha-acoes{animation:telaEntra .26s cubic-bezier(.2,.7,.3,1) both}
+@keyframes fundoEntra{from{background:rgba(14,28,36,0)}to{background:rgba(14,28,36,.55)}}
 .folha{background:#fff;max-width:1000px;margin:0 auto;padding:36px 40px;border-radius:2px}
 .folha h1{font-size:19px;text-align:center;margin-bottom:4px}
 .folha h4{font-size:13px;margin:22px 0 8px}
@@ -1405,7 +1420,7 @@ function irPara(v,opt){
     if(!opt.reset&&navIdx>0){
       // volta todas as telas de uma vez; o popstate desenha o Início
       scrollPorIdx[0]=0; history.go(-navIdx);
-      setTimeout(()=>{ if(viewAtual!=="inicio"){ histViews=["inicio"]; navIdx=0; aplicarView("inicio",0); } },450);
+      setTimeout(()=>{ if(viewAtual!=="inicio"){ histViews=["inicio"]; navIdx=0; aplicarView("inicio",0,true); } },450);
       return;
     }
     histViews=["inicio"]; navIdx=0; marcarHistorico({cd:1,idx:0},true);
@@ -1416,9 +1431,10 @@ function irPara(v,opt){
   }
   aplicarView(v,0);
 }
-function aplicarView(v,scrollY){
+function aplicarView(v,scrollY,voltando){
   viewAtual=v;
-  document.querySelectorAll(".view").forEach(s=>s.classList.toggle("active",s.id==="view-"+v));
+  // "volta" muda a direção da animação de entrada (desce em vez de subir)
+  document.querySelectorAll(".view").forEach(s=>{ const at=s.id==="view-"+v; s.classList.toggle("active",at); s.classList.toggle("volta",at&&!!voltando); });
   const bar=$("#secaoBar");
   if(v==="inicio"){ bar.style.display="none"; renderHub(); }
   else{
@@ -1441,7 +1457,7 @@ window.addEventListener("popstate",e=>{
   navIdx=Math.max(0,Math.min(s.idx,histViews.length-1));
   let v=histViews[navIdx]||"inicio";
   if(VIEWS_CONTROLE.has(v)&&!ehControle) v="inicio";
-  aplicarView(v,scrollPorIdx[navIdx]||0);
+  aplicarView(v,scrollPorIdx[navIdx]||0,true);
 });
 /* ---------------- Repositório (upload em massa + leitura automática) ---------------- */
 async function receber(files){
@@ -2623,7 +2639,7 @@ $("#hubGrid").addEventListener("click",e=>{
 $("#btnVoltar").addEventListener("click",()=>{
   const antes=navIdx; history.back();
   // se o navegador não tiver a entrada (caso raro), volta na mão
-  setTimeout(()=>{ if(navIdx===antes&&viewAtual!=="inicio"){ navIdx=Math.max(0,navIdx-1); aplicarView(histViews[navIdx]||"inicio",scrollPorIdx[navIdx]||0); } },450);
+  setTimeout(()=>{ if(navIdx===antes&&viewAtual!=="inicio"){ navIdx=Math.max(0,navIdx-1); aplicarView(histViews[navIdx]||"inicio",scrollPorIdx[navIdx]||0,true); } },450);
 });
 (()=>{ const logo=document.querySelector("#app .brand-logo"); if(!logo) return;
   logo.setAttribute("role","button"); logo.setAttribute("tabindex","0"); logo.title="Ir para o início";
