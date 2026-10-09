@@ -156,6 +156,17 @@ main{flex:1;padding:32px 24px 100px;max-width:1040px;width:100%;margin:0 auto}
 .casa-badge.concluida-reinsp{--st:#E0A526}
 .casa-badge.aberto{--st:#F1DFA6}
 .casa-badge.reinsp{--st:#E25A33}
+.aviso-dup{background:var(--warn-soft);border:1px solid #E3C77A;border-left:4px solid var(--warn);color:#5C4508;border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;font-size:13px;line-height:1.5}
+.aviso-dup span{display:block;margin-top:4px;color:#7A5C0E}
+.ciclos{margin-top:14px;border:1px solid var(--line2);border-radius:var(--radius);background:#FAFCFC}
+.ciclos summary{cursor:pointer;padding:10px 14px;font-size:13px;font-weight:600;color:var(--ink2)}
+.ciclos ol{margin:0;padding:0 14px 10px 32px;font-size:12.5px;color:var(--ink2)}
+.ciclos li{margin:6px 0;line-height:1.5}
+.ciclos li b{color:var(--ink)}
+.ciclos .eventos{padding:0 14px 12px;font-size:11.5px;color:var(--ink3)}
+.ciclos .eventos div{margin-top:2px}
+.ver-foto{border:0;background:none;padding:0;margin-left:4px;color:var(--seal);text-decoration:underline;cursor:pointer;font:inherit;font-size:12px}
+.ciclos img{display:block;max-width:220px;max-height:220px;border-radius:4px;border:1px solid var(--line);margin:6px 0}
 .pct-badge{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:70px;padding:2px 6px}
 .pct-badge b{font-family:"IBM Plex Serif",serif;font-size:16px;font-weight:600;line-height:1.1}
 .pct-badge .rot{font-size:9.5px;font-weight:700;letter-spacing:.05em;margin-top:3px;white-space:nowrap}
@@ -968,10 +979,19 @@ const DB = (() => {
       }
     },7000);
   }
-  async function remotoListarJson(l){
-    const r=await fetch(urlApi("/api/colecoes/"+l),{headers:headersJson()});
+  async function remotoListarJson(l,filtro){
+    // o servidor novo filtra pela obra; o antigo ignora o parâmetro e o filtro é refeito aqui
+    const qs=filtro?Object.keys(filtro).filter(k=>filtro[k]!=null).map(k=>encodeURIComponent(k)+"="+encodeURIComponent(filtro[k])).join("&"):"";
+    const r=await fetch(urlApi("/api/colecoes/"+l+(qs?"?"+qs:"")),{headers:headersJson()});
     if(!r.ok) throw new Error("Falha ao listar "+l+" ("+r.status+")");
     return r.json();
+  }
+  async function remotoCriarJson(l,reg){
+    // "If-None-Match: *" = só cria se ainda não existir (o servidor novo responde 409 se já existir)
+    const r=await fetch(urlApi("/api/colecoes/"+l+"/"+encodeURIComponent(reg.id)),{method:"PUT",headers:Object.assign(headersJson(),{"If-None-Match":"*"}),body:JSON.stringify(reg)});
+    if(r.status===409){ let ex=null; try{ const j=await r.json(); ex=j&&j.existente?j.existente:null; }catch(e){} return {criado:false,existente:ex}; }
+    if(!r.ok) throw new Error("Falha ao criar "+l+" ("+r.status+")");
+    return {criado:true};
   }
   async function remotoObterJson(l,id){
     const r=await fetch(urlApi("/api/colecoes/"+l+"/"+encodeURIComponent(id)),{headers:headersJson()});
@@ -1130,7 +1150,22 @@ const DB = (() => {
       return emMemoria ? "Memória (somente esta sessão)" : "IndexedDB local (só este navegador)";
     },
 
-    async listar(l){
+    async listar(l,filtro){
+      const lista=await this._listar(l,filtro);
+      if(!filtro) return lista;
+      return lista.filter(x=>Object.keys(filtro).every(k=>filtro[k]==null||String(x[k])===String(filtro[k])));
+    },
+    async criar(l,r){
+      if(modo==="remoto"){
+        const res=await remotoCriarJson(l,r);
+        if(!res.criado&&!res.existente) res.existente=await remotoObterJson(l,r.id);
+        return res;
+      }
+      const ex=await this.obter(l,r.id);
+      if(ex) return {criado:false,existente:ex};
+      await this.gravar(l,r); return {criado:true};
+    },
+    async _listar(l,filtro){
       if(l==="auditoria"){
         if(modo==="remoto") return remotoAuditoriaListar();
         if(modo==="claude") return auditoriaListar();
@@ -1148,7 +1183,7 @@ const DB = (() => {
         }
         return localGetAll(l);
       }
-      if(modo==="remoto") return remotoListarJson(l);
+      if(modo==="remoto") return remotoListarJson(l,filtro);
       if(modo==="claude"){ const snap=await dbCap.collection(l).get(); return snap.docs.map(snapParaRegistro); }
       return localGetAll(l);
     },
@@ -1541,6 +1576,7 @@ function aplicarView(v,scrollY,voltando){
     $("#secaoTag").style.display=VIEWS_CONTROLE.has(v)?"":"none";
   }
   if(v==="painel") renderPainel();
+  if(v==="db") carregarTodosQuestionarios();
   if(typeof esconderTip==="function") esconderTip();
   // a barra Fechar/Salvar/Gerar só faz sentido em Preencher, com uma ficha aberta
   $("#rodape").classList.toggle("show",v==="fill"&&!!fichaAtiva);
@@ -1631,7 +1667,9 @@ async function baixarVersao(docId,v){
 async function render(){
   docs=(await DB.listar("documentos")).sort((a,b)=>b.atualizadoEm.localeCompare(a.atualizadoEm));
   modelos=(await DB.listar("modelos")).sort((a,b)=>(a.titulo||"").localeCompare(b.titulo||"","pt-BR"));
-  preenchimentos=(await DB.listar("preenchimentos")).sort((a,b)=>b.atualizadoEm.localeCompare(a.atualizadoEm));
+  preenchimentos=(await DB.listar("preenchimentos",obra?{obraId:obra.id}:null)).sort((a,b)=>b.atualizadoEm.localeCompare(a.atualizadoEm));
+  preenchimentosTodos=null;
+  if(viewAtual==="db") carregarTodosQuestionarios();
   renderRepo(); renderModelos(); renderSetup(); renderMeus(); renderDB(); renderTodosQuestionarios(); renderGraficoReprovacoes(); renderPainel(); renderHub(); await renderLog();
 }
 
@@ -1783,26 +1821,82 @@ function validar(p,m){
   return {ok:true,msg:"Todos os itens foram respondidos. Pronto para gerar o relatório."};
 }
 
+/* ---- Identidade única da ficha: obra + FVS + casa. Evita duas fichas iguais. ---- */
+function normalizarUnidade(u){
+  const s=String(u==null?"":u).trim().toUpperCase().replace(/\s+/g,"");
+  return /^\d+$/.test(s)?String(parseInt(s,10)):s;
+}
+function idFicha(obraId,modeloId,unidade){
+  return ("f_"+obraId+"_"+modeloId+"_"+normalizarUnidade(unidade)).replace(/[^A-Za-z0-9_-]/g,"-");
+}
+function mesmaFicha(x,obraId,modeloId,unidade){
+  return x.obraId===obraId&&x.modeloId===modeloId&&normalizarUnidade(x.unidade)===normalizarUnidade(unidade);
+}
+function guardarLocal(reg){
+  const i=preenchimentos.findIndex(x=>x.id===reg.id);
+  if(i>=0) preenchimentos[i]=reg; else preenchimentos.unshift(reg);
+  preenchimentos.sort((a,b)=>b.atualizadoEm.localeCompare(a.atualizadoEm));
+}
+
+/* ---- Histórico do item: cada reprovação vira um "ciclo" guardado; cada troca de resultado vira um evento ---- */
+function quemSou(){ return user?(user.nome||user.email):"—"; }
+function registrarEventoItem(r,de,para){
+  r.eventos=r.eventos||[];
+  r.eventos.push({quando:new Date().toISOString(),quem:quemSou(),de:de||null,para:para||null});
+  if(r.eventos.length>40) r.eventos.shift();
+}
+function arquivarCiclo(r,desfecho){
+  r.ciclos=r.ciclos||[];
+  r.ciclos.push({
+    n:r.ciclos.length+1, reprovadoEm:r.data||null, fotoReprovacao:r.fotoId||null,
+    tratativa:Object.assign({},r.tratativa||{}), reinspecao:Object.assign({},r.reinspecao||{}),
+    desfecho, encerradoEm:new Date().toISOString(), encerradoPor:quemSou()
+  });
+}
+function numReprovacoes(r){
+  if(!r) return 0;
+  let k=(r.ciclos||[]).length+(r.resultado==="R"?1:0);
+  if(k===0&&r.resultado==="AR") k=1;   // fichas antigas, anteriores ao histórico
+  return k;
+}
+function fotoEmUso(r,id){
+  return !!id&&(r.ciclos||[]).some(c=>c.fotoReprovacao===id||(c.reinspecao&&c.reinspecao.fotoId===id));
+}
+
 async function abrirFicha(){
   const m=modelos.find(x=>x.id===$("#modeloSelect").value);
   if(!m) return toast("Selecione um documento.");
-  const un=$("#unidadeInput").value.trim();
+  const un=normalizarUnidade($("#unidadeInput").value);
   if(!un) return toast("Informe a unidade (casa).");
   const n=Number(un.replace(/\D/g,""));
   if(obra&&n&&(n<1||n>obra.casas)) return toast("A obra "+obra.nome+" tem "+obra.casas+" casas. Unidade "+un+" está fora da faixa.");
-  let p=preenchimentos.find(x=>x.modeloId===m.id&&x.obraId===obra.id&&x.unidade===un);
+  let p=preenchimentos.find(x=>mesmaFicha(x,obra.id,m.id,un));
+  if(!p&&DB.compartilhado){
+    // outro aparelho pode ter criado esta ficha há pouco: confere no servidor antes de criar
+    try{
+      const atual=await DB.listar("preenchimentos",{obraId:obra.id});
+      atual.forEach(guardarLocal);
+      p=preenchimentos.find(x=>mesmaFicha(x,obra.id,m.id,un));
+    }catch(e){}
+  }
   if(!p){
-    p={
-      id:uid(), modeloId:m.id, obraId:obra.id, obraNome:obra.nome, unidade:un,
+    const novo={
+      id:idFicha(obra.id,m.id,un), modeloId:m.id, obraId:obra.id, obraNome:obra.nome, unidade:un,
       cabecalho:{
         equipamentos:Array.from({length:m.equipamentosCount||3},()=>({label:"",patrimonio:""})),
         equipe:[], observacao:""
       },
       respostas:{}, iniciadoEm:new Date().toISOString(), atualizadoEm:new Date().toISOString(), por:(user.nome||user.email)
     };
-    await DB.gravar("preenchimentos",p);
-    await registrar("Questionário iniciado",m.titulo+" · unidade "+un);
-    preenchimentos.unshift(p);
+    const res=await DB.criar("preenchimentos",novo);
+    if(res.criado){
+      p=novo;
+      await registrar("Questionário iniciado",m.titulo+" · unidade "+un);
+    } else {
+      p=res.existente||novo;
+      toast("Esta ficha já tinha sido iniciada em outro aparelho — abrindo a existente.");
+    }
+    guardarLocal(p);
   }
   if(!p.cabecalho) p.cabecalho={equipamentos:Array.from({length:m.equipamentosCount||3},()=>({label:"",patrimonio:""})),equipe:[],observacao:""};
   await montarFicha(p,m);
@@ -1888,7 +1982,25 @@ function cardHTML(it,p){
         '<div><label>Data da inspeção</label><input type="date" value="'+esc(r.data||"")+'" data-data="'+esc(it.n)+'"></div>'+
       '</div>'+
       extra+
+      historicoItemHTML(it.n,r)+
     '</div></div>';
+}
+function historicoItemHTML(n,r){
+  const ciclos=r.ciclos||[], ev=r.eventos||[];
+  if(!ciclos.length&&!ev.length) return "";
+  const rot={A:"A",R:"R",AR:"AR",NA:"NA"};
+  const lis=ciclos.map(c=>{
+    const t=c.tratativa||{}, re=c.reinspecao||{};
+    return '<li><b>'+c.n+'ª reprovação</b>'+(c.reprovadoEm?' em '+esc(dataBR(c.reprovadoEm)):'')+
+      (c.fotoReprovacao?'<button type="button" class="ver-foto" data-verfoto="'+esc(c.fotoReprovacao)+'">ver foto</button>':'')+
+      (t.acao?' · ação: '+esc(t.acao):'')+(t.responsavel?' · resp.: '+esc(t.responsavel):'')+
+      (re.data?' · reinspecionado em '+esc(dataBR(re.data)):'')+
+      (re.fotoId?'<button type="button" class="ver-foto" data-verfoto="'+esc(re.fotoId)+'">ver foto da reinspeção</button>':'')+
+      ' · <b>'+esc(c.desfecho)+'</b> ('+esc(c.encerradoPor||"—")+')<span class="foto-ciclo"></span></li>';
+  }).join("");
+  const evs=ev.slice(-8).reverse().map(e=>'<div>'+esc(dataHora(e.quando))+' · '+esc(e.quem||"—")+': '+(e.de?esc(rot[e.de]||e.de):"vazio")+' → '+(e.para?esc(rot[e.para]||e.para):"vazio")+'</div>').join("");
+  return '<details class="ciclos"><summary>Histórico deste item'+(ciclos.length?' · '+ciclos.length+(ciclos.length===1?' reprovação':' reprovações'):'')+'</summary>'+
+    (lis?'<ol>'+lis+'</ol>':'')+(evs?'<div class="eventos"><div><b>Alterações do resultado</b></div>'+evs+'</div>':'')+'</details>';
 }
 async function carregarPreviewFoto(n,p){
   const fotoId=p.respostas[n]&&p.respostas[n].fotoId; if(!fotoId) return;
@@ -1914,12 +2026,18 @@ function carregarTodasPreviewsFoto(p,m){
 async function concluirReinspecaoSeCompleta(n,p){
   const r=p.respostas[n];
   if(r && r.resultado==="R" && r.reinspecao && r.reinspecao.data && r.reinspecao.fotoId){
+    registrarEventoItem(r,"R","AR");
+    arquivarCiclo(r,"Aprovado após reinspeção");
     r.resultado="AR";
     await registrar("Item reinspecionado e aprovado (AR)","Item "+n);
   }
 }
 
 async function montarFicha(p,m){
+  // busca só esta ficha no servidor, para não editar uma cópia desatualizada
+  if(DB.compartilhado){
+    try{ const fresco=await DB.obter("preenchimentos",p.id); if(fresco){ Object.keys(p).forEach(k=>{ if(!(k in fresco)) delete p[k]; }); Object.assign(p,fresco); } }catch(e){}
+  }
   if(user){
     const nomeAtual=user.nome||user.email;
     if(p.por!==nomeAtual){
@@ -1970,8 +2088,8 @@ async function salvarFicha(){
   const pr=progresso(p,m);
   const bi=$("#barraI"), pt=$("#prTxt");
   if(bi){ bi.style.width=pr.pct+"%"; pt.textContent=pr.feitos+" de "+pr.total+" itens"; }
-  preenchimentos=(await DB.listar("preenchimentos")).sort((a,b)=>b.atualizadoEm.localeCompare(a.atualizadoEm));
-  renderMeus(); renderTodosQuestionarios(); renderGraficoReprovacoes(); renderPainel();
+  guardarLocal(p);   // atualiza só a ficha salva, sem baixar todas de novo
+  renderMeus(); renderGraficoReprovacoes(); renderPainel();
   atualizarStatusGeracao();
 }
 function atualizarStatusGeracao(){
@@ -2065,6 +2183,18 @@ function renderMeus(){
   const gruposOrdenados=Object.values(grupos).sort((a,b)=>numeroCodigo(a.m)-numeroCodigo(b.m));
 
   const cont=$("#gruposPre"); cont.innerHTML="";
+  // fichas antigas repetidas (mesma FVS na mesma casa): avisa para o controle decidir qual manter
+  const porChave={};
+  todosDaObra.forEach(({p,m})=>{ const k=m.id+"|"+normalizarUnidade(p.unidade); (porChave[k]=porChave[k]||{m,u:normalizarUnidade(p.unidade),n:0}).n++; });
+  const dups=Object.values(porChave).filter(x=>x.n>1);
+  if(dups.length){
+    const av=document.createElement("div");
+    av.className="aviso-dup";
+    av.innerHTML='<b>'+dups.length+(dups.length===1?' casa tem':' casas têm')+' a mesma FVS registrada mais de uma vez.</b> '+
+      dups.slice(0,8).map(d=>'Casa '+esc(d.u)+' · '+esc(d.m.codigo||d.m.titulo)+' ('+d.n+'×)').join(" · ")+(dups.length>8?' · …':'')+
+      '<span>'+(ehControle?'Confira as fichas e exclua a que não vale.':'Avise a conta de controle para decidir qual manter.')+'</span>';
+    cont.appendChild(av);
+  }
   const vazio=$("#emptyPre");
   vazio.style.display=filtrados.length?"none":"block";
   vazio.innerHTML = todosDaObra.length
@@ -2179,7 +2309,7 @@ function calcularReprovacoesPorItem(filtroModeloId){
       let total=0, reprovados=0;
       doModelo.forEach(p=>{
         const r=p.respostas[it.n];
-        if(r && r.resultado){ total++; if(r.resultado==="R"||r.resultado==="AR") reprovados++; }
+        if(r && r.resultado){ total++; if(numReprovacoes(r)>0) reprovados++; }
       });
       if(total===0) return;
       linhas.push({modelo:m, n:it.n, texto:it.item, total, reprovados, taxa:Math.round(reprovados/total*100)});
@@ -2244,11 +2374,18 @@ function renderGraficoReprovacoes(){
 
   cont.innerHTML=html;
 }
+let preenchimentosTodos=null;
+async function carregarTodosQuestionarios(){
+  try{ preenchimentosTodos=(await DB.listar("preenchimentos")).sort((a,b)=>b.atualizadoEm.localeCompare(a.atualizadoEm)); }
+  catch(e){ preenchimentosTodos=null; }
+  renderTodosQuestionarios(); renderDB();
+}
 function renderTodosQuestionarios(){
   const ul=$("#listaTodos"); if(!ul) return; ul.innerHTML="";
-  $("#todosCount").textContent=preenchimentos.length;
-  $("#emptyTodos").style.display=preenchimentos.length?"none":"block";
-  preenchimentos.forEach(p=>{
+  const lista=preenchimentosTodos||preenchimentos;
+  $("#todosCount").textContent=lista.length;
+  $("#emptyTodos").style.display=lista.length?"none":"block";
+  lista.forEach(p=>{
     const m=modelos.find(x=>x.id===p.modeloId); if(!m) return;
     const pr=progresso(p,m), st=statusFicha(p,m), v=validar(p,m);
     const li=document.createElement("li");
@@ -2413,7 +2550,7 @@ function renderHub(){
   const r=resumoObra();
   const abertas=r.fichas.filter(({p,m})=>saudeFicha(p,m).aberto).length;
   let reprov=0;
-  r.fichas.forEach(({p,m})=>itensRespondiveis(m).forEach(it=>{ const x=p.respostas[it.n]; if(x&&(x.resultado==="R"||x.resultado==="AR")) reprov++; }));
+  r.fichas.forEach(({p,m})=>itensRespondiveis(m).forEach(it=>{ reprov+=numReprovacoes(p.respostas[it.n]); }));
   const set=(id,html)=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; };
   set("hubNumFill",abertas?'<button type="button" class="hub-link" data-irfiltro="aberto" title="Ver as fichas em aberto"><b>'+abertas+'</b><span>'+pl(abertas,"ficha em aberto","fichas em aberto")+' nesta obra ›</span></button>':'Nenhuma ficha em aberto · toque para começar');
   set("hubNumPainel",(r.totalPrevisto?'<b>'+Math.round(r.totConc/r.totalPrevisto*100)+'%</b> de cobertura':'<b>—</b> sem modelos')+
@@ -2439,7 +2576,8 @@ function renderPainel(){
   fichas.forEach(({p,m})=>itensRespondiveis(m).forEach(it=>{
     const x=p.respostas[it.n];
     if(!x||!x.data||x.data.slice(0,7)!==ym) return;
-    if(x.resultado==="A") a1++; else if(x.resultado==="R") r1++; else if(x.resultado==="AR") ar1++;
+    // "de primeira" = aprovado sem nenhuma reprovação no histórico do item
+    if(x.resultado==="A"&&!(x.ciclos||[]).length) a1++; else if(x.resultado==="R") r1++; else if(x.resultado==="AR"||x.resultado==="A") ar1++;
   }));
   const base=a1+r1+ar1;
 
@@ -2718,7 +2856,7 @@ function renderDB(){
   const tot=docs.reduce((s,d)=>s+d.versoes.reduce((x,v)=>x+v.tamanho,0),0);
   $("#stDocs").textContent=docs.length;
   $("#stModelos").textContent=modelos.length;
-  $("#stPre").textContent=preenchimentos.length;
+  $("#stPre").textContent=(preenchimentosTodos||preenchimentos).length;
   $("#stSize").textContent=bytes(tot);
   $("#stMotor").textContent=DB.motor;
   $("#notaLimiteFormato").style.display=DB.motor.startsWith("Nuvem compartilhada")?"":"none";
@@ -2872,8 +3010,17 @@ $("#fichaArea").addEventListener("change", async e=>{
 
   if(t.dataset.item){
     const n=t.dataset.item;
-    p.respostas[n]=Object.assign({},p.respostas[n],{resultado:t.value});
-    if(!p.respostas[n].data){ p.respostas[n].data=hojeLocalISO(); }
+    const r=p.respostas[n]=Object.assign({},p.respostas[n]);
+    const de=r.resultado||null, para=t.value;
+    if(de!==para){
+      registrarEventoItem(r,de,para);
+      // saiu de "R" sem passar pela reinspeção automática: guarda o ciclo com o desfecho escolhido
+      if(de==="R") arquivarCiclo(r,para==="AR"?"Aprovado após reinspeção (marcado manualmente)":"Resultado alterado para "+para);
+      // nova reprovação depois de um ciclo já guardado: começa um ciclo novo, com campos limpos
+      if(para==="R"&&(r.ciclos||[]).length){ delete r.fotoId; delete r.tratativa; delete r.reinspecao; r.data=hojeLocalISO(); }
+    }
+    r.resultado=para;
+    if(!r.data){ r.data=hojeLocalISO(); }
     await salvarFicha();
     document.getElementById("card-"+n).outerHTML=cardHTML(itemPorN[n],p);
     if(p.respostas[n].fotoId) carregarPreviewFoto(n,p);
@@ -2894,7 +3041,7 @@ $("#fichaArea").addEventListener("change", async e=>{
       await DB.gravar("midias",{id:midiaId,blob:arq});
       const antigo=p.respostas[n]&&p.respostas[n].fotoId;
       p.respostas[n]=Object.assign({},p.respostas[n],{fotoId:midiaId});
-      if(antigo) await DB.remover("midias",antigo);
+      if(antigo&&!fotoEmUso(p.respostas[n],antigo)) await DB.remover("midias",antigo);
       await salvarFicha();
       document.getElementById("card-"+n).outerHTML=cardHTML(itemPorN[n],p);
       carregarPreviewFoto(n,p);
@@ -2926,7 +3073,7 @@ $("#fichaArea").addEventListener("change", async e=>{
       p.respostas[n]=p.respostas[n]||{};
       const antigo=p.respostas[n].reinspecao&&p.respostas[n].reinspecao.fotoId;
       p.respostas[n].reinspecao=Object.assign({},p.respostas[n].reinspecao,{fotoId:midiaId});
-      if(antigo) await DB.remover("midias",antigo);
+      if(antigo&&!fotoEmUso(p.respostas[n],antigo)) await DB.remover("midias",antigo);
       await concluirReinspecaoSeCompleta(n,p);
       await salvarFicha();
       document.getElementById("card-"+n).outerHTML=cardHTML(itemPorN[n],p);
@@ -2949,6 +3096,13 @@ $("#fichaArea").addEventListener("change", async e=>{
 $("#fichaArea").addEventListener("click", async e=>{
   if(!fichaAtiva) return;
   const {p,m}=fichaAtiva, t=e.target;
+  if(t.dataset&&t.dataset.verfoto){
+    const alvo=t.parentElement.querySelector(".foto-ciclo");
+    const mid=await DB.obter("midias",t.dataset.verfoto);
+    if(!mid){ toast("Foto não encontrada na base."); return; }
+    alvo.innerHTML='<img alt="Foto do histórico">'; alvo.querySelector("img").src=URL.createObjectURL(mid.blob);
+    return;
+  }
   if(t.id==="btnAddEq"){ p.cabecalho.equipamentos.push({label:"",patrimonio:""}); await salvarFicha(); await montarFicha(p,m); }
   if(t.dataset.eqdel!=null){ p.cabecalho.equipamentos.splice(Number(t.dataset.eqdel),1); await salvarFicha(); await montarFicha(p,m); }
   if(t.id==="btnAddEqp"){ p.cabecalho.equipe.push({nome:"",funcao:"",dataInicio:"",dataTermino:""}); await salvarFicha(); await montarFicha(p,m); }
@@ -2981,15 +3135,16 @@ $("#wrapPre").addEventListener("click",async e=>{
 });
 $("#listaTodos").addEventListener("click",async e=>{
   const t=e.target;
+  const fonteTodos=preenchimentosTodos||preenchimentos;
   if(t.dataset.gerar2){
-    const p=preenchimentos.find(x=>x.id===t.dataset.gerar2), m=modelos.find(x=>x.id===p.modeloId);
+    const p=fonteTodos.find(x=>x.id===t.dataset.gerar2), m=modelos.find(x=>x.id===p.modeloId);
     const v=validar(p,m); if(!v.ok){ toast(v.msg); return; }
     await gerarDocumento(p,m);
   }
   if(t.dataset.hist2){ const el=document.getElementById(t.dataset.hist2); if(el) el.classList.toggle("open"); return; }
   if(t.dataset.delpre2){
     if(!ehControle) return toast("Somente a conta de controle pode excluir preenchimentos.");
-    const p=preenchimentos.find(x=>x.id===t.dataset.delpre2);
+    const p=fonteTodos.find(x=>x.id===t.dataset.delpre2);
     if(!confirm('Excluir definitivamente o preenchimento da obra '+(p?p.obraId:"")+' — casa '+(p?p.unidade:"")+'? Esta ação não pode ser desfeita.')) return;
     try{
       await DB.remover("preenchimentos",t.dataset.delpre2);
