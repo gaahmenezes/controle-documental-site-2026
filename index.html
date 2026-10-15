@@ -101,6 +101,71 @@ input:focus,select:focus,textarea:focus{border-color:var(--seal)}
 #app{display:none;min-height:100svh;flex-direction:column}
 header.topbar{background:var(--ink);border-bottom:3px solid var(--laranja);color:#fff;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;position:sticky;top:0;z-index:20;flex-wrap:wrap}
 .who{display:flex;align-items:center;gap:10px;font-size:13px;color:#B7C7CD;flex-wrap:wrap}
+/* ---- Marcar defeito na foto ---- */
+#anotador{position:fixed;inset:0;z-index:80;background:rgba(14,28,36,.86);display:none;flex-direction:column;align-items:center;justify-content:center;padding:14px}
+#anotador.show{display:flex}
+.an-caixa{background:var(--paper);border-radius:10px;width:min(980px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden}
+.an-topo{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.an-topo b{font-size:15px}
+.an-fechar{border:0;background:none;font-size:22px;line-height:1;cursor:pointer;color:var(--ink2);padding:2px 6px}
+.an-ferr{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line2)}
+.an-ferr button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:7px 11px;cursor:pointer;color:var(--ink)}
+.an-ferr button.ativo{border-color:var(--seal);background:var(--seal-soft);color:var(--seal);font-weight:600}
+.an-ferr .an-cor{width:30px;height:30px;padding:0;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.an-ferr .an-cor.ativo{box-shadow:0 0 0 2px var(--ink)}
+.an-ferr .sep{width:1px;height:24px;background:var(--line);margin:0 4px}
+.an-area{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:#1B2A31;padding:10px;overflow:hidden}
+.an-area canvas{max-width:100%;max-height:calc(100vh - 230px);touch-action:none;cursor:crosshair;display:block;border-radius:2px}
+.an-acoes{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;padding:12px 14px;border-top:1px solid var(--line)}
+.an-acoes .btn{width:auto}
+.btn-marcar{margin:6px 0 10px;font:inherit;font-size:13px;border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:7px 12px;cursor:pointer;color:var(--seal);font-weight:500}
+@media (max-width:640px){#anotador{padding:0}.an-caixa{border-radius:0;height:100%}.an-area canvas{max-height:calc(100vh - 250px)}}
+
+/* ---- Indicadores ---- */
+.ind-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.ind-kpi{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
+.ind-kpi span{display:block;font-size:12.5px;color:var(--ink2)}
+.ind-kpi b{display:block;font-size:28px;font-weight:600;color:var(--ink);line-height:1.15;margin:4px 0 2px}
+.ind-kpi small{display:block;font-size:12px;color:var(--ink3)}
+.ind-grade{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.ind-grade>.panel{min-width:0;margin:0}
+.ind-grade>.panel+.panel{margin-top:0}
+@media (max-width:900px){.ind-grade{grid-template-columns:1fr}}
+.ind-graf{position:relative;width:100%}
+.ind-graf svg{display:block;width:100%;overflow:visible}
+.ind-graf .eixo{fill:var(--ink3);font-size:11px;font-variant-numeric:tabular-nums}
+.ind-graf .grade{stroke:var(--line2);stroke-width:1}
+.ind-graf .faixa{fill:transparent}
+.ind-graf .faixa:hover,.ind-graf .faixa.on{fill:rgba(23,85,160,.06)}
+.ind-graf .rot{fill:var(--ink2);font-size:11px;font-weight:600}
+.ind-leg{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);margin:0 0 8px}
+.ind-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+#vzTip{position:fixed;z-index:70;pointer-events:none;background:var(--ink);color:#DCE6EA;border-radius:6px;padding:8px 10px;font-size:12px;line-height:1.45;box-shadow:0 10px 24px -8px rgba(14,28,36,.5);opacity:0;transition:opacity .1s;max-width:240px}
+#vzTip.show{opacity:1}
+#vzTip b{color:#fff}
+#vzTip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.ind-tabela{margin-top:10px;font-size:13px}
+.ind-tabela summary{cursor:pointer;color:var(--seal);font-weight:500}
+.ind-tabela table,.ind-tab{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+.ind-tabela th,.ind-tabela td,.ind-tab th,.ind-tab td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line2);white-space:nowrap}
+.ind-tab th,.ind-tabela th{font-size:11.5px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em}
+.ind-tab td.num,.ind-tab th.num{text-align:right}
+.ind-rolagem{overflow-x:auto}
+.ind-barra{display:flex;align-items:center;gap:8px;min-width:150px}
+.ind-barra .trilho{flex:1;height:10px;background:var(--line2);border-radius:0 4px 4px 0}
+.ind-barra .trilho i{display:block;height:100%;background:#1755A0;border-radius:0 4px 4px 0}
+.ind-barra em{font-style:normal;font-size:12.5px;color:var(--ink2);min-width:38px;text-align:right}
+.pareto{display:grid;gap:10px;font-size:13px}
+.pareto .p-lin{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;grid-template-areas:"rot bar val";gap:4px 12px;align-items:center}
+.pareto .p-rot{grid-area:rot}.pareto .p-bar{grid-area:bar}.pareto .p-val{grid-area:val}
+.pareto .p-rot{min-width:0}
+.pareto .p-rot b{display:block;font-weight:600;color:var(--ink)}
+.pareto .p-rot span{display:block;color:var(--ink3);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pareto .p-bar{height:14px;background:transparent}
+.pareto .p-bar i{display:block;height:100%;background:#C0461E;border-radius:0 4px 4px 0;min-width:3px}
+.pareto .p-val{font-variant-numeric:tabular-nums;color:var(--ink2);font-size:12.5px;text-align:right;white-space:nowrap}
+.pareto .p-val b{color:var(--ink);font-weight:600}
+@media (max-width:640px){.pareto .p-lin{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"rot val" "bar bar"}}
 .sync-pill{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:12px;border:0;cursor:pointer;background:#F1DFA6;color:#5C4508;white-space:nowrap}
 .sync-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.75}
 .sync-pill.enviando{background:#D7E7EE;color:#1E5368}
@@ -669,6 +734,7 @@ table.editor textarea{min-height:60px;resize:vertical}
       <div class="hub-grid" id="hubGrid">
     <div class="hub-card destaque"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v3H9z"/><path d="M8 4.5H6a1 1 0 0 0-1 1V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5.5a1 1 0 0 0-1-1h-2"/><path d="m9 14 2 2 4-4.5"/></svg></span><button type="button" class="hub-tit" data-ir="fill">Preencher ficha</button><span class="hub-desc">Abrir ou iniciar uma FVS numa casa da obra</span><span class="hub-num" id="hubNumFill">—</span></div>
     <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg></span><button type="button" class="hub-tit" data-ir="painel">Painel da obra</button><span class="hub-desc">Indicadores, reinspeções pendentes e mapa das casas</span><span class="hub-num" id="hubNumPainel">—</span></div>
+    <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><path d="m7 15 4-4 3 3 5-6"/></svg></span><button type="button" class="hub-tit" data-ir="indicadores">Indicadores</button><span class="hub-desc">Evolução semana a semana, itens mais reprovados e desempenho por quadra e por FVS</span><span class="hub-num" id="hubNumIndicadores">—</span></div>
     <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></span><button type="button" class="hub-tit" data-ir="meus">Preenchimentos</button><span class="hub-desc">Todas as fichas da obra, com filtros por FVS, status e casa</span><span class="hub-num" id="hubNumMeus">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M6 17v-6M11 17V6M16 17v-9M21 17v-4"/></svg></span><button type="button" class="hub-tit" data-ir="relatorio">Relatório</button><span class="hub-desc">Relatório para download e índice de reprovações por item</span><span class="hub-num" id="hubNumRelatorio">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg></span><button type="button" class="hub-tit" data-ir="repo">Repositório</button><span class="hub-desc">Documentos originais das FVS e suas versões</span><span class="hub-num" id="hubNumRepo">—</span></div>
@@ -695,6 +761,24 @@ table.editor textarea{min-height:60px;resize:vertical}
       </div>
       <div class="toolbar"><select id="painelFvsSel" aria-label="Escolher a FVS" style="flex:1 1 320px;min-width:0;max-width:100%"></select></div>
       <div id="painelCobertura"></div>
+    </section>
+
+    <!-- INDICADORES -->
+    <section class="view" id="view-indicadores">
+      <div class="view-head">
+        <h2>Indicadores</h2>
+        <p id="indObra"></p>
+      </div>
+      <div class="toolbar">
+        <select id="indFvs" aria-label="FVS" style="flex:1 1 320px;min-width:0;max-width:100%"></select>
+        <select id="indPeriodo" aria-label="Período" style="flex:0 1 220px">
+          <option value="8">Últimas 8 semanas</option>
+          <option value="12" selected>Últimas 12 semanas</option>
+          <option value="26">Últimos 6 meses</option>
+          <option value="0">Desde o início</option>
+        </select>
+      </div>
+      <div id="indConteudo"></div>
     </section>
 
     <!-- PREENCHER -->
@@ -876,6 +960,27 @@ table.editor textarea{min-height:60px;resize:vertical}
 </div>
 
 <div id="overlay"></div>
+<div id="anotador" role="dialog" aria-modal="true" aria-labelledby="anTitulo">
+  <div class="an-caixa">
+    <div class="an-topo"><b id="anTitulo">Marcar o defeito na foto</b><button type="button" class="an-fechar" id="anCancelar" aria-label="Cancelar">×</button></div>
+    <div class="an-ferr">
+      <button type="button" data-anferr="circulo" class="ativo">◯ Círculo</button>
+      <button type="button" data-anferr="seta">➜ Seta</button>
+      <button type="button" data-anferr="traco">✎ Traço livre</button>
+      <span class="sep"></span>
+      <button type="button" class="an-cor ativo" data-ancor="#E53935" style="background:#E53935" aria-label="Vermelho"></button>
+      <button type="button" class="an-cor" data-ancor="#FFD400" style="background:#FFD400" aria-label="Amarelo"></button>
+      <span class="sep"></span>
+      <button type="button" id="anDesfazer">↶ Desfazer</button>
+    </div>
+    <div class="an-area"><canvas id="anCanvas"></canvas></div>
+    <div class="an-acoes">
+      <button type="button" class="btn" id="anSemMarca">Usar sem marcação</button>
+      <button type="button" class="btn btn-primary" id="anSalvar">Salvar foto marcada</button>
+    </div>
+  </div>
+</div>
+<div id="vzTip" role="tooltip"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.38.3/lib/msal-browser.min.js"></script>
@@ -1144,7 +1249,7 @@ const DB = (() => {
     avisar(); agendarSync(400);
   }
   async function contarPendentes(){ return (await cAll("fila")).length; }
-  async function avisar(){ const n=await contarPendentes().catch(()=>0); ouvintes.forEach(f=>{ try{ f({online,pendentes:n,sincronizando}); }catch(e){} }); }
+  async function avisar(){ const n=await contarPendentes().catch(()=>0); ouvintes.forEach(f=>{ try{ f({online:modo!=="remoto"||online,pendentes:n,sincronizando}); }catch(e){} }); }
   function agendarSync(ms){ clearTimeout(timerSync); timerSync=setTimeout(()=>sincronizar(),ms||0); }
   function marcarOnline(v){
     const antes=online; online=v;
@@ -1242,6 +1347,7 @@ const DB = (() => {
     }catch(e){ if(!(e instanceof ErroRede)) throw e; marcarOnline(false); return filtrar(await cAll(l),filtro); }
   }
   async function rObter(l,id){
+    if(id==null||id==="") return undefined;
     if(LOJAS_BLOB.includes(l)) return rObterBlob(l,id);
     if(l==="auditoria") return (await rListar("auditoria")).find(x=>x.id===id);
     const pend=await pendente(l,id);
@@ -1529,6 +1635,75 @@ async function prepararFoto(arq){
     const nome=(arq.name||"foto").replace(/\.[^.]+$/,"")+".jpg";
     return new File([blob],nome,{type:"image/jpeg",lastModified:Date.now()});
   }catch(e){ console.warn("Não foi possível reduzir a foto; usando a original.",e); return arq; }
+}
+
+/* ---------------- Marcar o defeito na foto ----------------
+   Depois de escolher a foto, abre um editor simples: círculo, seta ou traço
+   livre, em vermelho ou amarelo. A marcação passa a fazer parte da foto
+   (fica visível no PDF e para quem for corrigir). Retorna a foto marcada,
+   a original ("Usar sem marcação") ou null (cancelado). */
+function anotarFoto(arq){
+  return new Promise(async resolver=>{
+    const ov=$("#anotador"), cv=$("#anCanvas"), cx=cv.getContext("2d");
+    let img;
+    try{ img=await createImageBitmap(arq); }
+    catch(e){ img=await new Promise((ok,er)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=er; i.src=URL.createObjectURL(arq); }).catch(()=>null); }
+    if(!img){ resolver(arq); return; }
+    cv.width=img.width; cv.height=img.height;
+    const esp=Math.max(4,Math.round(Math.hypot(cv.width,cv.height)*0.006));
+    let ferr="circulo", cor="#E53935", formas=[], atual=null;
+    const desenhar=()=>{
+      cx.drawImage(img,0,0);
+      formas.concat(atual?[atual]:[]).forEach(f=>{
+        cx.save(); cx.strokeStyle=f.cor; cx.fillStyle=f.cor; cx.lineWidth=esp; cx.lineCap="round"; cx.lineJoin="round";
+        cx.shadowColor="rgba(0,0,0,.45)"; cx.shadowBlur=esp*0.8;
+        if(f.tipo==="circulo"){
+          const rx=Math.abs(f.x2-f.x1)/2, ry=Math.abs(f.y2-f.y1)/2;
+          if(rx>1&&ry>1){ cx.beginPath(); cx.ellipse((f.x1+f.x2)/2,(f.y1+f.y2)/2,rx,ry,0,0,Math.PI*2); cx.stroke(); }
+        } else if(f.tipo==="seta"){
+          const ang=Math.atan2(f.y2-f.y1,f.x2-f.x1), c=esp*4.5;
+          cx.beginPath(); cx.moveTo(f.x1,f.y1); cx.lineTo(f.x2,f.y2); cx.stroke();
+          cx.beginPath(); cx.moveTo(f.x2,f.y2);
+          cx.lineTo(f.x2-c*Math.cos(ang-0.45),f.y2-c*Math.sin(ang-0.45));
+          cx.lineTo(f.x2-c*Math.cos(ang+0.45),f.y2-c*Math.sin(ang+0.45)); cx.closePath(); cx.fill();
+        } else if(f.pts&&f.pts.length>1){
+          cx.beginPath(); cx.moveTo(f.pts[0][0],f.pts[0][1]); f.pts.forEach(q=>cx.lineTo(q[0],q[1])); cx.stroke();
+        }
+        cx.restore();
+      });
+    };
+    const ponto=e=>{ const r=cv.getBoundingClientRect(); return [(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height]; };
+    const baixo=e=>{ e.preventDefault(); cv.setPointerCapture(e.pointerId); const [x,y]=ponto(e);
+      atual=ferr==="traco"?{tipo:"traco",cor,pts:[[x,y]]}:{tipo:ferr,cor,x1:x,y1:y,x2:x,y2:y}; desenhar(); };
+    const mover=e=>{ if(!atual) return; const [x,y]=ponto(e); if(atual.tipo==="traco") atual.pts.push([x,y]); else { atual.x2=x; atual.y2=y; } desenhar(); };
+    const cima=()=>{ if(!atual) return; const f=atual; atual=null;
+      const tam=f.tipo==="traco"?f.pts.length:Math.hypot(f.x2-f.x1,f.y2-f.y1);
+      if(tam>(f.tipo==="traco"?2:esp*2)) formas.push(f); desenhar(); };
+    const ferrClick=e=>{ const b=e.target.closest("button"); if(!b) return;
+      if(b.dataset.anferr){ ferr=b.dataset.anferr; ov.querySelectorAll("[data-anferr]").forEach(x=>x.classList.toggle("ativo",x===b)); }
+      if(b.dataset.ancor){ cor=b.dataset.ancor; ov.querySelectorAll("[data-ancor]").forEach(x=>x.classList.toggle("ativo",x===b)); }
+      if(b.id==="anDesfazer"){ formas.pop(); desenhar(); } };
+    const fechar=res=>{
+      cv.removeEventListener("pointerdown",baixo); cv.removeEventListener("pointermove",mover);
+      cv.removeEventListener("pointerup",cima); cv.removeEventListener("pointercancel",cima);
+      ov.querySelector(".an-ferr").removeEventListener("click",ferrClick);
+      $("#anSalvar").onclick=$("#anSemMarca").onclick=$("#anCancelar").onclick=null;
+      document.removeEventListener("keydown",tecla);
+      ov.classList.remove("show"); if(img.close) img.close(); resolver(res);
+    };
+    const tecla=e=>{ if(e.key==="Escape") fechar(null); };
+    cv.addEventListener("pointerdown",baixo); cv.addEventListener("pointermove",mover);
+    cv.addEventListener("pointerup",cima); cv.addEventListener("pointercancel",cima);
+    ov.querySelector(".an-ferr").addEventListener("click",ferrClick);
+    document.addEventListener("keydown",tecla);
+    $("#anCancelar").onclick=()=>fechar(null);
+    $("#anSemMarca").onclick=()=>fechar(arq);
+    $("#anSalvar").onclick=()=>{
+      if(!formas.length){ fechar(arq); return; }
+      cv.toBlob(b=>fechar(b?new File([b],(arq.name||"foto").replace(/\.[^.]+$/,"")+"-marcada.jpg",{type:"image/jpeg",lastModified:Date.now()}):arq),"image/jpeg",0.86);
+    };
+    desenhar(); ov.classList.add("show");
+  });
 }
 
 /* ---------------- Situação da conexão (pílula no topo) ---------------- */
@@ -1868,7 +2043,7 @@ async function escolherObra(o){
   await render();
 }
 const VIEWS_CONTROLE=new Set(["repo","modelos","relatorio","db"]);
-const NOMES_VIEW={inicio:"Início",painel:"Painel da obra",fill:"Preencher ficha",meus:"Preenchimentos",repo:"Repositório",modelos:"Modelos",relatorio:"Relatório",db:"Base de dados"};
+const NOMES_VIEW={inicio:"Início",painel:"Painel da obra",indicadores:"Indicadores",fill:"Preencher ficha",meus:"Preenchimentos",repo:"Repositório",modelos:"Modelos",relatorio:"Relatório",db:"Base de dados"};
 // Navegação integrada ao histórico do navegador: o botão voltar do celular
 // volta para a tela anterior do site (e fecha o documento aberto), em vez de sair dele.
 let histViews=["inicio"], navIdx=0, viewAtual="inicio";
@@ -1910,6 +2085,7 @@ function aplicarView(v,scrollY,voltando){
     $("#secaoTag").style.display=VIEWS_CONTROLE.has(v)?"":"none";
   }
   if(v==="painel") renderPainel();
+  if(v==="indicadores") renderIndicadores();
   if(v==="db") carregarTodosQuestionarios();
   if(typeof esconderTip==="function") esconderTip();
   // a barra Fechar/Salvar/Gerar só faz sentido em Preencher, com uma ficha aberta
@@ -2004,7 +2180,7 @@ async function render(){
   preenchimentos=(await DB.listar("preenchimentos",obra?{obraId:obra.id}:null)).sort((a,b)=>b.atualizadoEm.localeCompare(a.atualizadoEm));
   preenchimentosTodos=null;
   if(viewAtual==="db") carregarTodosQuestionarios();
-  renderRepo(); renderModelos(); renderSetup(); renderMeus(); renderDB(); renderTodosQuestionarios(); renderGraficoReprovacoes(); renderPainel(); renderHub(); await renderLog();
+  renderRepo(); renderModelos(); renderSetup(); renderMeus(); renderDB(); renderTodosQuestionarios(); renderGraficoReprovacoes(); renderPainel(); renderIndicadores(); renderHub(); await renderLog();
 }
 
 function renderRepo(){
@@ -2264,7 +2440,7 @@ function equipeHTML(p){
 function fotoBlockHTML(n,r){
   return '<div class="foto-wrap">'+
     '<label>Foto obrigatória da reprovação <span class="req">*</span></label>'+
-    (r.fotoId ? '<div class="foto-carregada">Foto anexada</div><img class="foto-prev" id="foto-img-'+esc(n)+'">' : '')+
+    (r.fotoId ? '<div class="foto-carregada">Foto anexada</div><img class="foto-prev" id="foto-img-'+esc(n)+'"><button type="button" class="btn-marcar" data-marcar="'+esc(n)+'|reprovacao">✎ Marcar o defeito nesta foto</button>' : '')+
     '<input type="file" accept="image/*" capture="environment" data-foto="'+esc(n)+'">'+
     (!r.fotoId ? '<span class="foto-aviso">Anexe uma foto mostrando o motivo da reprovação para liberar o relatório.</span>' : '')+
   '</div>';
@@ -2290,7 +2466,7 @@ function reinspecaoBlockHTML(n,r){
     '<h4>Reinspeção</h4>'+
     '<div class="field"><label>Data da reinspeção</label><input type="date" value="'+esc(re.data||"")+'" data-reinspdata="'+esc(n)+'"></div>'+
     '<label>Foto de comprovação da reinspeção <span class="req">*</span></label>'+
-    (re.fotoId?'<div class="foto-carregada">Foto anexada</div><img class="foto-prev" id="foto-reinsp-'+esc(n)+'" style="display:none">':'')+
+    (re.fotoId?'<div class="foto-carregada">Foto anexada</div><img class="foto-prev" id="foto-reinsp-'+esc(n)+'" style="display:none"><button type="button" class="btn-marcar" data-marcar="'+esc(n)+'|reinspecao">✎ Marcar nesta foto</button>':'')+
     '<input type="file" accept="image/*" capture="environment" data-reinspfoto="'+esc(n)+'">'+
     '<p class="note" style="margin-top:8px;margin-bottom:0">Ao preencher a data e anexar a foto, este item passa automaticamente para "Aprovado após re-inspeção".</p>'+
   '</div>';
@@ -2889,6 +3065,7 @@ function renderHub(){
   set("hubNumFill",abertas?'<button type="button" class="hub-link" data-irfiltro="aberto" title="Ver as fichas em aberto"><b>'+abertas+'</b><span>'+pl(abertas,"ficha em aberto","fichas em aberto")+' nesta obra ›</span></button>':'Nenhuma ficha em aberto · toque para começar');
   set("hubNumPainel",(r.totalPrevisto?'<b>'+Math.round(r.totConc/r.totalPrevisto*100)+'%</b> de cobertura':'<b>—</b> sem modelos')+
     (r.pend.length?'<button type="button" class="hub-alerta hub-link" data-irpend="1" title="Ver as reinspeções pendentes">'+r.pend.length+' '+pl(r.pend.length,"reinspeção pendente","reinspeções pendentes")+' ›</button>':''));
+  { const pa=indPrimeira(r.fichas); set("hubNumIndicadores",pa.total?'<b>'+Math.round(pa.ok/pa.total*100)+'%</b> aprovado de primeira':'<b>—</b> ainda sem respostas'); }
   set("hubNumMeus",'<b>'+r.fichas.length+'</b> '+pl(r.fichas.length,"ficha","fichas")+' nesta obra');
   set("hubNumRelatorio",'<b>'+reprov+'</b> '+pl(reprov,"reprovação registrada","reprovações registradas"));
   set("hubNumRepo",'<b>'+docs.length+'</b> '+pl(docs.length,"documento","documentos"));
@@ -2976,6 +3153,194 @@ function renderPainel(){
     '</div></div>';
 }
 $("#painelFvsSel").addEventListener("change",e=>{ painelFvsEscolhida=e.target.value; renderPainel(); });
+
+/* ---------------- Indicadores ----------------
+   Aba para o controle e a diretoria acompanharem a obra ao longo do tempo:
+   ritmo de conclusão, reprovações abertas x corrigidas por semana, itens mais
+   reprovados (Pareto), quadras e FVS. Tudo calculado das fichas da obra. */
+const VZ={a:"#1755A0",b:"#C0461E"};   // azul = concluídas/corrigidas · laranja = reprovações (par validado para daltonismo)
+let indFvsEscolhida="";
+const isoDia=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function inicioSemana(iso){ const d=new Date(String(iso).slice(0,10)+"T00:00:00"); if(isNaN(d)) return null; d.setDate(d.getDate()-((d.getDay()+6)%7)); return isoDia(d); }
+function somaDias(iso,n){ const d=new Date(iso+"T00:00:00"); d.setDate(d.getDate()+n); return isoDia(d); }
+const diaBR=iso=>iso?iso.slice(8,10)+"/"+iso.slice(5,7):"";
+const difDias=(a,b)=>Math.round((new Date(b+"T00:00:00")-new Date(a+"T00:00:00"))/86400000);
+function dataConclusao(p){
+  let u="";
+  Object.values(p.respostas||{}).forEach(r=>{ if(!r) return;
+    [r.data, r.reinspecao&&r.reinspecao.data].concat((r.ciclos||[]).map(c=>c.reinspecao&&c.reinspecao.data)).forEach(d=>{ if(d&&d>u) u=d; }); });
+  return (u||String(p.atualizadoEm||"")).slice(0,10)||null;
+}
+// cada reprovação de um item: quando foi reprovado e (se já) quando foi corrigido
+function reprovacoesDoItem(r){
+  const lista=[];
+  (r.ciclos||[]).forEach(c=>{
+    const corr=/^Aprovado/.test(c.desfecho||"") ? ((c.reinspecao&&c.reinspecao.data)||String(c.encerradoEm||"").slice(0,10)||null) : null;
+    lista.push({em:c.reprovadoEm||null, corrigidoEm:corr});
+  });
+  if(r.resultado==="R") lista.push({em:r.data||null, corrigidoEm:null, aberta:true});
+  else if(r.resultado==="AR"&&!(r.ciclos||[]).length) lista.push({em:r.data||null, corrigidoEm:(r.reinspecao&&r.reinspecao.data)||null});
+  return lista;
+}
+function indPrimeira(fichas){
+  let ok=0,total=0;
+  fichas.forEach(({p,m})=>itensRespondiveis(m).forEach(it=>{ const r=p.respostas[it.n];
+    if(!r||!r.resultado||r.resultado==="NA") return; total++; if(!numReprovacoes(r)) ok++; }));
+  return {ok,total};
+}
+function calcularIndicadores(fvsId,semanas){
+  const base=resumoObra();
+  const mods=fvsId?base.modelosOrd.filter(m=>m.id===fvsId):base.modelosOrd;
+  const fichas=base.fichas.filter(x=>mods.some(m=>m.id===x.m.id));
+  const impl=IMPLANTACAO[String(obra.id)], quadraDe=impl?quadrasPorCasa(impl):null;
+  const hoje=hojeLocalISO(), semAtual=inicioSemana(hoje);
+  const conc=[], reps=[], pareto={}, porQuadra={}, porFvs={};
+  mods.forEach(m=>porFvs[m.id]={m,fichas:0,conc:0,ok:0,resp:0,abertas:0,tempos:[]});
+  if(quadraDe) Object.values(quadraDe).forEach(q=>{ if(!porQuadra[q]) porQuadra[q]={q,casas:0,conc:0,abertas:0,resp:0,reprov:0}; });
+  if(quadraDe) Object.keys(quadraDe).forEach(n=>porQuadra[quadraDe[n]].casas++);
+  fichas.forEach(({p,m})=>{
+    const f=porFvs[m.id]; f.fichas++;
+    const fechada=!saudeFicha(p,m).aberto, q=quadraDe?quadraDe[numeroDaCasa(p.unidade)]:null;
+    if(fechada){ f.conc++; const d=dataConclusao(p); if(d) conc.push(d); if(q) porQuadra[q].conc++; }
+    itensRespondiveis(m).forEach(it=>{
+      const r=p.respostas[it.n]; if(!r||!r.resultado||r.resultado==="NA") return;
+      f.resp++; const k=numReprovacoes(r); if(!k) f.ok++;
+      if(q){ porQuadra[q].resp++; if(k) porQuadra[q].reprov++; }
+      if(k){ const ch=m.id+"|"+it.n; (pareto[ch]=pareto[ch]||{m,it,n:0}).n+=k; }
+      reprovacoesDoItem(r).forEach(x=>{
+        reps.push(x);
+        if(x.aberta){ f.abertas++; if(q) porQuadra[q].abertas++; }
+        if(x.em&&x.corrigidoEm) f.tempos.push(Math.max(0,difDias(x.em,x.corrigidoEm)));
+      });
+    });
+  });
+  // semanas do gráfico
+  let ini;
+  if(semanas>0) ini=somaDias(semAtual,-7*(semanas-1));
+  else { const datas=conc.concat(reps.map(x=>x.em).filter(Boolean)).sort(); ini=datas.length?inicioSemana(datas[0]):semAtual;
+    if(difDias(ini,semAtual)>7*103) ini=somaDias(semAtual,-7*103); }
+  const sem=[]; for(let w=ini; w<=semAtual; w=somaDias(w,7)) sem.push(w);
+  const idx=d=>{ const w=d&&inicioSemana(d); if(!w||w<ini||w>semAtual) return -1; return Math.round(difDias(ini,w)/7); };
+  const concSem=sem.map(()=>0), repSem=sem.map(()=>0), corSem=sem.map(()=>0);
+  conc.forEach(d=>{ const i=idx(d); if(i>=0) concSem[i]++; });
+  reps.forEach(x=>{ const i=idx(x.em); if(i>=0) repSem[i]++; const j=idx(x.corrigidoEm); if(j>=0) corSem[j]++; });
+  const antesIni=conc.filter(d=>d<ini).length;
+  const acum=[]; concSem.reduce((s,v,i)=>(acum[i]=s+v),antesIni);
+  // indicadores do topo
+  const previstas=obra.casas*mods.length, concluidas=conc.length;
+  const prim=indPrimeira(fichas);
+  const abertas=base.pend.filter(x=>mods.some(m=>m.id===x.m.id));
+  const tempos=[].concat(...Object.values(porFvs).map(f=>f.tempos));
+  const ult4=concSem.slice(-4), ritmo=ult4.length?ult4.reduce((a,b)=>a+b,0)/ult4.length:0;
+  return {mods,fichas,sem,concSem,repSem,corSem,acum,previstas,concluidas,prim,abertas,tempos,ritmo,
+    pareto:Object.values(pareto).sort((a,b)=>b.n-a.n), porQuadra:Object.values(porQuadra).sort((a,b)=>a.q.localeCompare(b.q)), porFvs:Object.values(porFvs), impl};
+}
+const fmtNum=n=>Number(n).toLocaleString("pt-BR");
+const fmtPct=(a,b)=>b?Math.round(a/b*100)+"%":"—";
+const media=l=>l.length?l.reduce((a,b)=>a+b,0)/l.length:null;
+function niceMax(v){ if(v<=4) return 4; const p=Math.pow(10,Math.floor(Math.log10(v))); for(const k of [1,2,2.5,5,10]) if(k*p>=v) return k*p; return 10*p; }
+// colunas (1 ou 2 séries lado a lado) em SVG, com eixo único, grade fina e dica ao passar o mouse/tocar
+function graficoColunas(el,{rotulos,series,dica,rotuloUltimo}){
+  const W=Math.max(280,el.clientWidth||600), H=210, ml=34, mr=10, mt=14, mb=26, iw=W-ml-mr, ih=H-mt-mb;
+  const n=rotulos.length, ns=series.length, max=niceMax(Math.max(1,...series.map(s=>Math.max(0,...s.valores))));
+  const banda=iw/n, bw=Math.max(2,Math.min(24,(banda*0.72-(ns-1)*2)/ns)), y=v=>mt+ih-(v/max)*ih;
+  let g="";
+  [0,0.5,1].forEach(k=>{ const v=max*k, yy=y(v); g+='<line class="grade" x1="'+ml+'" x2="'+(W-mr)+'" y1="'+yy+'" y2="'+yy+'"/><text class="eixo" x="'+(ml-6)+'" y="'+(yy+4)+'" text-anchor="end">'+fmtNum(Math.round(v))+'</text>'; });
+  const passo=Math.max(1,Math.ceil(n*46/iw));
+  rotulos.forEach((r,i)=>{ if((n-1-i)%passo) return; g+='<text class="eixo" x="'+(ml+banda*i+banda/2)+'" y="'+(H-8)+'" text-anchor="middle">'+esc(r)+'</text>'; });
+  const barra=(x,v,cor)=>{ if(!v) return ""; const yy=y(v), h=mt+ih-yy, r=Math.min(4,h,bw/2);
+    return '<path fill="'+cor+'" d="M'+x+','+(mt+ih)+'V'+(yy+r)+'Q'+x+','+yy+' '+(x+r)+','+yy+'H'+(x+bw-r)+'Q'+(x+bw)+','+yy+' '+(x+bw)+','+(yy+r)+'V'+(mt+ih)+'Z"/>'; };
+  let b="", f="";
+  rotulos.forEach((r,i)=>{
+    const x0=ml+banda*i+(banda-(bw*ns+(ns-1)*2))/2;
+    series.forEach((s,k)=>{ b+=barra(x0+k*(bw+2),s.valores[i],s.cor); });
+    f+='<rect class="faixa" data-i="'+i+'" x="'+(ml+banda*i)+'" y="'+mt+'" width="'+banda+'" height="'+ih+'"/>';
+  });
+  if(rotuloUltimo&&ns===1){ const i=n-1, v=series[0].valores[i]; if(v){ const x=ml+banda*i+banda/2; b+='<text class="rot" x="'+x+'" y="'+(y(v)-5)+'" text-anchor="middle">'+fmtNum(v)+'</text>'; } }
+  el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" height="'+H+'" role="img">'+g+b+f+'</svg>';
+  const tip=$("#vzTip");
+  const mostrar=(rc,i)=>{ el.querySelectorAll(".faixa").forEach(x=>x.classList.toggle("on",x===rc)); tip.innerHTML=dica(i); tip.classList.add("show");
+    const r=rc.getBoundingClientRect(), t=tip.getBoundingClientRect();
+    let left=r.left+r.width/2-t.width/2; left=Math.max(8,Math.min(left,innerWidth-t.width-8));
+    let top=r.top-t.height-8; if(top<8) top=r.top+12; tip.style.left=left+"px"; tip.style.top=top+"px"; };
+  const esconder=()=>{ tip.classList.remove("show"); el.querySelectorAll(".faixa.on").forEach(x=>x.classList.remove("on")); };
+  el.querySelectorAll(".faixa").forEach(rc=>{ rc.addEventListener("pointerenter",()=>mostrar(rc,+rc.dataset.i)); rc.addEventListener("pointerdown",()=>mostrar(rc,+rc.dataset.i)); });
+  el.querySelector("svg").addEventListener("pointerleave",esconder);
+}
+function popularIndFvs(){
+  const sel=$("#indFvs"); const ord=[...modelos].sort((a,b)=>numeroCodigo(a)-numeroCodigo(b));
+  sel.innerHTML='<option value="">Todas as FVS</option>'+ord.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.codigo?m.codigo+" — "+m.titulo:m.titulo)+'</option>').join("");
+  if(!ord.some(m=>m.id===indFvsEscolhida)) indFvsEscolhida="";
+  sel.value=indFvsEscolhida;
+}
+function renderIndicadores(){
+  const cont=$("#indConteudo"); if(!cont) return;
+  if(!obra||!$("#view-indicadores").classList.contains("active")) return;
+  $("#indObra").textContent="Obra "+obra.id+" — "+obra.nome+" · "+obra.casas+" casas · semanas de segunda a domingo";
+  popularIndFvs();
+  if(!modelos.length){ cont.innerHTML='<div class="panel empty"><b>Nenhum modelo de FVS</b>Quando houver modelos e fichas, os indicadores aparecem aqui.</div>'; return; }
+  const semanas=Number($("#indPeriodo").value);
+  const d=calcularIndicadores(indFvsEscolhida,semanas);
+  const tm=media(d.tempos), restante=d.previstas-d.concluidas;
+  const proj=d.ritmo>0&&restante>0?Math.ceil(restante/d.ritmo):null;
+  const maisAntiga=d.abertas.length?d.abertas[0].dias:null;
+  const kpi=(rot,val,sub)=>'<div class="ind-kpi"><span>'+rot+'</span><b>'+val+'</b><small>'+sub+'</small></div>';
+  let h='<div class="ind-kpis">'+
+    kpi("Fichas concluídas",fmtNum(d.concluidas),fmtPct(d.concluidas,d.previstas)+" das "+fmtNum(d.previstas)+" previstas")+
+    kpi("Aprovado de primeira",fmtPct(d.prim.ok,d.prim.total),fmtNum(d.prim.ok)+" de "+fmtNum(d.prim.total)+" itens respondidos")+
+    kpi("Reprovações em aberto",fmtNum(d.abertas.length),maisAntiga!=null?"a mais antiga há "+maisAntiga+(maisAntiga===1?" dia":" dias"):"nenhuma aguardando reinspeção")+
+    kpi("Tempo médio até corrigir",tm==null?"—":(Math.round(tm*10)/10).toLocaleString("pt-BR")+" dias",tm==null?"sem correções registradas":"da reprovação à reinspeção ("+d.tempos.length+")")+
+    kpi("Ritmo (fichas por semana)",(Math.round(d.ritmo*10)/10).toLocaleString("pt-BR"),proj?"no ritmo atual, ~"+proj+(proj===1?" semana":" semanas")+" para concluir":(restante>0?"sem conclusões nas últimas 4 semanas":"todas as fichas previstas concluídas"))+
+  '</div>';
+  const tabSem=(cab,linhas)=>'<details class="ind-tabela"><summary>Ver em tabela</summary><div class="ind-rolagem"><table><thead><tr>'+cab.map(c=>'<th>'+c+'</th>').join("")+'</tr></thead><tbody>'+linhas.join("")+'</tbody></table></div></details>';
+  const nomeSem=i=>diaBR(d.sem[i])+" a "+diaBR(somaDias(d.sem[i],6));
+  h+='<div class="ind-grade">'+
+    '<div class="panel"><div class="panel-head"><h3>Fichas concluídas por semana</h3><span class="count">'+fmtNum(d.concSem.reduce((a,b)=>a+b,0))+' no período</span></div><div class="panel-body">'+
+      '<div class="ind-graf" id="indGrafConc"></div>'+
+      tabSem(["Semana","Concluídas","Acumulado"],d.sem.map((w,i)=>'<tr><td>'+nomeSem(i)+'</td><td>'+d.concSem[i]+'</td><td>'+d.acum[i]+'</td></tr>').reverse())+
+    '</div></div>'+
+    '<div class="panel"><div class="panel-head"><h3>Reprovações por semana</h3><span class="count">'+fmtNum(d.repSem.reduce((a,b)=>a+b,0))+' registradas · '+fmtNum(d.corSem.reduce((a,b)=>a+b,0))+' corrigidas</span></div><div class="panel-body">'+
+      '<div class="ind-leg"><span><i style="background:'+VZ.b+'"></i>Reprovações registradas</span><span><i style="background:'+VZ.a+'"></i>Corrigidas (reinspeção aprovada)</span></div>'+
+      '<div class="ind-graf" id="indGrafRep"></div>'+
+      tabSem(["Semana","Registradas","Corrigidas"],d.sem.map((w,i)=>'<tr><td>'+nomeSem(i)+'</td><td>'+d.repSem[i]+'</td><td>'+d.corSem[i]+'</td></tr>').reverse())+
+    '</div></div>'+
+  '</div>';
+  // Pareto
+  const top=d.pareto.slice(0,10), totRep=d.pareto.reduce((a,x)=>a+x.n,0); let ac=0;
+  h+='<div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3>Itens mais reprovados</h3><span class="count">'+(totRep?fmtNum(totRep)+' reprovações em '+d.pareto.length+(d.pareto.length===1?' item':' itens'):'nenhuma reprovação')+'</span></div><div class="panel-body">'+
+    (top.length?'<div class="pareto">'+top.map(x=>{ ac+=x.n; const w=Math.round(x.n/top[0].n*100);
+      return '<div class="p-lin"><div class="p-rot"><b>'+esc((x.m.codigo?x.m.codigo+" · ":"")+"Item "+x.it.n)+'</b><span title="'+esc(x.it.item)+'">'+esc(x.it.item)+'</span></div>'+
+        '<div class="p-bar"><i style="width:'+w+'%"></i></div>'+
+        '<div class="p-val"><b>'+x.n+'×</b> · '+Math.round(ac/totRep*100)+'% acum.</div></div>'; }).join("")+'</div>'+
+      '<p class="note" style="margin:12px 0 0">Concentre a orientação das equipes nos primeiros itens: são eles que somam a maior parte das reprovações (coluna "% acum.").</p>'
+    :'<p class="note" style="margin:0">Sem reprovações registradas para esta seleção.</p>')+
+  '</div></div>';
+  // Por quadra
+  if(d.impl&&d.porQuadra.length){
+    const prev=d.mods.length;
+    h+='<div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3>Por quadra</h3><span class="count">'+(indFvsEscolhida?"FVS selecionada":"todas as FVS somadas")+'</span></div><div class="panel-body ind-rolagem"><table class="ind-tab"><thead><tr><th>Quadra</th><th class="num">Casas</th><th>Fichas concluídas</th><th class="num">Reprov. em aberto</th><th class="num">Taxa de reprovação</th></tr></thead><tbody>'+
+      d.porQuadra.map(q=>{ const tot=q.casas*prev, pc=tot?Math.round(q.conc/tot*100):0;
+        return '<tr><td><b>Quadra '+esc(q.q)+'</b></td><td class="num">'+q.casas+'</td><td><div class="ind-barra"><span class="trilho"><i style="width:'+pc+'%"></i></span><em>'+pc+'%</em></div></td><td class="num">'+q.abertas+'</td><td class="num">'+fmtPct(q.reprov,q.resp)+'</td></tr>'; }).join("")+
+    '</tbody></table></div></div>';
+  }
+  // Por FVS
+  if(!indFvsEscolhida&&d.porFvs.length>1){
+    h+='<div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3>Por FVS</h3><span class="count">'+d.porFvs.length+' modelos</span></div><div class="panel-body ind-rolagem"><table class="ind-tab"><thead><tr><th>FVS</th><th class="num">Fichas</th><th>Casas concluídas</th><th class="num">Aprovado de 1ª</th><th class="num">Reprov. em aberto</th><th class="num">Tempo médio de correção</th></tr></thead><tbody>'+
+      d.porFvs.map(f=>{ const pc=Math.round(f.conc/obra.casas*100), t=media(f.tempos);
+        return '<tr><td><b>'+esc(f.m.codigo||"—")+'</b> <span style="color:var(--ink3)">'+esc((f.m.titulo||"").replace(/\s+/g," ").slice(0,48))+'</span></td><td class="num">'+f.fichas+'</td><td><div class="ind-barra"><span class="trilho"><i style="width:'+pc+'%"></i></span><em>'+pc+'%</em></div></td><td class="num">'+fmtPct(f.ok,f.resp)+'</td><td class="num">'+f.abertas+'</td><td class="num">'+(t==null?"—":(Math.round(t*10)/10).toLocaleString("pt-BR")+" d")+'</td></tr>'; }).join("")+
+    '</tbody></table></div></div>';
+  }
+  cont.innerHTML=h;
+  const rot=d.sem.map(diaBR);
+  graficoColunas($("#indGrafConc"),{rotulos:rot,series:[{cor:VZ.a,valores:d.concSem}],rotuloUltimo:true,
+    dica:i=>'<b>Semana de '+nomeSem(i)+'</b><br>'+d.concSem[i]+(d.concSem[i]===1?' ficha concluída':' fichas concluídas')+'<br>Acumulado: '+d.acum[i]});
+  graficoColunas($("#indGrafRep"),{rotulos:rot,series:[{cor:VZ.b,valores:d.repSem},{cor:VZ.a,valores:d.corSem}],
+    dica:i=>'<b>Semana de '+nomeSem(i)+'</b><br><i style="background:'+VZ.b+'"></i>'+d.repSem[i]+' registradas<br><i style="background:'+VZ.a+'"></i>'+d.corSem[i]+' corrigidas'});
+}
+$("#indFvs").addEventListener("change",e=>{ indFvsEscolhida=e.target.value; renderIndicadores(); });
+$("#indPeriodo").addEventListener("change",renderIndicadores);
+{ let tRes=null; window.addEventListener("resize",()=>{ clearTimeout(tRes); tRes=setTimeout(()=>{ if(viewAtual==="indicadores") renderIndicadores(); },200); }); }
+window.addEventListener("scroll",()=>{ const t=$("#vzTip"); if(t) t.classList.remove("show"); },{passive:true});
 /* ---------------- Implantação: mapa das casas no formato da planta ----------------
    Viva Mais Barra (obra 58) segue a planta VMB-ARQ-PE-03/21 IMP R02:
    Quadra A em faixa ao longo da Rua A (casa 01 embaixo, 22 em cima) e
@@ -3396,6 +3761,27 @@ $("#btnGerar").addEventListener("click",async()=>{
 });
 
 /* ---------------- Eventos: ficha (delegados, ligados uma única vez) ---------------- */
+// grava a foto nova do item (reprovação ou reinspeção) e libera a antiga se ninguém mais usa
+async function trocarFotoItem(n,arq,tipo){
+  if(!fichaAtiva) return;
+  const {p,itemPorN}=fichaAtiva;
+  const midiaId=uid();
+  await DB.gravar("midias",{id:midiaId,blob:arq});
+  p.respostas[n]=p.respostas[n]||{};
+  let antigo;
+  if(tipo==="reinspecao"){
+    antigo=p.respostas[n].reinspecao&&p.respostas[n].reinspecao.fotoId;
+    p.respostas[n].reinspecao=Object.assign({},p.respostas[n].reinspecao,{fotoId:midiaId});
+  } else {
+    antigo=p.respostas[n].fotoId;
+    p.respostas[n]=Object.assign({},p.respostas[n],{fotoId:midiaId});
+  }
+  if(antigo&&antigo!==midiaId&&!fotoEmUso(p.respostas[n],antigo)) await DB.remover("midias",antigo);
+  if(tipo==="reinspecao") await concluirReinspecaoSeCompleta(n,p);
+  await salvarFicha();
+  document.getElementById("card-"+n).outerHTML=cardHTML(itemPorN[n],p);
+  carregarPreviewFoto(n,p); carregarPreviewReinsp(n,p);
+}
 $("#fichaArea").addEventListener("change", async e=>{
   if(!fichaAtiva) return;
   const {p,m,itemPorN}=fichaAtiva, t=e.target;
@@ -3427,17 +3813,9 @@ $("#fichaArea").addEventListener("change", async e=>{
     return;
   }
   if(t.dataset.foto){
-    const n=t.dataset.foto, arq=await prepararFoto(t.files[0]);
-    if(arq){
-      const midiaId=uid();
-      await DB.gravar("midias",{id:midiaId,blob:arq});
-      const antigo=p.respostas[n]&&p.respostas[n].fotoId;
-      p.respostas[n]=Object.assign({},p.respostas[n],{fotoId:midiaId});
-      if(antigo&&!fotoEmUso(p.respostas[n],antigo)) await DB.remover("midias",antigo);
-      await salvarFicha();
-      document.getElementById("card-"+n).outerHTML=cardHTML(itemPorN[n],p);
-      carregarPreviewFoto(n,p);
-    }
+    const n=t.dataset.foto; let arq=await prepararFoto(t.files[0]);
+    if(arq) arq=await anotarFoto(arq);
+    if(arq) await trocarFotoItem(n,arq,"reprovacao"); else t.value="";
     return;
   }
   if(t.dataset.trat){
@@ -3458,19 +3836,9 @@ $("#fichaArea").addEventListener("change", async e=>{
     return;
   }
   if(t.dataset.reinspfoto){
-    const n=t.dataset.reinspfoto, arq=await prepararFoto(t.files[0]);
-    if(arq){
-      const midiaId=uid();
-      await DB.gravar("midias",{id:midiaId,blob:arq});
-      p.respostas[n]=p.respostas[n]||{};
-      const antigo=p.respostas[n].reinspecao&&p.respostas[n].reinspecao.fotoId;
-      p.respostas[n].reinspecao=Object.assign({},p.respostas[n].reinspecao,{fotoId:midiaId});
-      if(antigo&&!fotoEmUso(p.respostas[n],antigo)) await DB.remover("midias",antigo);
-      await concluirReinspecaoSeCompleta(n,p);
-      await salvarFicha();
-      document.getElementById("card-"+n).outerHTML=cardHTML(itemPorN[n],p);
-      carregarPreviewFoto(n,p); carregarPreviewReinsp(n,p);
-    }
+    const n=t.dataset.reinspfoto; let arq=await prepararFoto(t.files[0]);
+    if(arq) arq=await anotarFoto(arq);
+    if(arq) await trocarFotoItem(n,arq,"reinspecao"); else t.value="";
     return;
   }
   if(t.dataset.eq){
@@ -3488,6 +3856,15 @@ $("#fichaArea").addEventListener("change", async e=>{
 $("#fichaArea").addEventListener("click", async e=>{
   if(!fichaAtiva) return;
   const {p,m}=fichaAtiva, t=e.target;
+  if(t.dataset&&t.dataset.marcar){
+    const [n,tipo]=t.dataset.marcar.split("|"), r=p.respostas[n]||{};
+    const id=tipo==="reinspecao"?(r.reinspecao&&r.reinspecao.fotoId):r.fotoId;
+    const mid=id&&await DB.obter("midias",id);
+    if(!mid){ toast("Foto não encontrada na base."); return; }
+    const marcada=await anotarFoto(mid.blob);
+    if(marcada&&marcada!==mid.blob) await trocarFotoItem(n,marcada,tipo);
+    return;
+  }
   if(t.dataset&&t.dataset.verfoto){
     const alvo=t.parentElement.querySelector(".foto-ciclo");
     const mid=await DB.obter("midias",t.dataset.verfoto);

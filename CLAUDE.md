@@ -13,6 +13,8 @@
 - Histórico por item: `ciclos` (reprovações arquivadas) e `eventos` (trocas de resultado).
 - Listagens filtram por obra (`?obraId=`). Não recarregar listas inteiras depois de salvar.
 - Modo backend: cópia local (IndexedDB `controle_documental_cache`) + fila de envio; sem conexão grava no aparelho e sincroniza depois (`ErroRede`, `sincronizar`). Fotos são reduzidas por `prepararFoto` antes de gravar.
+- Aba Indicadores (`renderIndicadores`, `calcularIndicadores`): gráficos em SVG próprio (`graficoColunas`), cores validadas para daltonismo em `VZ` (azul #1755A0 / laranja #C0461E).
+- Fotos de reprovação/reinspeção passam por `anotarFoto` (marcação) e `trocarFotoItem`.
 - Melhorias visuais de computador ficam em `@media (min-width:821px)` / `(hover:hover) and (pointer:fine)`; respeitar `prefers-reduced-motion`.
 
 ## Backend
