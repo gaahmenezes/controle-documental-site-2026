@@ -193,6 +193,13 @@ main{flex:1;padding:32px 24px 100px;max-width:1040px;width:100%;margin:0 auto}
 .hub-grid .hub-card:nth-child(5){animation-delay:.12s}
 .hub-grid .hub-card:nth-child(6){animation-delay:.15s}
 .hub-grid .hub-card:nth-child(7){animation-delay:.18s}
+/* troca entre as telas de fora do app (login, escolha da obra, app) */
+.tela-entra{animation:telaEntra .26s cubic-bezier(.2,.7,.3,1) backwards}
+.tela-volta{animation:telaVolta .26s cubic-bezier(.2,.7,.3,1) backwards}
+#obras .obra-card{animation:cardEntra .28s cubic-bezier(.2,.7,.3,1) backwards}
+#obras .obra-card:nth-child(2){animation-delay:.05s}
+#obras .obra-card:nth-child(3){animation-delay:.1s}
+#obras .obra-card:nth-child(n+4){animation-delay:.14s}
 @keyframes cardEntra{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
 .secao-bar{animation:barraEntra .2s ease both}
 @keyframes barraEntra{from{opacity:0}to{opacity:1}}
@@ -1960,6 +1967,7 @@ async function verificarOuEntrarEmail(v){
     $("#verifEmail").textContent=v;
     $("#vNome").value=""; $("#vSobrenome").value="";
     $("#verificacao").style.display="block";
+    animarTela($("#verificacao"));
     $("#vNome").focus();
   }
 }
@@ -2008,11 +2016,19 @@ async function sair(){
   user=null;obra=null;fichaAtiva=null;pendingEmail=null;
   apagarSessaoSalva();
   $("#app").style.display="none";$("#obras").style.display="none";$("#verificacao").style.display="none";$("#login").style.display="grid";
+  animarTela($("#login"),true);
   $("#email").value="";limpaAviso($("#loginMsg"));
   if(Auth365.conta) Auth365.sair();
 }
 
 /* ---------------- Obras ---------------- */
+// reinicia a animação de entrada de uma tela ("volta" = vindo de uma tela mais adiante)
+function animarTela(el,volta){
+  if(!el) return;
+  el.classList.remove("tela-entra","tela-volta"); void el.offsetWidth;
+  el.classList.add(volta?"tela-volta":"tela-entra");
+  el.addEventListener("animationend",function fim(e){ if(e.target!==el) return; el.classList.remove("tela-entra","tela-volta"); el.removeEventListener("animationend",fim); });
+}
 async function telaObras(){
   const lista=await DB.listar("obras");
   const el=$("#obraLista"); el.innerHTML="";
@@ -2026,8 +2042,11 @@ async function telaObras(){
     b.addEventListener("click",()=>escolherObra(o));
     el.appendChild(b);
   });
+  const vindoDoApp=$("#app").style.display==="flex";
   $("#app").style.display="none";
   $("#obras").style.display="block";
+  animarTela($("#obras"),vindoDoApp);
+  window.scrollTo(0,0);
 }
 async function escolherObra(o){
   obra=o;
@@ -2037,6 +2056,7 @@ async function escolherObra(o){
   if(lg){ hl.innerHTML='<img src="'+lg+'" alt="Logo '+esc(o.nome)+'">'; hl.style.display=""; } else { hl.innerHTML=""; hl.style.display="none"; }
   $("#obras").style.display="none";
   $("#app").style.display="flex";
+  animarTela($("#app"));
   document.querySelectorAll("[data-controle]").forEach(b=>b.style.display=ehControle?"":"none");
   irPara("inicio",{reset:true});
   await registrar("Obra selecionada", o.id+" — "+o.nome);
