@@ -1184,7 +1184,7 @@ table.editor textarea{min-height:60px;resize:vertical}
       <div class="hub-grid" id="hubGrid">
     <div class="hub-card destaque"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v3H9z"/><path d="M8 4.5H6a1 1 0 0 0-1 1V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5.5a1 1 0 0 0-1-1h-2"/><path d="m9 14 2 2 4-4.5"/></svg></span><button type="button" class="hub-tit" data-ir="fill">Preencher ficha</button><span class="hub-desc">Abrir ou iniciar uma FVS numa casa da obra</span><span class="hub-num" id="hubNumFill">—</span></div>
     <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg></span><button type="button" class="hub-tit" data-ir="painel">Painel da obra</button><span class="hub-desc">Mapa das casas e cobertura de cada FVS</span><span class="hub-num" id="hubNumPainel">—</span></div>
-    <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><path d="m7 15 4-4 3 3 5-6"/></svg></span><button type="button" class="hub-tit" data-ir="indicadores">Indicadores</button><span class="hub-desc">Reinspeções pendentes, fichas paradas, evolução e desempenho da obra</span><span class="hub-num" id="hubNumIndicadores">—</span></div>
+    <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><path d="m7 15 4-4 3 3 5-6"/></svg></span><button type="button" class="hub-tit" data-ir="indicadores">Indicadores</button><span class="hub-desc">Evolução e desempenho, reinspeções pendentes e fichas paradas da obra</span><span class="hub-num" id="hubNumIndicadores">—</span></div>
     <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></span><button type="button" class="hub-tit" data-ir="meus">Preenchimentos</button><span class="hub-desc">Todas as fichas da obra, com filtros por FVS, status e casa</span><span class="hub-num" id="hubNumMeus">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M6 17v-6M11 17V6M16 17v-9M21 17v-4"/></svg></span><button type="button" class="hub-tit" data-ir="relatorio">Relatório</button><span class="hub-desc">Relatório para download e índice de reprovações por item</span><span class="hub-num" id="hubNumRelatorio">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg></span><button type="button" class="hub-tit" data-ir="repo">Repositório</button><span class="hub-desc">Documentos originais das FVS e suas versões</span><span class="hub-num" id="hubNumRepo">—</span></div>
@@ -1215,6 +1215,26 @@ table.editor textarea{min-height:60px;resize:vertical}
         <h2>Indicadores</h2>
         <p id="indObra"></p>
       </div>
+      <div class="view-head" style="margin:6px 0 14px">
+        <h2 style="font-size:20px">Evolução e desempenho</h2>
+        <p>Os números abaixo mudam com a FVS e a empreiteira escolhidas. O período muda só os gráficos por semana.</p>
+      </div>
+      <div class="toolbar">
+        <select id="indFvs" aria-label="FVS" style="flex:1 1 320px;min-width:0;max-width:100%"></select>
+        <select id="indPeriodo" aria-label="Período" style="flex:0 1 220px">
+          <option value="8">Últimas 8 semanas</option>
+          <option value="12" selected>Últimas 12 semanas</option>
+          <option value="26">Últimos 6 meses</option>
+          <option value="0">Desde o início</option>
+        </select>
+        <select id="indEmp" aria-label="Empreiteira" style="flex:0 1 240px"><option value="">Todas as empreiteiras</option></select>
+        <button type="button" class="btn btn-apres" id="btnApres" style="width:auto">▶ Modo apresentação</button>
+      </div>
+      <div id="indConteudo"></div>
+      <div class="view-head" style="margin:30px 0 14px">
+        <h2 style="font-size:20px">Pendências da obra</h2>
+        <p>Reinspeções pendentes, envios com problema e fichas paradas. Consideram a obra inteira, sem os filtros acima.</p>
+      </div>
 <div id="acompanhamento">
       <div class="panel" id="painelPendPainel">
         <div class="panel-head"><h3>Reinspeções pendentes</h3><span class="count" id="painelPendCount"></span></div>
@@ -1235,22 +1255,6 @@ table.editor textarea{min-height:60px;resize:vertical}
         <div id="painelParadas"></div>
       </div>
 </div>
-      <div class="view-head" style="margin:30px 0 14px">
-        <h2 style="font-size:20px">Evolução e desempenho</h2>
-        <p>Os números abaixo mudam com a FVS e a empreiteira escolhidas. O período muda só os gráficos por semana.</p>
-      </div>
-      <div class="toolbar">
-        <select id="indFvs" aria-label="FVS" style="flex:1 1 320px;min-width:0;max-width:100%"></select>
-        <select id="indPeriodo" aria-label="Período" style="flex:0 1 220px">
-          <option value="8">Últimas 8 semanas</option>
-          <option value="12" selected>Últimas 12 semanas</option>
-          <option value="26">Últimos 6 meses</option>
-          <option value="0">Desde o início</option>
-        </select>
-        <select id="indEmp" aria-label="Empreiteira" style="flex:0 1 240px"><option value="">Todas as empreiteiras</option></select>
-        <button type="button" class="btn btn-apres" id="btnApres" style="width:auto">▶ Modo apresentação</button>
-      </div>
-      <div id="indConteudo"></div>
     </section>
 
     <!-- PREENCHER -->
@@ -4445,7 +4449,7 @@ function renderPainel(){
   const {cobertura}=resumoObra();
   renderCobertura(cobertura);
 }
-// Acompanhamento (fica no topo de Indicadores): reinspeções pendentes,
+// Acompanhamento (fica em Indicadores, depois de Evolução e desempenho): reinspeções pendentes,
 // envios com problema e fichas paradas
 function renderAcompanhamento(){
   const elPend=$("#painelPend"); if(!elPend) return;
@@ -4706,7 +4710,7 @@ const GUIA_PASSOS=[
   {tit:()=>"Reprovou? Foto e tratativa",desc:"Tire a foto do problema: ela sai com data, hora e localização, e dá para desenhar sobre o defeito. Descreva a ação. Até salvar, um R marcado por engano ainda pode ser trocado.",ilus:'<div class="gi-foto"><span class="cam">📷</span><span class="circ"></span></div>'},
   {tit:()=>"Salve a ficha",desc:"O botão Salvar grava a ficha e trava as reprovações. Se esquecer, o sistema salva sozinho a cada 10 minutos. Sem internet, tudo fica no celular e é enviado quando o sinal voltar.",ilus:'<div class="gi-salvar"><span class="ns">● Não salvo</span><i>Salvar •</i></div>'},
   {tit:()=>"Reinspeção",desc:"Depois da correção, abra a ficha de novo: preencha a data e a foto da reinspeção e o item passa sozinho para AR (aprovado após reinspeção).",ilus:'<div class="gi-opts"><span class="r">✕<b>R</b></span><em>→</em><span class="ar">↻<b>AR</b></span></div>'},
-  {so:"controle",tit:()=>"Para a conta de controle",desc:"Em Indicadores: reinspeções pendentes, fichas paradas, envios com problema, a situação da obra e o Modo apresentação. No Painel: o mapa das casas. Em Base de dados: a lixeira e o registro de operações com busca.",ilus:'<div class="gi-ctrl"><span>Painel</span><span>Indicadores</span><span>▶ Apresentação</span><span>Lixeira</span></div>'}
+  {so:"controle",tit:()=>"Para a conta de controle",desc:"Em Indicadores: a evolução da obra, as reinspeções pendentes, fichas paradas, envios com problema e o Modo apresentação. No Painel: o mapa das casas. Em Base de dados: a lixeira e o registro de operações com busca.",ilus:'<div class="gi-ctrl"><span>Painel</span><span>Indicadores</span><span>▶ Apresentação</span><span>Lixeira</span></div>'}
 ];
 let guiaI=0, guiaLista=[];
 const chaveGuia=()=>"cd_guia_"+(user?user.email.toLowerCase():"");
@@ -4735,7 +4739,7 @@ $("#btnGuia").addEventListener("click",abrirGuia);
 // Novidades: a mais recente primeiro. Cada atualização visível para a equipe ganha uma entrada aqui.
 const NOVIDADES=[
   {data:"2026-10-15.3",titulo:"Indicadores reorganizados",itens:[
-    "Reinspeções pendentes, envios com problema e fichas paradas agora ficam no topo de Indicadores.",
+    "Reinspeções pendentes, envios com problema e fichas paradas agora ficam em Indicadores, em “Pendências da obra”, logo depois de Evolução e desempenho.",
     "O Painel da obra ficou só com o mapa das casas e a cobertura de cada FVS.",
     "Indicadores sem números repetidos: cada número aparece uma vez só, e o aprovado de primeira do mês aparece junto com o total."]},
   {data:"2026-10-15.2",titulo:"Atualização de 15/10 (tarde)",itens:[
