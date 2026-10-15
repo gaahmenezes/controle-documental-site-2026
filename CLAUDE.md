@@ -28,6 +28,10 @@
 - Envios com problema: cada aparelho (`idAparelho`) informa à coleção `aparelhos` pendências, recusas (`cd_recusados`, com cópia local) e rascunhos (`relatarAparelho`); o controle vê em `renderEnvios` no Painel.
 - Guia de primeiro uso (`GUIA_PASSOS`, `abrirGuia`, por e-mail em `cd_guia_<email>`) e Novidades (`NOVIDADES`, a mais recente primeiro — acrescente uma entrada a cada atualização visível para a equipe).
 - Acessibilidade: janelas com foco preso e devolvido (observador das classes `show`); `--ink3` #5B6B73 (claro) / #98AAB3 (escuro) para contraste ≥ 4,5; campos da ficha com `aria-label`. `.folha` e o relatório mantêm as cores originais.
+- Fotos: `fotoDoCampo` = `prepararFoto` → `carimbarFoto` (faixa com data, hora, GPS de `pedirLocal`, obra, casa, item) → `anotarFoto` (só traço livre; Desfazer/Limpar; devolve {arquivo, marcas}). Guarda `fotoBase` (foto sem marcação) + `fotoMarcas` para reabrir os traços editáveis, e `fotoGeo`.
+- Empreiteiras (coleção `empreiteiras`, tela só do controle): equipe de execução escolhe da lista (`empreiteiraId` + `nome`), obrigatória em `validar`/pendências; filtros por empreiteira em Indicadores (`#indEmp`) e Preenchimentos (`#filtroEmpPre`).
+- Aprovação (coleção `aprovacoes`, aba `aprovacao`): engenheiros por obra em `obra.engenheiros` (controle edita); aprovar/devolver; PDF assinado no gov.br (assinador.iti.br) anexado em `arquivos`; ficha alterada depois volta para "aguardando" (`situacaoAprovacao`).
+- Abrir ficha: busca do servidor e trava em paralelo com limite de 2,5 s (`montarFicha`); se o servidor demorar, abre com a cópia do aparelho e atualiza depois.
 - Melhorias visuais de computador ficam em `@media (min-width:821px)` / `(hover:hover) and (pointer:fine)`; respeitar `prefers-reduced-motion`.
 
 ## Backend

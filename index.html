@@ -112,6 +112,8 @@ header.topbar{background:var(--chrome);border-bottom:3px solid var(--laranja);co
 .an-ferr{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line2)}
 .an-ferr button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:7px 11px;cursor:pointer;color:var(--ink)}
 .an-ferr button.ativo{border-color:var(--seal);background:var(--seal-soft);color:var(--seal);font-weight:600}
+.an-dica{font-size:13px;color:var(--ink2);margin-right:auto}
+.an-ferr button:disabled{opacity:.45;cursor:default}
 .an-ferr .an-cor{width:30px;height:30px;padding:0;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
 .an-ferr .an-cor.ativo{box-shadow:0 0 0 2px var(--ink)}
 .an-ferr .sep{width:1px;height:24px;background:var(--line);margin:0 4px}
@@ -440,6 +442,31 @@ body.tema-escuro .ap-mapa .mp.ap-casa{background:color-mix(in srgb,#4C93E0 var(-
 .casa-resumo>div{background:var(--canvas);border-radius:8px;padding:10px 12px}
 .casa-resumo b{display:block;font-size:22px;font-variant-numeric:tabular-nums}.casa-resumo b small{font-size:13px;color:var(--ink3);font-weight:500}
 .casa-resumo span{font-size:12px;color:var(--ink3)}
+.emp-form{display:grid;grid-template-columns:2fr 1fr 1.5fr auto;gap:0 12px;align-items:start}
+.emp-form .field{margin:0}
+@media (max-width:820px){.emp-form{grid-template-columns:1fr}.emp-form .btn{width:100%!important}}
+.emp-inativa .doc-meta b{color:var(--ink3)}
+.emp-falta{margin:10px 0 0}
+#painelEquipe.falta-equipe{border-color:var(--flag);box-shadow:inset 3px 0 0 var(--flag)}
+table.editor select{width:100%;min-width:180px}
+.aprov-eng{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:6px}
+.aprov-eng li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line2)}
+.aprov-eng-add{display:flex;gap:8px;flex-wrap:wrap}.aprov-eng-add input{flex:1 1 260px;min-width:0}
+.aprov-abas{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.aprov-abas button{font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--paper);color:var(--ink2);border-radius:20px;padding:8px 14px;cursor:pointer;min-height:40px}
+.aprov-abas button[aria-selected="true"]{background:var(--seal);border-color:var(--seal);color:#fff}
+.aprov-abas button b{margin-left:4px}
+#aprovLista .doc-meta span{white-space:normal;display:block;margin-top:2px}
+.aprov-alerta{color:var(--flag)!important;font-weight:600}
+.aprov-passos{color:var(--ink2)!important}
+.aprov-passos a{color:var(--seal)}
+.icon-btn.primario{background:var(--seal);border-color:var(--seal);color:#fff}
+a.icon-btn{text-decoration:none;display:inline-flex;align-items:center}
+label.icon-btn.anexar{display:inline-flex;align-items:center;cursor:pointer}
+.aprov-ok{margin:0 0 14px;padding:10px 14px;border-radius:var(--radius);background:var(--ok-soft);color:var(--ok);font-size:13.5px;font-weight:600}
+.aprov-dev .trava-ico{font-weight:700}
+.casa-filtro{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.casa-filtro input{flex:1 1 220px;min-width:0}.casa-filtro select{flex:0 1 200px;width:auto}
 .casa-lista{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .casa-fvs{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;border:1px solid var(--line2);border-radius:8px;padding:10px 12px}
 .casa-fvs.destaque{border-color:var(--seal);box-shadow:inset 3px 0 0 var(--seal)}
@@ -1162,6 +1189,8 @@ table.editor textarea{min-height:60px;resize:vertical}
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M6 17v-6M11 17V6M16 17v-9M21 17v-4"/></svg></span><button type="button" class="hub-tit" data-ir="relatorio">Relatório</button><span class="hub-desc">Relatório para download e índice de reprovações por item</span><span class="hub-num" id="hubNumRelatorio">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg></span><button type="button" class="hub-tit" data-ir="repo">Repositório</button><span class="hub-desc">Documentos originais das FVS e suas versões</span><span class="hub-num" id="hubNumRepo">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span><button type="button" class="hub-tit" data-ir="modelos">Modelos</button><span class="hub-desc">Questionários gerados a partir das FVS</span><span class="hub-num" id="hubNumModelos">—</span></div>
+    <div class="hub-card" data-aprova style="display:none"><span class="hub-tag">Engenheiro</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/><path d="M8 17c1.5-2 2.5-2 3 0s2 1.5 3-1"/></svg></span><button type="button" class="hub-tit" data-ir="aprovacao">Aprovação</button><span class="hub-desc">Fichas concluídas para aprovar e assinar pelo gov.br</span><span class="hub-num" id="hubNumAprov">—</span></div>
+    <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg></span><button type="button" class="hub-tit" data-ir="empreiteiras">Empreiteiras</button><span class="hub-desc">Cadastro das empresas da equipe de execução</span><span class="hub-num" id="hubNumEmp">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span><button type="button" class="hub-tit" data-ir="db">Base de dados</button><span class="hub-desc">Armazenamento, backup e registro de operações</span><span class="hub-num" id="hubNumDb">—</span></div>
       </div>
     </section>
@@ -1213,6 +1242,7 @@ table.editor textarea{min-height:60px;resize:vertical}
           <option value="26">Últimos 6 meses</option>
           <option value="0">Desde o início</option>
         </select>
+        <select id="indEmp" aria-label="Empreiteira" style="flex:0 1 240px"><option value="">Todas as empreiteiras</option></select>
         <button type="button" class="btn btn-apres" id="btnApres" style="width:auto">▶ Modo apresentação</button>
       </div>
       <div id="indConteudo"></div>
@@ -1222,7 +1252,7 @@ table.editor textarea{min-height:60px;resize:vertical}
     <section class="view" id="view-fill">
       <div class="view-head">
         <h2>Preencher documento</h2>
-        <p>Escolha a ficha, informe a unidade e registre o resultado e a data de cada item. O preenchimento é gravado automaticamente; use "Salvar" a qualquer momento para confirmar.</p>
+        <p>Escolha a ficha, informe a unidade e registre o resultado e a data de cada item. Toque em "Salvar" para gravar a ficha (o sistema também salva sozinho a cada 10 minutos).</p>
       </div>
 
       <div class="panel" id="setupPanel">
@@ -1264,6 +1294,7 @@ table.editor textarea{min-height:60px;resize:vertical}
               <option value="aberto">Em aberto</option>
               <option value="concluida">Concluídas</option>
             </select>
+            <select id="filtroEmpPre" aria-label="Empreiteira"><option value="">Todas as empreiteiras</option></select>
             <input type="text" id="filtroUnidadePre" placeholder="Filtrar por casa (ex.: 102)" inputmode="numeric" autocomplete="off">
           </div>
         </div>
@@ -1347,6 +1378,45 @@ table.editor textarea{min-height:60px;resize:vertical}
     </section>
 
     <!-- BASE DE DADOS -->
+    <!-- EMPREITEIRAS -->
+    <section class="view" id="view-empreiteiras">
+      <div class="view-head">
+        <h2>Empreiteiras</h2>
+        <p>Cadastro das empresas que executam os serviços. Na ficha, a equipe de execução é escolhida desta lista.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Cadastrar empreiteira</h3></div>
+        <div class="panel-body emp-form">
+          <div class="field"><label for="empNome">Nome da empresa *</label><input type="text" id="empNome" autocomplete="off"></div>
+          <div class="field"><label for="empCnpj">CNPJ</label><input type="text" id="empCnpj" inputmode="numeric" autocomplete="off"></div>
+          <div class="field"><label for="empServico">Serviço / especialidade</label><input type="text" id="empServico" autocomplete="off" placeholder="ex.: esquadrias, reboco, pintura"></div>
+          <button type="button" class="btn btn-primary" id="btnEmpAdd" style="width:auto;align-self:end">Cadastrar</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Empreiteiras cadastradas</h3><span class="count" id="empCount"></span></div>
+        <div class="toolbar" style="padding:12px 20px 0"><input type="search" id="empBusca" placeholder="Buscar empreiteira" aria-label="Buscar empreiteira" style="flex:1 1 240px"></div>
+        <div id="listaEmp"></div>
+      </div>
+    </section>
+
+    <!-- APROVAÇÃO -->
+    <section class="view" id="view-aprovacao">
+      <div class="view-head">
+        <h2>Aprovação das fichas</h2>
+        <p id="aprovObra">Fichas concluídas aguardando a aprovação do engenheiro responsável, com assinatura pelo gov.br.</p>
+      </div>
+      <div class="panel" id="aprovEngPanel">
+        <div class="panel-head"><div><h3>Engenheiros responsáveis desta obra</h3><span class="count">Só estas contas (e o controle) aprovam e assinam</span></div><span class="hub-tag" style="position:static">Controle</span></div>
+        <div class="panel-body">
+          <ul class="aprov-eng" id="aprovEngLista"></ul>
+          <div class="aprov-eng-add"><input type="email" id="aprovEngEmail" placeholder="nome@vivaconstrucoes.com.br" aria-label="E-mail do engenheiro"><button type="button" class="btn" id="btnAprovEngAdd" style="width:auto">Adicionar engenheiro</button></div>
+        </div>
+      </div>
+      <div class="aprov-abas" role="tablist" id="aprovAbas"></div>
+      <div id="aprovLista"></div>
+    </section>
+
     <section class="view" id="view-db">
       <div class="view-head">
         <h2>Base de dados</h2>
@@ -1414,14 +1484,12 @@ table.editor textarea{min-height:60px;resize:vertical}
   <div class="an-caixa">
     <div class="an-topo"><b id="anTitulo">Marcar o defeito na foto</b><button type="button" class="an-fechar" id="anCancelar" aria-label="Cancelar">×</button></div>
     <div class="an-ferr">
-      <button type="button" data-anferr="circulo" class="ativo">◯ Círculo</button>
-      <button type="button" data-anferr="seta">➜ Seta</button>
-      <button type="button" data-anferr="traco">✎ Traço livre</button>
-      <span class="sep"></span>
-      <button type="button" class="an-cor ativo" data-ancor="#E53935" style="background:#E53935" aria-label="Vermelho"></button>
-      <button type="button" class="an-cor" data-ancor="#FFD400" style="background:#FFD400" aria-label="Amarelo"></button>
+      <span class="an-dica">✎ Desenhe com o dedo sobre o defeito</span>
+      <button type="button" class="an-cor ativo" data-ancor="#E53935" style="background:#E53935" aria-label="Cor vermelha"></button>
+      <button type="button" class="an-cor" data-ancor="#FFD400" style="background:#FFD400" aria-label="Cor amarela"></button>
       <span class="sep"></span>
       <button type="button" id="anDesfazer">↶ Desfazer</button>
+      <button type="button" id="anLimpar">Limpar</button>
     </div>
     <div class="an-area"><canvas id="anCanvas"></canvas></div>
     <div class="an-acoes">
@@ -1558,7 +1626,7 @@ const EXT_PLANILHA = ["xlsx","xls"];
    - Sem o Artifact (arquivo aberto direto, ou capabilities indisponíveis), cai para IndexedDB
      local e, na falta dela, memória da sessão — exatamente como antes.
 --------------------------------------------------------------------------------------------- */
-const LOJAS = ["obras","documentos","arquivos","modelos","preenchimentos","midias","auditoria","usuarios","lixeira"];
+const LOJAS = ["obras","documentos","arquivos","modelos","preenchimentos","midias","auditoria","usuarios","lixeira","empreiteiras","aprovacoes"];
 const LOJAS_BLOB = ["arquivos","midias"];
 const TIPOS_ASSET_ACEITOS = ["image/png","image/jpeg","image/gif","image/webp","image/svg+xml","video/mp4","video/webm","application/pdf","font/woff2","font/woff","font/ttf","font/otf","text/csv","text/markdown","application/json","text/plain"];
 
@@ -1571,7 +1639,7 @@ const DB = (() => {
   function abrirLocalUmaVez(){
     return new Promise((res,rej)=>{
       try{
-        const r = indexedDB.open("controle_documental", 6);
+        const r = indexedDB.open("controle_documental", 7);
         r.onupgradeneeded = e => {
           const d = e.target.result;
           LOJAS.forEach(l=>{ if(!d.objectStoreNames.contains(l)) d.createObjectStore(l,{keyPath:"id"}); });
@@ -1722,7 +1790,7 @@ const DB = (() => {
   function abrirCache(){
     return new Promise(res=>{
       try{
-        const r=indexedDB.open("controle_documental_cache",2);
+        const r=indexedDB.open("controle_documental_cache",3);
         r.onupgradeneeded=e=>{ const d=e.target.result;
           LOJAS.forEach(l=>{ if(!d.objectStoreNames.contains(l)) d.createObjectStore(l,{keyPath:"id"}); });
           if(!d.objectStoreNames.contains("fila")) d.createObjectStore("fila",{keyPath:"chave"}); };
@@ -2193,72 +2261,114 @@ async function prepararFoto(arq){
 }
 
 /* ---------------- Marcar o defeito na foto ----------------
-   Depois de escolher a foto, abre um editor simples: círculo, seta ou traço
-   livre, em vermelho ou amarelo. A marcação passa a fazer parte da foto
-   (fica visível no PDF e para quem for corrigir). Retorna a foto marcada,
-   a original ("Usar sem marcação") ou null (cancelado). */
-function anotarFoto(arq){
+   Editor de traço livre (vermelho ou amarelo), com Desfazer e Limpar. A foto
+   sem marcação fica guardada à parte com a lista de traços: ao reabrir, os
+   traços continuam editáveis e o Desfazer remove até os antigos.
+   Retorna {arquivo, marcas} (marcas vazias = foto sem marcação) ou null (cancelado). */
+function anotarFoto(arq,opts){
+  opts=opts||{};
   return new Promise(async resolver=>{
     const ov=$("#anotador"), cv=$("#anCanvas"), cx=cv.getContext("2d");
     let img;
     try{ img=await createImageBitmap(arq); }
     catch(e){ img=await new Promise((ok,er)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=er; i.src=URL.createObjectURL(arq); }).catch(()=>null); }
-    if(!img){ resolver(arq); return; }
+    if(!img){ resolver({arquivo:arq,marcas:[]}); return; }
     cv.width=img.width; cv.height=img.height;
     const esp=Math.max(4,Math.round(Math.hypot(cv.width,cv.height)*0.006));
-    let ferr="circulo", cor="#E53935", formas=[], atual=null;
+    let cor="#E53935", formas=JSON.parse(JSON.stringify(opts.marcas||[])).filter(f=>f&&f.pts&&f.pts.length>1), atual=null;
+    const botoes=()=>{ $("#anDesfazer").disabled=!formas.length; $("#anLimpar").disabled=!formas.length; };
     const desenhar=()=>{
       cx.drawImage(img,0,0);
       formas.concat(atual?[atual]:[]).forEach(f=>{
-        cx.save(); cx.strokeStyle=f.cor; cx.fillStyle=f.cor; cx.lineWidth=esp; cx.lineCap="round"; cx.lineJoin="round";
-        cx.shadowColor="rgba(0,0,0,.45)"; cx.shadowBlur=esp*0.8;
-        if(f.tipo==="circulo"){
-          const rx=Math.abs(f.x2-f.x1)/2, ry=Math.abs(f.y2-f.y1)/2;
-          if(rx>1&&ry>1){ cx.beginPath(); cx.ellipse((f.x1+f.x2)/2,(f.y1+f.y2)/2,rx,ry,0,0,Math.PI*2); cx.stroke(); }
-        } else if(f.tipo==="seta"){
-          const ang=Math.atan2(f.y2-f.y1,f.x2-f.x1), c=esp*4.5;
-          cx.beginPath(); cx.moveTo(f.x1,f.y1); cx.lineTo(f.x2,f.y2); cx.stroke();
-          cx.beginPath(); cx.moveTo(f.x2,f.y2);
-          cx.lineTo(f.x2-c*Math.cos(ang-0.45),f.y2-c*Math.sin(ang-0.45));
-          cx.lineTo(f.x2-c*Math.cos(ang+0.45),f.y2-c*Math.sin(ang+0.45)); cx.closePath(); cx.fill();
-        } else if(f.pts&&f.pts.length>1){
-          cx.beginPath(); cx.moveTo(f.pts[0][0],f.pts[0][1]); f.pts.forEach(q=>cx.lineTo(q[0],q[1])); cx.stroke();
-        }
+        if(!f.pts||f.pts.length<2) return;
+        cx.save(); cx.strokeStyle=f.cor; cx.lineWidth=f.esp||esp; cx.lineCap="round"; cx.lineJoin="round";
+        cx.shadowColor="rgba(0,0,0,.45)"; cx.shadowBlur=(f.esp||esp)*0.8;
+        cx.beginPath(); cx.moveTo(f.pts[0][0],f.pts[0][1]); f.pts.forEach(q=>cx.lineTo(q[0],q[1])); cx.stroke();
         cx.restore();
       });
+      botoes();
     };
-    const ponto=e=>{ const r=cv.getBoundingClientRect(); return [(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height]; };
-    const baixo=e=>{ e.preventDefault(); cv.setPointerCapture(e.pointerId); const [x,y]=ponto(e);
-      atual=ferr==="traco"?{tipo:"traco",cor,pts:[[x,y]]}:{tipo:ferr,cor,x1:x,y1:y,x2:x,y2:y}; desenhar(); };
-    const mover=e=>{ if(!atual) return; const [x,y]=ponto(e); if(atual.tipo==="traco") atual.pts.push([x,y]); else { atual.x2=x; atual.y2=y; } desenhar(); };
-    const cima=()=>{ if(!atual) return; const f=atual; atual=null;
-      const tam=f.tipo==="traco"?f.pts.length:Math.hypot(f.x2-f.x1,f.y2-f.y1);
-      if(tam>(f.tipo==="traco"?2:esp*2)) formas.push(f); desenhar(); };
+    const ponto=e=>{ const r=cv.getBoundingClientRect(); return [Math.round((e.clientX-r.left)*cv.width/r.width),Math.round((e.clientY-r.top)*cv.height/r.height)]; };
+    const baixo=e=>{ e.preventDefault(); try{ cv.setPointerCapture(e.pointerId); }catch(x){} atual={cor,esp,pts:[ponto(e)]}; };
+    const mover=e=>{ if(!atual) return; atual.pts.push(ponto(e)); desenhar(); };
+    const cima=()=>{ if(!atual) return; const f=atual; atual=null; if(f.pts.length>2) formas.push(f); desenhar(); };
     const ferrClick=e=>{ const b=e.target.closest("button"); if(!b) return;
-      if(b.dataset.anferr){ ferr=b.dataset.anferr; ov.querySelectorAll("[data-anferr]").forEach(x=>x.classList.toggle("ativo",x===b)); }
       if(b.dataset.ancor){ cor=b.dataset.ancor; ov.querySelectorAll("[data-ancor]").forEach(x=>x.classList.toggle("ativo",x===b)); }
-      if(b.id==="anDesfazer"){ formas.pop(); desenhar(); } };
+      if(b.id==="anDesfazer"){ formas.pop(); desenhar(); }
+      if(b.id==="anLimpar"){ formas=[]; desenhar(); } };
     const fechar=res=>{
       cv.removeEventListener("pointerdown",baixo); cv.removeEventListener("pointermove",mover);
-      cv.removeEventListener("pointerup",cima); cv.removeEventListener("pointercancel",cima);
+      cv.removeEventListener("pointerup",cima); cv.removeEventListener("pointercancel",cima); cv.removeEventListener("pointerleave",cima);
       ov.querySelector(".an-ferr").removeEventListener("click",ferrClick);
       $("#anSalvar").onclick=$("#anSemMarca").onclick=$("#anCancelar").onclick=null;
       document.removeEventListener("keydown",tecla);
       ov.classList.remove("show"); if(img.close) img.close(); resolver(res);
     };
-    const tecla=e=>{ if(e.key==="Escape") fechar(null); };
+    const tecla=e=>{ if(e.key==="Escape") fechar(null); if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){ e.preventDefault(); formas.pop(); desenhar(); } };
     cv.addEventListener("pointerdown",baixo); cv.addEventListener("pointermove",mover);
-    cv.addEventListener("pointerup",cima); cv.addEventListener("pointercancel",cima);
+    cv.addEventListener("pointerup",cima); cv.addEventListener("pointercancel",cima); cv.addEventListener("pointerleave",cima);
     ov.querySelector(".an-ferr").addEventListener("click",ferrClick);
     document.addEventListener("keydown",tecla);
     $("#anCancelar").onclick=()=>fechar(null);
-    $("#anSemMarca").onclick=()=>fechar(arq);
+    $("#anSemMarca").onclick=()=>fechar({arquivo:arq,marcas:[]});
     $("#anSalvar").onclick=()=>{
-      if(!formas.length){ fechar(arq); return; }
-      cv.toBlob(b=>fechar(b?new File([b],(arq.name||"foto").replace(/\.[^.]+$/,"")+"-marcada.jpg",{type:"image/jpeg",lastModified:Date.now()}):arq),"image/jpeg",0.86);
+      if(!formas.length){ fechar({arquivo:arq,marcas:[]}); return; }
+      cv.toBlob(b=>fechar(b?{arquivo:new File([b],"foto-marcada.jpg",{type:"image/jpeg",lastModified:Date.now()}),marcas:formas}:{arquivo:arq,marcas:[]}),"image/jpeg",0.86);
     };
     desenhar(); ov.classList.add("show");
   });
+}
+
+/* ---------------- Carimbo de data, hora e localização na foto ----------------
+   Ao anexar a foto, o aparelho informa onde está (GPS) e o sistema escreve uma
+   faixa na parte de baixo da imagem: data, hora, coordenadas e precisão, obra,
+   casa e item. A localização é pedida assim que a pessoa toca para tirar a foto. */
+let localPendente=null, ultimoLocal=null;
+function pedirLocal(){
+  if(ultimoLocal&&Date.now()-ultimoLocal.quando<120000) return Promise.resolve(ultimoLocal);
+  if(localPendente) return localPendente;
+  if(!navigator.geolocation) return Promise.resolve({erro:"Localização não disponível neste aparelho"});
+  localPendente=new Promise(res=>{
+    navigator.geolocation.getCurrentPosition(
+      pos=>{ ultimoLocal={lat:pos.coords.latitude,lon:pos.coords.longitude,acc:Math.round(pos.coords.accuracy||0),quando:Date.now()}; res(ultimoLocal); },
+      err=>res({erro:err&&err.code===1?"Localização não autorizada":"Localização indisponível"}),
+      {enableHighAccuracy:true,timeout:12000,maximumAge:120000});
+  }).finally(()=>{ setTimeout(()=>{ localPendente=null; },0); });
+  return localPendente;
+}
+async function carimbarFoto(arq,info){
+  try{
+    const loc=await Promise.race([pedirLocal(),new Promise(r=>setTimeout(()=>r({erro:"Localização demorou a responder"}),12500))]);
+    let fonte; try{ fonte=await createImageBitmap(arq); }catch(e){ fonte=await new Promise((ok,er)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=er; i.src=URL.createObjectURL(arq); }); }
+    const w=fonte.width||fonte.naturalWidth, h=fonte.height||fonte.naturalHeight;
+    const cv=document.createElement("canvas"); cv.width=w; cv.height=h;
+    const cx=cv.getContext("2d"); cx.drawImage(fonte,0,0,w,h); if(fonte.close) fonte.close();
+    const agora=new Date();
+    const l1=agora.toLocaleDateString("pt-BR")+" "+agora.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})+"  ·  "+
+      (loc.erro?loc.erro:loc.lat.toFixed(6)+", "+loc.lon.toFixed(6)+"  (±"+loc.acc+" m)");
+    const l2=[info.obra,info.casa,info.item].filter(Boolean).join("  ·  ");
+    const fs=Math.max(13,Math.round(w*0.022)), pad=Math.round(fs*0.6), alt=fs*2+pad*3;
+    cx.fillStyle="rgba(0,0,0,.62)"; cx.fillRect(0,h-alt,w,alt);
+    cx.fillStyle="#fff"; cx.textBaseline="top"; cx.font="600 "+fs+"px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";
+    cx.fillText(l1,pad,h-alt+pad,w-pad*2);
+    cx.font=fs+"px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";
+    cx.fillText(l2,pad,h-alt+pad*2+fs,w-pad*2);
+    const blob=await new Promise(res=>cv.toBlob(res,"image/jpeg",0.85));
+    if(!blob) return {arquivo:arq,geo:null};
+    return {arquivo:new File([blob],"foto.jpg",{type:"image/jpeg",lastModified:Date.now()}),geo:loc.erro?{erro:loc.erro,em:agora.toISOString()}:{lat:loc.lat,lon:loc.lon,acc:loc.acc,em:agora.toISOString()}};
+  }catch(e){ console.warn("Não foi possível carimbar a foto.",e); return {arquivo:arq,geo:null}; }
+}
+// pede a localização já no toque para tirar a foto (assim ela está pronta quando a foto chegar)
+document.addEventListener("pointerdown",e=>{ if(e.target.closest&&e.target.closest("input[data-foto],input[data-reinspfoto]")) pedirLocal(); },true);
+document.addEventListener("click",e=>{ if(e.target.closest&&e.target.closest("input[data-foto],input[data-reinspfoto]")) pedirLocal(); },true);
+async function fotoDoCampo(arqBruto,n,tipo){
+  let arq=await prepararFoto(arqBruto); if(!arq) return null;
+  const m=fichaAtiva&&fichaAtiva.m, p=fichaAtiva&&fichaAtiva.p;
+  toast("Obtendo a localização para a foto…");
+  const c=await carimbarFoto(arq,{obra:obra?"Obra "+obra.id+" "+obra.nome:"",casa:p?"Casa "+p.unidade:"",item:(m?(m.codigo||"")+" ":"")+"item "+n+(tipo==="reinspecao"?" · reinspeção":" · reprovação")});
+  const an=await anotarFoto(c.arquivo);
+  if(!an) return null;
+  return {arquivo:an.arquivo,base:an.marcas.length?c.arquivo:null,marcas:an.marcas,geo:c.geo};
 }
 
 /* ---------------- Situação da conexão (pílula no topo) ---------------- */
@@ -2320,7 +2430,7 @@ function iniciarIndicadorSync(){
 
 /* ---------------- Estado ---------------- */
 let user=null, obra=null, ehControle=false;
-let docs=[], modelos=[], preenchimentos=[], fichaAtiva=null;
+let docs=[], modelos=[], preenchimentos=[], fichaAtiva=null, empreiteiras=[], aprovacoes=[];
 
 /* ---------------- Utilidades ---------------- */
 const aviso=(el,t,tipo)=>{el.textContent=t;el.className="msg "+(tipo||"info")};
@@ -2646,14 +2756,15 @@ async function escolherObra(o){
   $("#app").style.display="flex";
   animarTela($("#app"));
   document.querySelectorAll("[data-controle]").forEach(b=>b.style.display=ehControle?"":"none");
+  document.querySelectorAll("[data-aprova]").forEach(b=>b.style.display=podeAprovar()?"":"none");
   irPara("inicio",{reset:true});
   await registrar("Obra selecionada", o.id+" — "+o.nome);
   await render();
   relatarAparelho();
   mostrarBoasVindas();
 }
-const VIEWS_CONTROLE=new Set(["repo","modelos","relatorio","db"]);
-const NOMES_VIEW={inicio:"Início",painel:"Painel da obra",indicadores:"Indicadores",fill:"Preencher ficha",meus:"Preenchimentos",repo:"Repositório",modelos:"Modelos",relatorio:"Relatório",db:"Base de dados"};
+const VIEWS_CONTROLE=new Set(["repo","modelos","relatorio","db","empreiteiras"]);
+const NOMES_VIEW={inicio:"Início",painel:"Painel da obra",indicadores:"Indicadores",fill:"Preencher ficha",meus:"Preenchimentos",aprovacao:"Aprovação",repo:"Repositório",modelos:"Modelos",relatorio:"Relatório",empreiteiras:"Empreiteiras",db:"Base de dados"};
 // Navegação integrada ao histórico do navegador: o botão voltar do celular
 // volta para a tela anterior do site (e fecha o documento aberto), em vez de sair dele.
 let histViews=["inicio"], navIdx=0, viewAtual="inicio";
@@ -2666,6 +2777,7 @@ function irPara(v,opt){
   opt=opt||{};
   if(!NOMES_VIEW[v]) v="inicio";
   if(VIEWS_CONTROLE.has(v)&&!ehControle){ toast("Esta seção é restrita à conta de controle."); v="inicio"; }
+  if(v==="aprovacao"&&!podeAprovar()){ toast("A aprovação é feita pelos engenheiros responsáveis da obra."); v="inicio"; }
   if(v==="inicio"){
     if(!opt.reset&&navIdx>0){
       // volta todas as telas de uma vez; o popstate desenha o Início
@@ -2699,6 +2811,8 @@ function aplicarView(v,scrollY,voltando){
   if(v==="painel") renderPainel();
   if(v==="indicadores") renderIndicadores();
   if(v==="db"){ carregarTodosQuestionarios(); renderLog(); renderLixeira(); }
+  if(v==="empreiteiras") renderEmpreiteiras();
+  if(v==="aprovacao") renderAprovacao();
   if(typeof esconderTip==="function") esconderTip();
   // a barra Fechar/Salvar/Gerar só faz sentido em Preencher, com uma ficha aberta
   $("#rodape").classList.toggle("show",v==="fill"&&!!fichaAtiva);
@@ -2808,7 +2922,11 @@ async function renderDados(){
   modelos=(await DB.listar("modelos")).sort((a,b)=>(a.titulo||"").localeCompare(b.titulo||"","pt-BR"));
   preenchimentos=(await DB.listar("preenchimentos",obra?{obraId:obra.id}:null)).sort((a,b)=>b.atualizadoEm.localeCompare(a.atualizadoEm));
   preenchimentosTodos=null;
+  try{ empreiteiras=(await DB.listar("empreiteiras")).sort((a,b)=>(a.nome||"").localeCompare(b.nome||"","pt-BR")); }catch(e){ empreiteiras=[]; }
+  try{ aprovacoes=obra?await DB.listar("aprovacoes",{obraId:String(obra.id)}):[]; }catch(e){ aprovacoes=[]; }
   if(viewAtual==="db") carregarTodosQuestionarios();
+  if(viewAtual==="empreiteiras") renderEmpreiteiras();
+  if(viewAtual==="aprovacao") renderAprovacao();
   renderRepo(); renderModelos(); renderSetup(); renderMeus(); renderDB(); renderTodosQuestionarios(); renderGraficoReprovacoes(); renderPainel(); renderIndicadores(); renderHub(); await renderLog();
 }
 
@@ -3035,6 +3153,7 @@ function statusFicha(p,m){
   return {label:"Concluída",cls:"st-concluida"};
 }
 function validar(p,m){
+  if(!((p.cabecalho&&p.cabecalho.equipe)||[]).some(r=>String(r.nome||"").trim())) return {ok:false,msg:"Informe a equipe de execução (empreiteira)."};
   for(const it of itensRespondiveis(m)){
     const r=p.respostas[it.n];
     if(!r || !r.resultado) return {ok:false,msg:"O item "+it.n+" ainda não tem um resultado selecionado."};
@@ -3106,11 +3225,10 @@ async function abrirFicha(){
   if(obra&&n&&(n<1||n>obra.casas)) return toast("A obra "+obra.nome+" tem "+obra.casas+" casas. Unidade "+un+" está fora da faixa.");
   let p=preenchimentos.find(x=>mesmaFicha(x,obra.id,m.id,un));
   if(!p&&DB.compartilhado){
-    // outro aparelho pode ter criado esta ficha há pouco: confere no servidor antes de criar
+    // outro aparelho pode ter criado esta ficha há pouco: confere só esta ficha no servidor (com limite de espera)
     try{
-      const atual=await DB.listar("preenchimentos",{obraId:obra.id});
-      atual.forEach(guardarLocal);
-      p=preenchimentos.find(x=>mesmaFicha(x,obra.id,m.id,un));
+      const f=await Promise.race([DB.obter("preenchimentos",idFicha(obra.id,m.id,un)),new Promise(r=>setTimeout(()=>r(null),2500))]);
+      if(f){ guardarLocal(f); p=f; }
     }catch(e){}
   }
   if(!p){
@@ -3139,18 +3257,27 @@ function equipamentosHTML(p){
   return '<div class="panel"><div class="panel-head"><h3>Identificação dos recursos de monitoramento e inspeção</h3><button class="icon-btn" id="btnAddEq">Adicionar equipamento</button></div>'+
     '<div class="panel-body">'+(rows||'<p class="note" style="margin:0">Nenhum equipamento adicionado.</p>')+'</div></div>';
 }
+function opcoesEmpreiteira(r){
+  const ativas=empreiteiras.filter(e=>e.ativa!==false||e.id===r.empreiteiraId);
+  const achou=ativas.some(e=>e.id===r.empreiteiraId)||(!r.empreiteiraId&&ativas.some(e=>chaveEquipe(e.nome)===chaveEquipe(r.nome)));
+  return '<option value="">Escolha a empreiteira…</option>'+ativas.map(e=>'<option value="'+esc(e.id)+'"'+((e.id===r.empreiteiraId||(!r.empreiteiraId&&r.nome&&chaveEquipe(e.nome)===chaveEquipe(r.nome)))?' selected':'')+'>'+esc(e.nome)+'</option>').join("")+
+    (r.nome&&!achou?'<option value="__livre" selected>'+esc(r.nome)+' (não cadastrada)</option>':'');
+}
 function equipeHTML(p){
   const eq=p.cabecalho.equipe;
   const rows=eq.map((r,i)=>
-    '<tr><td><input type="text" value="'+esc(r.nome)+'" data-eqp="'+i+'|nome" placeholder="Nome / empresa terceirizada"></td>'+
+    '<tr><td><select data-eqpemp="'+i+'" aria-label="Empreiteira">'+opcoesEmpreiteira(r)+'</select></td>'+
     '<td><input type="text" value="'+esc(r.funcao)+'" data-eqp="'+i+'|funcao" placeholder="Função"></td>'+
     '<td><input type="date" value="'+esc(r.dataInicio)+'" data-eqp="'+i+'|dataInicio" aria-label="Data de início"></td>'+
     '<td><input type="date" value="'+esc(r.dataTermino)+'" data-eqp="'+i+'|dataTermino" aria-label="Data de término"></td>'+
     '<td><button class="icon-btn danger" data-eqpdel="'+i+'">×</button></td></tr>'
   ).join("");
-  return '<div class="panel"><div class="panel-head"><h3>Equipe de execução</h3><button class="icon-btn" id="btnAddEqp">Adicionar colaborador</button></div>'+
-    '<div class="panel-body"><div class="tbl-wrap"><table class="editor"><thead><tr><th>Nome / empresa</th><th>Função</th><th>Data início</th><th>Data término</th><th></th></tr></thead><tbody>'+
-    (rows||'<tr><td colspan="5" style="color:var(--ink3)">Nenhum colaborador adicionado.</td></tr>')+'</tbody></table></div>'+
+  const temEq=eq.some(r=>String(r.nome||"").trim());
+  return '<div class="panel'+(temEq?'':' falta-equipe')+'" id="painelEquipe"><div class="panel-head"><div><h3>Equipe de execução <span class="req">*</span></h3><span class="count">Obrigatória para gerar o documento</span></div><button class="icon-btn" id="btnAddEqp">Adicionar empreiteira</button></div>'+
+    '<div class="panel-body"><div class="tbl-wrap"><table class="editor"><thead><tr><th>Empreiteira</th><th>Função</th><th>Data início</th><th>Data término</th><th></th></tr></thead><tbody>'+
+    (rows||'<tr><td colspan="5" style="color:var(--flag)">Nenhuma empreiteira informada — toque em “Adicionar empreiteira”.</td></tr>')+'</tbody></table></div>'+
+    (empreiteiras.some(e=>e.ativa!==false)?'':'<p class="note" style="margin:10px 0 0">Ainda não há empreiteiras cadastradas. O controle cadastra em Início → Empreiteiras.</p>')+
+    '<p class="emp-falta">'+(ehControle?'<button type="button" class="linkbtn2" data-empnova="1">+ Cadastrar uma empreiteira nova</button>':'<button type="button" class="linkbtn2" data-emppedir="1">A empreiteira não está na lista? Avise o controle</button>')+'</p>'+
     '<div class="field" style="margin-top:14px"><label for="obsGeral">Observação</label><textarea id="obsGeral" rows="3">'+esc(p.cabecalho.observacao||"")+'</textarea></div>'+
     '</div></div>';
 }
@@ -3336,20 +3463,27 @@ async function montarFicha(p,m,opts){
   if(manterEdicao) p=fichaAtiva.p;
   else if(novaAbertura) p=JSON.parse(JSON.stringify(p));   // edita uma cópia; a lista só muda ao salvar
   if(novaAbertura){ clearTimeout(edicao.timer); edicao={id:p.id,sujo:false,existe:!opts.nova,timer:null,autoEm:null,base:""}; }
-  // busca só esta ficha no servidor, para não editar uma cópia desatualizada
-  if(DB.compartilhado&&!manterEdicao){
-    try{ const fresco=await DB.obter("preenchimentos",p.id); if(fresco){ Object.keys(p).forEach(k=>{ if(!(k in fresco)) delete p[k]; }); Object.assign(p,JSON.parse(JSON.stringify(fresco))); edicao.existe=true; } }catch(e){}
+  // Busca a versão do servidor e confere quem está com a ficha ao mesmo tempo, com limite de
+  // espera: se o servidor demorar, abre com a cópia do aparelho e atualiza sozinho quando chegar.
+  const LENTO="__lento", LIM_MS=2500;
+  const comLimite=(pr,padrao)=>Promise.race([Promise.resolve(pr).catch(()=>padrao),new Promise(r=>setTimeout(()=>r(padrao),LIM_MS))]);
+  const buscaFresca=(DB.compartilhado&&!manterEdicao)?DB.obter("preenchimentos",p.id).catch(()=>null):null;
+  const [fresco,donoRapido]=await Promise.all([buscaFresca?comLimite(buscaFresca,LENTO):null,comLimite(ocuparFicha(p.id),null)]);
+  if(fresco&&fresco!==LENTO){ Object.keys(p).forEach(k=>{ if(!(k in fresco)) delete p[k]; }); Object.assign(p,JSON.parse(JSON.stringify(fresco))); edicao.existe=true; }
+  if(fresco===LENTO){
+    const idA=p.id, versaoA=p.atualizadoEm;
+    buscaFresca.then(f=>{ if(f&&fichaAtiva&&fichaAtiva.p.id===idA&&!edicao.sujo&&!fichaAtiva.leitura&&f.atualizadoEm!==versaoA){ toast("A ficha foi atualizada com a versão do servidor."); remontarFicha(); } });
   }
   // fichas salvas antes do botão Salvar travar o R: as reprovações já gravadas contam como salvas
   if(!p.salvoManual){ Object.values(p.respostas||{}).forEach(r=>{ if(r&&r.resultado==="R"&&!r.travadoEm) r.travadoEm=p.atualizadoEm||new Date().toISOString(); }); p.salvoManual=1; }
   if(novaAbertura){ edicao.base=edicao.existe?(p.atualizadoEm||""):""; edicao.resBase=edicao.existe?resultadosDe(p.respostas):{}; edicao.salvoResp=JSON.parse(JSON.stringify(edicao.existe?(p.respostas||{}):{})); }
   // trava: se outra pessoa está com esta ficha aberta agora, abre só para consulta
-  const dono=await ocuparFicha(p.id);
+  const dono=donoRapido;
   if(!dono&&user){
     const nomeAtual=user.nome||user.email;
     if(p.por!==nomeAtual){
       p.por=nomeAtual;   // vale a partir do próximo salvamento
-      if(edicao.existe&&novaAbertura) await registrar("Ficha reaberta por outro responsável",m.titulo+" · unidade "+p.unidade);
+      if(edicao.existe&&novaAbertura) registrar("Ficha reaberta por outro responsável",m.titulo+" · unidade "+p.unidade).catch(()=>{});
     }
   }
   // alterações deste aparelho que não chegaram a ser salvas (bateria, navegador fechado...)
@@ -3381,7 +3515,7 @@ async function montarFicha(p,m,opts){
   '<div class="panel-body"><div class="q-setup"><div class="field" style="margin:0"><label for="unEdit">Unidade (casa) — inspeções durante a execução</label><input type="text" id="unEdit" value="'+esc(p.unidade)+'" disabled></div>'+
   '<div class="field" style="margin:0"><label>Responsável</label><input type="text" value="'+esc(p.por)+'" disabled aria-label="Responsável"></div></div></div></div>';
 
-  html = (dono?travaAvisoHTML(dono):'') + html;
+  html = (dono?travaAvisoHTML(dono):'') + avisoAprovacaoHTML(p) + html;
   if(ret) html += retomarHTML(ret);
   html += equipamentosHTML(p) + equipeHTML(p);
 
@@ -3665,13 +3799,14 @@ function perguntar(titulo,texto,botoes,opts){
   return new Promise(res=>{
     const d=$("#dlgPergunta");
     $("#dlgPerguntaTit").textContent=titulo; $("#dlgPerguntaTxt").textContent=texto;
-    const cx=$("#dlgPerguntaCampo"); cx.style.display=opts.campo?"":"none"; cx.value=""; cx.placeholder=opts.campo||"";
+    const cx=$("#dlgPerguntaCampo"); cx.style.display=opts.campo?"":"none"; cx.value=opts.valor||""; cx.placeholder=opts.campo||"";
     const ac=$("#dlgPerguntaAcoes"); ac.innerHTML="";
     const fim=v=>{ d.classList.remove("show"); document.removeEventListener("keydown",tecla); res(opts.campo?(v==null?null:{valor:v,texto:cx.value}):v); };
     const tecla=e=>{ if(e.key==="Escape") fim(null); };
     const exigem=[];
     botoes.forEach(b=>{ const el=document.createElement("button"); el.type="button"; el.className="btn"+(b.primario?" btn-primary":""); el.textContent=b.rot; el.addEventListener("click",()=>fim(b.valor)); ac.appendChild(el); if(b.exigeTexto){ el.disabled=true; exigem.push(el); } });
     cx.oninput=()=>exigem.forEach(el=>el.disabled=cx.value.trim().length<3);
+    if(opts.valor) cx.oninput();
     d.querySelector("[data-dlgpfechar]").onclick=()=>fim(null);
     document.addEventListener("keydown",tecla);
     d.classList.add("show");
@@ -3682,6 +3817,7 @@ window.addEventListener("beforeunload",e=>{ if(edicao.sujo&&fichaAtiva&&!fichaAt
 /* ---- Pendências: tudo o que falta para gerar o documento, com atalho para cada item ---- */
 function pendenciasFicha(p,m){
   const l=[];
+  if(!((p.cabecalho&&p.cabecalho.equipe)||[]).some(r=>String(r.nome||"").trim())) l.push({n:"equipe",tipo:"equipe",txt:"empreiteira não informada"});
   itensRespondiveis(m).forEach(it=>{ const r=p.respostas[it.n];
     if(!r||!r.resultado){ l.push({n:it.n,tipo:"res",txt:"sem resultado"}); return; }
     if(!r.data) l.push({n:it.n,tipo:"data",txt:"sem data da inspeção"});
@@ -3701,10 +3837,10 @@ function atualizarStatusGeracao(){
   if($("#pendLista").classList.contains("show")) montarPendencias(pend);
 }
 function montarPendencias(pend){
-  const cont={res:0,data:0,foto:0}; pend.forEach(x=>cont[x.tipo]++);
-  const resumo=[cont.res?cont.res+" sem resultado":"",cont.data?cont.data+" sem data":"",cont.foto?cont.foto+" sem foto da reprovação":""].filter(Boolean).join(" · ");
+  const cont={res:0,data:0,foto:0,equipe:0}; pend.forEach(x=>cont[x.tipo]++);
+  const resumo=[cont.equipe?"equipe de execução":"",cont.res?cont.res+" sem resultado":"",cont.data?cont.data+" sem data":"",cont.foto?cont.foto+" sem foto da reprovação":""].filter(Boolean).join(" · ");
   $("#pendLista").innerHTML='<div class="pend-topo"><b>Falta para gerar o documento</b><span>'+esc(resumo)+'</span><button type="button" class="an-fechar" data-pendfechar aria-label="Fechar">×</button></div>'+
-    '<ul>'+pend.map(x=>'<li><button type="button" data-irpend="'+esc(x.n)+'"><span class="item-n">'+esc(x.n)+'</span><span>Item '+esc(x.n)+' — '+esc(x.txt)+'</span><span class="seta">›</span></button></li>').join("")+'</ul>';
+    '<ul>'+pend.map(x=>'<li><button type="button" data-irpend="'+esc(x.n)+'"><span class="item-n">'+(x.tipo==="equipe"?"!":esc(x.n))+'</span><span>'+(x.tipo==="equipe"?'Equipe de execução — ':'Item '+esc(x.n)+' — ')+esc(x.txt)+'</span><span class="seta">›</span></button></li>').join("")+'</ul>';
 }
 function fecharPendencias(){ const l=$("#pendLista"); l.classList.remove("show"); const b=$("#btnPend"); if(b) b.setAttribute("aria-expanded","false"); }
 function rolarAteCard(card){
@@ -3724,6 +3860,7 @@ $("#pendLista").addEventListener("click",e=>{
   if(e.target.closest("[data-pendfechar]")) return fecharPendencias();
   const b=e.target.closest("[data-irpend]"); if(!b) return;
   fecharPendencias();
+  if(b.dataset.irpend==="equipe"){ const pe=document.getElementById("painelEquipe"); if(pe) rolarAteCard(pe); return; }
   const card=document.getElementById("card-"+b.dataset.irpend); if(!card) return;
   document.querySelectorAll("#fichaArea .item-card.atual").forEach(c=>c.classList.remove("atual"));
   card.classList.add("atual"); rolarAteCard(card);
@@ -3816,6 +3953,9 @@ function renderMeus(){
 
   let filtrados=todosDaObra;
   if(fModelo) filtrados=filtrados.filter(x=>x.m.id===fModelo);
+  popularFiltroEmp($("#filtroEmpPre"));
+  const fEmp=$("#filtroEmpPre").value;
+  if(fEmp) filtrados=filtrados.filter(x=>fichaTemEmpreiteira(x.p,fEmp));
   if(fUnidade) filtrados=filtrados.filter(x=>x.p.unidade.toLowerCase().includes(fUnidade));
   if(fStatus!=="todas") filtrados=filtrados.filter(x=>{ const sa=saudeFicha(x.p,x.m); return fStatus==="aberto"?sa.aberto:!sa.aberto; });
 
@@ -4203,6 +4343,9 @@ function renderHub(){
   set("hubNumRepo",'<b>'+docs.length+'</b> '+pl(docs.length,"documento","documentos"));
   set("hubNumModelos",'<b>'+modelos.length+'</b> '+pl(modelos.length,"modelo de FVS","modelos de FVS"));
   set("hubNumDb",esc(DB.motor));
+  const nEmp=empreiteiras.filter(e=>e.ativa!==false).length;
+  set("hubNumEmp",'<b>'+nEmp+'</b> '+(nEmp===1?'empreiteira ativa':'empreiteiras ativas'));
+  if(podeAprovar()){ const ag=fichasParaAprovar().filter(x=>x.st==="aguardando").length; set("hubNumAprov",'<b>'+ag+'</b> '+(ag===1?'ficha aguardando':'fichas aguardando')); }
 }
 
 /* ---- Envios com problema: cada aparelho conta ao servidor o que ainda não conseguiu enviar;
@@ -4387,12 +4530,193 @@ $("#painelCobertura").addEventListener("click",e=>{
   if(!painelFiltroSt&&lim) lim.remove();
 });
 
+/* ---------------- Empreiteiras ---------------- */
+function popularFiltroEmp(sel){
+  if(!sel) return; const v=sel.value;
+  sel.innerHTML='<option value="">Todas as empreiteiras</option>'+empreiteiras.map(e=>'<option value="'+esc(e.id)+'">'+esc(e.nome)+(e.ativa===false?' (inativa)':'')+'</option>').join("");
+  sel.value=empreiteiras.some(e=>e.id===v)?v:"";
+}
+function fichaTemEmpreiteira(p,id){
+  const e=empreiteiras.find(x=>x.id===id); if(!e) return false;
+  return ((p.cabecalho&&p.cabecalho.equipe)||[]).some(r=>r.empreiteiraId===id||(!r.empreiteiraId&&chaveEquipe(r.nome)===chaveEquipe(e.nome)));
+}
+const soDigitos=t=>String(t||"").replace(/\D/g,"");
+function formatarCnpj(t){ const d=soDigitos(t); return d.length===14?d.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,"$1.$2.$3/$4-$5"):String(t||"").trim(); }
+async function criarEmpreiteira(nome,cnpj,servico){
+  nome=String(nome||"").replace(/\s+/g," ").trim();
+  if(nome.length<2){ toast("Informe o nome da empreiteira."); return null; }
+  const dup=empreiteiras.find(e=>chaveEquipe(e.nome)===chaveEquipe(nome)||(soDigitos(cnpj)&&soDigitos(e.cnpj)===soDigitos(cnpj)));
+  if(dup){ toast("Já existe: "+dup.nome+(dup.ativa===false?" (inativa — reative na lista)":"")); return null; }
+  const e={id:uid(),nome,cnpj:formatarCnpj(cnpj),servico:String(servico||"").trim(),ativa:true,criadoEm:new Date().toISOString(),criadoPor:quemSou()};
+  await DB.gravar("empreiteiras",e);
+  empreiteiras.push(e); empreiteiras.sort((a,b)=>a.nome.localeCompare(b.nome,"pt-BR"));
+  await registrar("Empreiteira cadastrada",nome+(e.cnpj?" · CNPJ "+e.cnpj:""));
+  return e;
+}
+async function cadastrarEmpreiteiraRapido(){
+  const r=await perguntar("Cadastrar empreiteira","Nome da empresa (o CNPJ e o serviço podem ser completados depois em Empreiteiras).",[{rot:"Cancelar",valor:null},{rot:"Cadastrar",valor:"ok",primario:true,exigeTexto:true}],{campo:"Nome da empreiteira"});
+  if(!r||r.valor!=="ok") return null;
+  const e=await criarEmpreiteira(r.texto,"",""); if(e) toast("Empreiteira cadastrada: "+e.nome); return e;
+}
+function renderEmpreiteiras(){
+  const el=$("#listaEmp"); if(!el) return;
+  const t=semAcento($("#empBusca").value).trim();
+  const uso={}; preenchimentos.forEach(p=>empreiteiras.forEach(e=>{ if(fichaTemEmpreiteira(p,e.id)) uso[e.id]=(uso[e.id]||0)+1; }));
+  const lista=empreiteiras.filter(e=>!t||semAcento(e.nome+" "+(e.cnpj||"")+" "+(e.servico||"")).includes(t));
+  const at=empreiteiras.filter(e=>e.ativa!==false).length;
+  $("#empCount").textContent=empreiteiras.length?(at+(at===1?" ativa":" ativas")+(empreiteiras.length>at?" · "+(empreiteiras.length-at)+" inativa(s)":"")):"";
+  if(!lista.length){ el.innerHTML='<div class="empty"><b>'+(empreiteiras.length?'Nenhuma empreiteira encontrada':'Nenhuma empreiteira cadastrada')+'</b>'+(empreiteiras.length?'Tente outro termo.':'Cadastre as empresas acima; elas aparecem na ficha, em Equipe de execução.')+'</div>'; return; }
+  el.innerHTML='<ul class="docs">'+lista.map(e=>'<li class="'+(e.ativa===false?'emp-inativa':'')+'"><div class="doc-row"><div class="doc-meta"><b>'+esc(e.nome)+(e.ativa===false?'<span class="status-pill st-sem">Inativa</span>':'')+'</b>'+
+    '<span>'+[e.cnpj?"CNPJ "+esc(e.cnpj):"",e.servico?esc(e.servico):"",(uso[e.id]||0)+((uso[e.id]||0)===1?" ficha nesta obra":" fichas nesta obra")].filter(Boolean).join(" · ")+'</span></div>'+
+    '<div class="row-actions"><button class="icon-btn" data-empedit="'+esc(e.id)+'">Editar</button><button class="icon-btn'+(e.ativa===false?'':' danger')+'" data-emptoggle="'+esc(e.id)+'">'+(e.ativa===false?'Reativar':'Desativar')+'</button></div></div></li>').join("")+'</ul>'+
+    '<p class="note" style="margin:0;padding:10px 20px 14px">Desativar tira a empreiteira da lista da ficha, mas as fichas que já a usam continuam com o nome dela.</p>';
+}
+$("#btnEmpAdd").addEventListener("click",async()=>{
+  if(!ehControle) return toast("Somente a conta de controle cadastra empreiteiras.");
+  const e=await criarEmpreiteira($("#empNome").value,$("#empCnpj").value,$("#empServico").value);
+  if(e){ $("#empNome").value=$("#empCnpj").value=$("#empServico").value=""; renderEmpreiteiras(); renderHub(); toast("Empreiteira cadastrada."); }
+});
+$("#empBusca").addEventListener("input",renderEmpreiteiras);
+$("#listaEmp").addEventListener("click",async ev=>{
+  const ed=ev.target.closest("[data-empedit]"), tg=ev.target.closest("[data-emptoggle]"); if(!ed&&!tg) return;
+  if(!ehControle) return toast("Somente a conta de controle altera empreiteiras.");
+  const e=empreiteiras.find(x=>x.id===(ed||tg).dataset.empedit||x.id===(ed||tg).dataset.emptoggle); if(!e) return;
+  if(tg){ e.ativa=e.ativa===false; await DB.gravar("empreiteiras",e); await registrar(e.ativa?"Empreiteira reativada":"Empreiteira desativada",e.nome); renderEmpreiteiras(); renderHub(); return; }
+  const r=await perguntar("Editar "+e.nome,"Escreva: nome; CNPJ; serviço (separados por ponto e vírgula). Fichas antigas mantêm o nome que já tinham no documento.",[{rot:"Cancelar",valor:null},{rot:"Salvar",valor:"ok",primario:true,exigeTexto:true}],{campo:"Nome; CNPJ; serviço",valor:[e.nome,e.cnpj||"",e.servico||""].join("; ")});
+  if(!r||r.valor!=="ok") return;
+  const [nome,cnpj,serv]=r.texto.split(";").map(x=>(x||"").trim());
+  if(!nome) return toast("O nome não pode ficar vazio.");
+  const antes=e.nome; e.nome=nome; e.cnpj=formatarCnpj(cnpj); e.servico=serv||"";
+  await DB.gravar("empreiteiras",e); empreiteiras.sort((a,b)=>a.nome.localeCompare(b.nome,"pt-BR"));
+  await registrar("Empreiteira alterada",antes+(antes!==nome?" → "+nome:"")); renderEmpreiteiras();
+});
+
+/* ---------------- Aprovação das fichas pelo engenheiro (assinatura no gov.br) ----------------
+   Fichas concluídas entram aqui. O engenheiro responsável revisa o documento, aprova
+   (ou devolve com motivo), baixa o PDF, assina no assinador oficial do gov.br e anexa o
+   PDF assinado. Se a ficha mudar depois da aprovação, ela volta para "aguardando". */
+const URL_ASSINADOR_GOVBR="https://assinador.iti.br/";
+function engenheirosDaObra(){ return ((obra&&obra.engenheiros)||[]).map(x=>String(x).toLowerCase()); }
+function ehEngenheiro(){ return !!(user&&obra&&engenheirosDaObra().includes(String(user.email).toLowerCase())); }
+function podeAprovar(){ return !!(ehControle||ehEngenheiro()); }
+let aprovAba="aguardando";
+function situacaoAprovacao(p,a){
+  if(!a) return "aguardando";
+  if(a.status==="devolvida") return String(p.atualizadoEm||"")>String(a.em||"")?"aguardando":"devolvida";
+  if((a.status==="aprovada"||a.status==="assinada")&&String(p.atualizadoEm||"")>String(a.versaoFicha||"")) return "aguardando";
+  return a.status;
+}
+function fichasParaAprovar(){
+  if(!obra) return [];
+  const porId={}; aprovacoes.forEach(a=>porId[a.id]=a);
+  return preenchimentos.filter(p=>p.obraId===obra.id).map(p=>({p,m:modelos.find(x=>x.id===p.modeloId),a:porId[p.id]||null})).filter(x=>x.m)
+    .filter(x=>{ const concl=validar(x.p,x.m).ok&&!saudeFicha(x.p,x.m).aberto; return concl||(x.a&&x.a.status==="devolvida"); })
+    .map(x=>Object.assign(x,{st:situacaoAprovacao(x.p,x.a),alterada:!!(x.a&&(x.a.status==="aprovada"||x.a.status==="assinada")&&String(x.p.atualizadoEm||"")>String(x.a.versaoFicha||""))}))
+    .sort((u,v)=>(numeroDaCasa(u.p.unidade)||0)-(numeroDaCasa(v.p.unidade)||0)||numeroCodigo(u.m)-numeroCodigo(v.m));
+}
+function renderAprovacao(){
+  if(!obra||!$("#view-aprovacao").classList.contains("active")) return;
+  $("#aprovObra").textContent="Obra "+obra.id+" — "+obra.nome+". Fichas concluídas para o engenheiro responsável aprovar e assinar pelo gov.br.";
+  $("#aprovEngPanel").style.display=ehControle?"":"none";
+  const engs=engenheirosDaObra();
+  $("#aprovEngLista").innerHTML=engs.length?engs.map(e=>'<li><span>'+esc(e)+'</span><button type="button" class="icon-btn danger" data-engrem="'+esc(e)+'">Remover</button></li>').join(""):'<li class="note">Nenhum engenheiro cadastrado ainda — só o controle consegue aprovar.</li>';
+  const todas=fichasParaAprovar();
+  const abas=[["aguardando","Aguardando aprovação"],["aprovada","Aprovadas · falta assinar"],["assinada","Assinadas"],["devolvida","Devolvidas"]];
+  $("#aprovAbas").innerHTML=abas.map(([k,r])=>{ const n=todas.filter(x=>x.st===k).length; return '<button type="button" role="tab" aria-selected="'+(aprovAba===k)+'" data-aprovaba="'+k+'">'+r+' <b>'+n+'</b></button>'; }).join("");
+  const lista=todas.filter(x=>x.st===aprovAba);
+  const el=$("#aprovLista");
+  if(!lista.length){ el.innerHTML='<div class="panel empty"><b>Nada aqui</b>'+({aguardando:"Nenhuma ficha concluída aguardando aprovação.",aprovada:"Nenhuma ficha aprovada esperando a assinatura.",assinada:"Nenhuma ficha assinada ainda.",devolvida:"Nenhuma ficha devolvida para correção."})[aprovAba]+'</div>'; return; }
+  el.innerHTML='<div class="panel"><ul class="docs">'+lista.map(({p,m,a,st,alterada})=>{
+    const id=esc(p.id), u=ultimaAtividade(p);
+    let info='', acoes='<button class="icon-btn" data-aprovver="'+id+'">Ver documento</button>';
+    if(st==="aguardando"){ info=alterada?'<span class="aprov-alerta">A ficha foi alterada depois da aprovação de '+esc((a&&a.aprovadoPor)||"")+' — revise de novo.</span>':(a&&a.status==="devolvida"?'<span>Corrigida depois da devolução.</span>':'');
+      acoes+='<button class="icon-btn" data-aprovdev="'+id+'">Devolver</button><button class="icon-btn primario" data-aprovok="'+id+'">Aprovar</button>'; }
+    if(st==="aprovada"){ info='<span>Aprovada por '+esc(a.aprovadoPor||"—")+' em '+esc(dataHora(a.aprovadoEm))+'.</span>'+
+      '<span class="aprov-passos"><b>1.</b> Baixe o PDF em “Ver documento” · <b>2.</b> <a href="'+URL_ASSINADOR_GOVBR+'" target="_blank" rel="noopener">Assine no gov.br ↗</a> · <b>3.</b> Anexe o PDF assinado</span>';
+      acoes+='<a class="icon-btn" href="'+URL_ASSINADOR_GOVBR+'" target="_blank" rel="noopener">Assinar no gov.br ↗</a><label class="icon-btn primario anexar">Anexar PDF assinado<input type="file" accept="application/pdf,.pdf" data-aprovanexo="'+id+'" hidden></label>'; }
+    if(st==="assinada"){ info='<span>Aprovada por '+esc(a.aprovadoPor||"—")+' em '+esc(dataHora(a.aprovadoEm))+' · assinada '+(a.assinadoEm?'em '+esc(dataHora(a.assinadoEm)):'')+(a.assinadoPor?' (anexada por '+esc(a.assinadoPor)+')':'')+'</span>';
+      acoes+='<button class="icon-btn primario" data-aprovbaixar="'+id+'">Baixar PDF assinado</button><label class="icon-btn anexar">Substituir<input type="file" accept="application/pdf,.pdf" data-aprovanexo="'+id+'" hidden></label>'; }
+    if(st==="devolvida"){ info='<span class="aprov-alerta">Devolvida por '+esc(a.devolvidoPor||"—")+' em '+esc(dataHora(a.em))+': '+esc(a.motivo||"")+'</span>'; }
+    return '<li><div class="doc-row">'+casaBadgeHTML(p.unidade,"",st)+'<div class="doc-meta"><b>'+esc(m.codigo||m.titulo)+' · casa '+esc(p.unidade)+'</b><span>'+esc((m.titulo||"").replace(/\s+/g," ").slice(0,70))+' · última inspeção '+esc(dataBR(u.dia))+'</span>'+info+'</div>'+
+      '<div class="row-actions">'+acoes+'</div></div></li>'; }).join("")+'</ul></div>';
+}
+async function gravarAprovacao(p,campos,acao){
+  const ant=aprovacoes.find(a=>a.id===p.id)||{};
+  const a=Object.assign({},ant,{id:p.id,obraId:String(p.obraId),modeloId:p.modeloId,unidade:p.unidade},campos);
+  await DB.gravar("aprovacoes",a);
+  aprovacoes=aprovacoes.filter(x=>x.id!==a.id).concat([a]);
+  const m=modelos.find(x=>x.id===p.modeloId);
+  await registrar(acao,(m?(m.codigo||m.titulo):"")+" · casa "+p.unidade);
+  renderAprovacao(); renderHub();
+  return a;
+}
+$("#aprovAbas").addEventListener("click",e=>{ const b=e.target.closest("[data-aprovaba]"); if(!b) return; aprovAba=b.dataset.aprovaba; renderAprovacao(); });
+$("#btnAprovEngAdd").addEventListener("click",async()=>{
+  if(!ehControle) return;
+  const em=$("#aprovEngEmail").value.trim().toLowerCase();
+  if(!/^[^@\s]+@vivaconstrucoes\.com\.br$/.test(em)) return toast("Use um e-mail @vivaconstrucoes.com.br.");
+  const engs=engenheirosDaObra(); if(engs.includes(em)) return toast("Este e-mail já está na lista.");
+  obra.engenheiros=engs.concat([em]); await DB.gravar("obras",obra); await registrar("Engenheiro responsável adicionado",em+" · obra "+obra.id);
+  $("#aprovEngEmail").value=""; renderAprovacao();
+});
+$("#aprovEngLista").addEventListener("click",async e=>{
+  const b=e.target.closest("[data-engrem]"); if(!b||!ehControle) return;
+  if(!confirm("Remover "+b.dataset.engrem+" dos engenheiros responsáveis?")) return;
+  obra.engenheiros=engenheirosDaObra().filter(x=>x!==b.dataset.engrem); await DB.gravar("obras",obra);
+  await registrar("Engenheiro responsável removido",b.dataset.engrem+" · obra "+obra.id); renderAprovacao();
+});
+$("#aprovLista").addEventListener("click",async e=>{
+  const alvo=e.target.closest("[data-aprovver],[data-aprovok],[data-aprovdev],[data-aprovbaixar]"); if(!alvo) return;
+  if(!podeAprovar()) return toast("A aprovação é feita pelos engenheiros responsáveis da obra.");
+  const id=alvo.dataset.aprovver||alvo.dataset.aprovok||alvo.dataset.aprovdev||alvo.dataset.aprovbaixar;
+  const p=preenchimentos.find(x=>x.id===id), m=p&&modelos.find(x=>x.id===p.modeloId); if(!p||!m) return;
+  if(alvo.dataset.aprovver) return gerarDocumento(p,m);
+  if(alvo.dataset.aprovok){
+    if(!confirm("Aprovar a ficha "+(m.codigo||m.titulo)+" da casa "+p.unidade+"? Depois, baixe o PDF, assine no gov.br e anexe o arquivo assinado.")) return;
+    await gravarAprovacao(p,{status:"aprovada",versaoFicha:p.atualizadoEm,aprovadoPor:quemSou(),aprovadoEmail:user.email,aprovadoEm:new Date().toISOString(),motivo:null},"Ficha aprovada pelo engenheiro");
+    aprovAba="aprovada"; renderAprovacao(); toast("Ficha aprovada. Agora baixe o PDF e assine no gov.br."); return;
+  }
+  if(alvo.dataset.aprovdev){
+    const r=await perguntar("Devolver para correção","A ficha volta para quem preenche, com o motivo abaixo. Quando for corrigida e salva, ela reaparece aqui.",[{rot:"Cancelar",valor:null},{rot:"Devolver",valor:"ok",primario:true,exigeTexto:true}],{campo:"Motivo da devolução"});
+    if(!r||r.valor!=="ok") return;
+    await gravarAprovacao(p,{status:"devolvida",motivo:r.texto.trim(),devolvidoPor:quemSou(),em:new Date().toISOString()},"Ficha devolvida pelo engenheiro");
+    toast("Ficha devolvida."); return;
+  }
+  if(alvo.dataset.aprovbaixar){
+    const a=aprovacoes.find(x=>x.id===p.id), arq=a&&a.assinadoArquivo&&await DB.obter("arquivos",a.assinadoArquivo.id);
+    if(!arq||!arq.blob) return toast("Arquivo assinado não encontrado.");
+    return baixarBlob(arq.blob,a.assinadoArquivo.nome||((m.codigo||"FVS")+" - casa "+p.unidade+" - assinada.pdf"));
+  }
+});
+$("#aprovLista").addEventListener("change",async e=>{
+  const inp=e.target.closest("[data-aprovanexo]"); if(!inp||!inp.files[0]) return;
+  if(!podeAprovar()) return;
+  const f=inp.files[0], p=preenchimentos.find(x=>x.id===inp.dataset.aprovanexo), m=p&&modelos.find(x=>x.id===p.modeloId); if(!p) return;
+  if(!/pdf$/i.test(f.type)&&!/\.pdf$/i.test(f.name)) return toast("Anexe o arquivo PDF assinado.");
+  const cab=await f.slice(0,2048000).text().catch(()=>"");
+  if(!/\/ByteRange|\/Sig\b|adbe\.pkcs7|ETSI\.CAdES/.test(cab)&&!confirm("Não encontramos uma assinatura digital neste PDF. Ele foi mesmo assinado no gov.br? Anexar assim mesmo?")) { inp.value=""; return; }
+  const ant=aprovacoes.find(x=>x.id===p.id);
+  const idArq=uid(), nome=((m&&m.codigo)||"FVS")+" - casa "+p.unidade+" - assinada.pdf";
+  await DB.gravar("arquivos",{id:idArq,blob:new File([f],nome,{type:"application/pdf"})});
+  if(ant&&ant.assinadoArquivo&&ant.assinadoArquivo.id) DB.remover("arquivos",ant.assinadoArquivo.id).catch(()=>{});
+  await gravarAprovacao(p,{status:"assinada",assinadoArquivo:{id:idArq,nome,tamanho:f.size},assinadoEm:new Date().toISOString(),assinadoPor:quemSou()},"PDF assinado anexado");
+  aprovAba="assinada"; renderAprovacao(); toast("PDF assinado anexado.");
+});
+// na ficha: aviso de devolução / aprovação
+function avisoAprovacaoHTML(p){
+  const a=aprovacoes.find(x=>x.id===p.id); if(!a) return "";
+  const st=situacaoAprovacao(p,a);
+  if(st==="devolvida") return '<div class="trava-aviso aprov-dev"><span class="trava-ico" aria-hidden="true">!</span><div><b>Devolvida para correção por '+esc(a.devolvidoPor||"engenheiro")+' em '+esc(dataHora(a.em))+'</b><span>'+esc(a.motivo||"")+' — corrija e salve: a ficha volta para a aprovação.</span></div></div>';
+  if(st==="aprovada"||st==="assinada") return '<div class="aprov-ok">✓ '+(st==="assinada"?"Aprovada e assinada":"Aprovada")+' por '+esc(a.aprovadoPor||"engenheiro")+' em '+esc(dataBR(String(a.aprovadoEm||"").slice(0,10)))+'. Alterar a ficha faz ela voltar para a aprovação.</div>';
+  return "";
+}
+
 /* ---------------- Guia de primeiro uso e novidades ---------------- */
 const GUIA_PASSOS=[
   {tit:n=>"Bem-vindo"+(n?", "+n:"")+"!",desc:"O Controle Documental substitui a FVS de papel. Em um minuto, veja como preencher uma ficha do começo ao fim.",ilus:'<div class="gi-logo"><img data-logo="cor" alt=""></div>'},
-  {tit:()=>"Abra a ficha da casa",desc:"Em Preencher ficha, escolha a FVS e digite o número da casa. Também dá para tocar na casa no mapa do Painel ou usar a busca no topo.",ilus:'<div class="gi-campos"><span>FVS.111 — Esquadrias</span><span>Casa <b>45</b></span><i>Abrir ficha</i></div>'},
+  {tit:()=>"Abra a ficha da casa",desc:"Em Preencher ficha, escolha a FVS e digite o número da casa (ou toque na casa no mapa do Painel). Informe a empreiteira em Equipe de execução — ela é obrigatória.",ilus:'<div class="gi-campos"><span>FVS.111 — Esquadrias</span><span>Casa <b>45</b></span><i>Abrir ficha</i></div>'},
   {tit:()=>"Marque cada item",desc:"A = aprovado, R = reprovado, NA = não se aplica. Ao responder, o sistema leva você ao próximo item.",ilus:'<div class="gi-opts"><span class="a">✓<b>A</b></span><span class="r">✕<b>R</b></span><span class="na">–<b>NA</b></span></div>'},
-  {tit:()=>"Reprovou? Foto e tratativa",desc:"Tire a foto do problema — dá para marcar o defeito nela — e descreva a ação. Até salvar, um R marcado por engano ainda pode ser trocado.",ilus:'<div class="gi-foto"><span class="cam">📷</span><span class="circ"></span></div>'},
+  {tit:()=>"Reprovou? Foto e tratativa",desc:"Tire a foto do problema: ela sai com data, hora e localização, e dá para desenhar sobre o defeito. Descreva a ação. Até salvar, um R marcado por engano ainda pode ser trocado.",ilus:'<div class="gi-foto"><span class="cam">📷</span><span class="circ"></span></div>'},
   {tit:()=>"Salve a ficha",desc:"O botão Salvar grava a ficha e trava as reprovações. Se esquecer, o sistema salva sozinho a cada 10 minutos. Sem internet, tudo fica no celular e é enviado quando o sinal voltar.",ilus:'<div class="gi-salvar"><span class="ns">● Não salvo</span><i>Salvar •</i></div>'},
   {tit:()=>"Reinspeção",desc:"Depois da correção, abra a ficha de novo: preencha a data e a foto da reinspeção e o item passa sozinho para AR (aprovado após reinspeção).",ilus:'<div class="gi-opts"><span class="r">✕<b>R</b></span><em>→</em><span class="ar">↻<b>AR</b></span></div>'},
   {so:"controle",tit:()=>"Para a conta de controle",desc:"No Painel: fichas paradas e envios com problema. Em Indicadores: a situação da obra e o Modo apresentação. Em Base de dados: a lixeira e o registro de operações com busca.",ilus:'<div class="gi-ctrl"><span>Painel</span><span>Indicadores</span><span>▶ Apresentação</span><span>Lixeira</span></div>'}
@@ -4423,6 +4747,12 @@ $("#btnGuia").addEventListener("click",abrirGuia);
 
 // Novidades: a mais recente primeiro. Cada atualização visível para a equipe ganha uma entrada aqui.
 const NOVIDADES=[
+  {data:"2026-10-15.2",titulo:"Atualização de 15/10 (tarde)",itens:[
+    "Fotos saem com data, hora e localização (GPS) escritas na própria imagem.",
+    "Equipe de execução agora é escolhida da lista de empreiteiras e é obrigatória para gerar o documento.",
+    "Desenho na foto: só traço livre, com Desfazer e Limpar funcionando — inclusive ao reabrir a foto.",
+    "Nova aba Aprovação: o engenheiro aprova as fichas concluídas e anexa o PDF assinado no gov.br.",
+    "Ficha da casa com filtro de FVS, coluna de fichas pendentes por quadra e abertura das fichas mais rápida."]},
   {data:"2026-10-15",titulo:"Atualização de 15/10",itens:[
     "A ficha só é gravada no botão Salvar (ou sozinha a cada 10 minutos); reprovações travam ao salvar.",
     "Toque numa casa do mapa para ver todas as FVS dela, com fotos de antes e depois.",
@@ -4491,8 +4821,9 @@ async function abrirCasa(n,destaqueModelo){
   const pill={concluida:"st-concluida",reinsp:"st-reinsp",aberto:"st-andamento",sem:"st-sem"};
   const corpo=linhas.map(l=>{
     const dest=l.m.id===destaqueModelo?' destaque':'';
-    if(!l.p) return '<li class="casa-fvs'+dest+'"><div class="cf-info"><b>'+esc(l.m.codigo||l.m.titulo)+'<span class="status-pill '+pill.sem+'">Sem ficha</span></b><span>'+esc((l.m.titulo||"").replace(/\s+/g," ").slice(0,70))+'</span></div><button type="button" class="icon-btn" data-casainiciar="'+esc(l.m.id)+'">Iniciar</button></li>';
-    return '<li class="casa-fvs'+dest+'"><div class="cf-info"><b>'+esc(l.m.codigo||l.m.titulo)+'<span class="status-pill '+pill[l.st]+'">'+esc(ROT_STATUS[l.st])+'</span></b>'+
+    const chave=esc(semAcento((l.m.codigo||"")+" "+(l.m.titulo||"")));
+    if(!l.p) return '<li class="casa-fvs'+dest+'" data-busca="'+chave+'" data-st="sem"><div class="cf-info"><b>'+esc(l.m.codigo||l.m.titulo)+'<span class="status-pill '+pill.sem+'">Sem ficha</span></b><span>'+esc((l.m.titulo||"").replace(/\s+/g," ").slice(0,70))+'</span></div><button type="button" class="icon-btn" data-casainiciar="'+esc(l.m.id)+'">Iniciar</button></li>';
+    return '<li class="casa-fvs'+dest+'" data-busca="'+chave+'" data-st="'+l.st+'"><div class="cf-info"><b>'+esc(l.m.codigo||l.m.titulo)+'<span class="status-pill '+pill[l.st]+'">'+esc(ROT_STATUS[l.st])+'</span></b>'+
       '<span>'+l.pr.feitos+' de '+l.pr.total+' itens · última inspeção em '+esc(dataBR(l.u.dia))+(l.u.quem?' por '+esc(l.u.quem):'')+'</span>'+
       (l.abertos.length?'<span class="cf-abertos">Reprovado em aberto: '+l.abertos.map(it=>'item '+esc(it.n)).join(", ")+'</span>':'')+
       (l.pares.length?'<span class="cf-pares">'+l.pares.map(({it,c})=>'<button type="button" class="ver-foto antes-depois" data-antesdepois="'+esc(c.fotoReprovacao)+'|'+esc(c.reinspecao.fotoId)+'|'+esc(c.reprovadoEm||"")+'|'+esc(c.reinspecao.data||"")+'">antes e depois · item '+esc(it.n)+'</button>').join("")+'<span class="foto-ciclo"></span></span>':'')+
@@ -4501,9 +4832,17 @@ async function abrirCasa(n,destaqueModelo){
   $("#dlgCasaTit").textContent="Casa "+n+(q?" · Quadra "+q:"");
   $("#dlgCasaCorpo").innerHTML=
     '<div class="casa-resumo"><div><b>'+conc+'<small> de '+mods.length+'</small></b><span>FVS concluídas</span></div><div><b>'+ab+'</b><span>'+(ab===1?'item reprovado':'itens reprovados')+' em aberto</span></div><div><b>'+linhas.filter(l=>l.p).length+'</b><span>fichas iniciadas</span></div></div>'+
-    (mods.length?'<ul class="casa-lista">'+corpo+'</ul>':'<p class="note">Nenhum modelo de FVS cadastrado.</p>');
+    (mods.length?'<div class="casa-filtro"><input type="search" id="casaFiltro" placeholder="Filtrar FVS (ex.: 113, esquadria, reboco)" aria-label="Filtrar as FVS desta casa"><select id="casaFiltroSt" aria-label="Situação"><option value="">Todas as situações</option><option value="sem">Sem ficha</option><option value="aberto">Em aberto</option><option value="reinsp">Aguardando reinspeção</option><option value="concluida">Concluída</option></select></div>':'')+
+    (mods.length?'<ul class="casa-lista">'+corpo+'</ul><p class="note casa-vazio" style="display:none">Nenhuma FVS com esse filtro.</p>':'<p class="note">Nenhum modelo de FVS cadastrado.</p>');
   $("#dlgCasa").classList.add("show");
+  const fi=$("#casaFiltro"); if(fi){ fi.addEventListener("input",filtrarCasa); $("#casaFiltroSt").addEventListener("change",filtrarCasa); }
   const d=$("#dlgCasaCorpo .destaque"); if(d) d.scrollIntoView({block:"nearest"});
+}
+function filtrarCasa(){
+  const t=semAcento($("#casaFiltro").value).trim().split(/\s+/).filter(Boolean), st=$("#casaFiltroSt").value;
+  let vis=0;
+  document.querySelectorAll("#dlgCasaCorpo .casa-fvs").forEach(li=>{ const ok=(!st||li.dataset.st===st)&&t.every(x=>li.dataset.busca.includes(x)); li.style.display=ok?"":"none"; if(ok) vis++; });
+  const v=$("#dlgCasaCorpo .casa-vazio"); if(v) v.style.display=vis?"none":"";
 }
 function fecharCasa(){ $("#dlgCasa").classList.remove("show"); casaAberta=null; }
 $("#dlgCasa").addEventListener("click",async e=>{
@@ -4610,8 +4949,9 @@ function calcularIndicadores(fvsId,semanas,o,lista){
     const f=porFvs[m.id]; f.fichas++;
     const fechada=!saudeFicha(p,m).aberto, q=quadraDe?quadraDe[numeroDaCasa(p.unidade)]:null;
     // equipe de execução (terceirizada) informada na ficha: cada nome recebe os números desta ficha
-    const nomesEq=[...new Set(((p.cabecalho&&p.cabecalho.equipe)||[]).map(e=>String(e.nome||"").replace(/\s+/g," ").trim()).filter(Boolean))];
-    const eqs=nomesEq.map(nm=>{ const k=chaveEquipe(nm); if(!k) return null;
+    const linhasEq=((p.cabecalho&&p.cabecalho.equipe)||[]).filter(e=>String(e.nome||"").trim());
+    const eqs=linhasEq.map(le=>{ const cad=le.empreiteiraId&&empreiteiras.find(x=>x.id===le.empreiteiraId);
+      const nm=cad?cad.nome:String(le.nome||"").replace(/\s+/g," ").trim(); const k=cad?"id:"+cad.id:(empreiteiras.find(x=>chaveEquipe(x.nome)===chaveEquipe(nm))?"id:"+empreiteiras.find(x=>chaveEquipe(x.nome)===chaveEquipe(nm)).id:chaveEquipe(nm)); if(!k) return null;
       const e=porEquipe[k]=porEquipe[k]||{grafias:{},fichas:0,conc:0,resp:0,reprov:0,abertas:0,tempos:[]};
       e.grafias[nm]=(e.grafias[nm]||0)+1; e.fichas++; if(fechada) e.conc++; return e; }).filter(Boolean);
     const eqUnicas=[...new Set(eqs)];
@@ -4728,7 +5068,10 @@ function renderIndicadores(opts){
   popularIndFvs();
   if(!modelos.length){ cont.innerHTML='<div class="panel empty"><b>Nenhum modelo de FVS</b>Quando houver modelos e fichas, os indicadores aparecem aqui.</div>'; return; }
   const semanas=Number($("#indPeriodo").value);
-  const d=calcularIndicadores(indFvsEscolhida,semanas);
+  popularFiltroEmp($("#indEmp"));
+  const fEmp=$("#indEmp").value;
+  const d=calcularIndicadores(indFvsEscolhida,semanas,obra,fEmp?preenchimentos.filter(p=>fichaTemEmpreiteira(p,fEmp)):null);
+  d.filtroEmp=fEmp?(empreiteiras.find(e=>e.id===fEmp)||{}).nome||"":"";
   const tm=media(d.tempos), restante=d.previstas-d.concluidas;
   const proj=d.ritmo>0&&restante>0?Math.ceil(restante/d.ritmo):null;
   const maisAntiga=d.abertas.length?d.abertas[0].dias:null;
@@ -4767,9 +5110,9 @@ function renderIndicadores(opts){
   // Por quadra
   if(d.impl&&d.porQuadra.length){
     const prev=d.mods.length;
-    h+='<div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3>Por quadra</h3><span class="count">'+(indFvsEscolhida?"FVS selecionada":"todas as FVS somadas")+'</span></div><div class="panel-body ind-rolagem"><table class="ind-tab"><thead><tr><th>Quadra</th><th class="num">Casas</th><th>Fichas concluídas</th><th class="num">Reprov. em aberto</th><th class="num">Taxa de reprovação</th></tr></thead><tbody>'+
+    h+='<div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3>Por quadra</h3><span class="count">'+(indFvsEscolhida?"FVS selecionada":"todas as FVS somadas")+'</span></div><div class="panel-body ind-rolagem"><table class="ind-tab"><thead><tr><th>Quadra</th><th class="num">Casas</th><th>Fichas concluídas</th><th class="num">Fichas pendentes</th><th class="num">Reprov. em aberto</th><th class="num">Taxa de reprovação</th></tr></thead><tbody>'+
       d.porQuadra.map(q=>{ const tot=q.casas*prev, pc=tot?Math.round(q.conc/tot*100):0;
-        return '<tr><td><b>Quadra '+esc(q.q)+'</b></td><td class="num">'+q.casas+'</td><td><div class="ind-barra"><span class="trilho"><i style="width:'+pc+'%"></i></span><em>'+pc+'%</em></div></td><td class="num">'+q.abertas+'</td><td class="num">'+fmtPct(q.reprov,q.resp)+'</td></tr>'; }).join("")+
+        return '<tr><td><b>Quadra '+esc(q.q)+'</b></td><td class="num">'+q.casas+'</td><td><div class="ind-barra"><span class="trilho"><i style="width:'+pc+'%"></i></span><em>'+pc+'%</em></div></td><td class="num" title="Fichas previstas (casas × FVS) ainda não concluídas">'+fmtNum(Math.max(0,tot-q.conc))+'</td><td class="num">'+q.abertas+'</td><td class="num">'+fmtPct(q.reprov,q.resp)+'</td></tr>'; }).join("")+
     '</tbody></table></div></div>';
   }
   // Por FVS
@@ -4805,7 +5148,7 @@ function renderIndicadores(opts){
 let indSituAberta="";
 function situacaoGrupos(d){
   const escuro=document.body.classList.contains("tema-escuro");
-  const s=d.situ;
+  const s=Object.assign({},d.situ); if(d.filtroEmp) s.naoIniciada=0;   // filtrado por empreiteira: só as fichas dela
   return [
     {k:"primeira",rot:"Concluídas de primeira",sub:"sem nenhuma reprovação",n:s.primeira.length,lista:s.primeira,cor:VZ.a},
     {k:"aposReinsp",rot:"Concluídas após reinspeção",sub:"tiveram reprovação já corrigida",n:s.aposReinsp.length,lista:s.aposReinsp,cor:escuro?"#4C93E0":"#5E95E0",hach:true},
@@ -5454,6 +5797,8 @@ drop.addEventListener("drop",e=>receber(e.dataTransfer.files));
 $("#search").addEventListener("input",renderRepo);
 $("#filtroModeloPre").addEventListener("change",renderMeus);
 $("#filtroStatusPre").addEventListener("change",renderMeus);
+$("#filtroEmpPre").addEventListener("change",renderMeus);
+$("#indEmp").addEventListener("change",()=>renderIndicadores());
 $("#filtroUnidadePre").addEventListener("input",renderMeus);
 
 $("#list").addEventListener("click",async e=>{
@@ -5523,22 +5868,24 @@ $("#btnGerar").addEventListener("click",async()=>{
 
 /* ---------------- Eventos: ficha (delegados, ligados uma única vez) ---------------- */
 // grava a foto nova do item (reprovação ou reinspeção) e libera a antiga se ninguém mais usa
-async function trocarFotoItem(n,arq,tipo){
+// extra: {base (File sem marcação) | baseId, marcas, geo}
+async function trocarFotoItem(n,arq,tipo,extra){
   if(!fichaAtiva) return;
+  extra=extra||{};
   const {p,itemPorN}=fichaAtiva;
   const midiaId=uid();
   await DB.gravar("midias",{id:midiaId,blob:arq});
+  let baseId=extra.baseId||null;
+  if(!baseId&&extra.base){ baseId=uid(); await DB.gravar("midias",{id:baseId,blob:extra.base}); }
   p.respostas[n]=p.respostas[n]||{};
-  let antigo;
-  if(tipo==="reinspecao"){
-    antigo=p.respostas[n].reinspecao&&p.respostas[n].reinspecao.fotoId;
-    p.respostas[n].reinspecao=Object.assign({},p.respostas[n].reinspecao,{fotoId:midiaId});
-  } else {
-    antigo=p.respostas[n].fotoId;
-    p.respostas[n]=Object.assign({},p.respostas[n],{fotoId:midiaId});
-  }
+  const alvoAntes=tipo==="reinspecao"?(p.respostas[n].reinspecao||{}):p.respostas[n];
+  const antigos=[alvoAntes.fotoId,alvoAntes.fotoBase].filter(x=>x&&x!==midiaId&&x!==baseId);
+  const campos={fotoId:midiaId,fotoBase:(extra.marcas&&extra.marcas.length)?baseId:null,fotoMarcas:(extra.marcas&&extra.marcas.length)?extra.marcas:null};
+  if(extra.geo!==undefined) campos.fotoGeo=extra.geo;
+  if(tipo==="reinspecao") p.respostas[n].reinspecao=Object.assign({},p.respostas[n].reinspecao,campos);
+  else p.respostas[n]=Object.assign({},p.respostas[n],campos);
   // a foto antiga só é apagada quando a ficha for salva (se sair sem salvar, a ficha salva ainda usa ela)
-  if(antigo&&antigo!==midiaId) (edicao.aRemover=edicao.aRemover||[]).push(antigo);
+  antigos.forEach(a=>(edicao.aRemover=edicao.aRemover||[]).push(a));
   if(tipo==="reinspecao") await concluirReinspecaoSeCompleta(n,p);
   await salvarFicha();
   document.getElementById("card-"+n).outerHTML=cardHTML(itemPorN[n],p);
@@ -5605,9 +5952,8 @@ $("#fichaArea").addEventListener("change", async e=>{
     return;
   }
   if(t.dataset.foto){
-    const n=t.dataset.foto; let arq=await prepararFoto(t.files[0]);
-    if(arq) arq=await anotarFoto(arq);
-    if(arq) await trocarFotoItem(n,arq,"reprovacao"); else t.value="";
+    const n=t.dataset.foto, f=await fotoDoCampo(t.files[0],n,"reprovacao");
+    if(f) await trocarFotoItem(n,f.arquivo,"reprovacao",f); else t.value="";
     return;
   }
   if(t.dataset.trat){
@@ -5628,14 +5974,22 @@ $("#fichaArea").addEventListener("change", async e=>{
     return;
   }
   if(t.dataset.reinspfoto){
-    const n=t.dataset.reinspfoto; let arq=await prepararFoto(t.files[0]);
-    if(arq) arq=await anotarFoto(arq);
-    if(arq) await trocarFotoItem(n,arq,"reinspecao"); else t.value="";
+    const n=t.dataset.reinspfoto, f=await fotoDoCampo(t.files[0],n,"reinspecao");
+    if(f) await trocarFotoItem(n,f.arquivo,"reinspecao",f); else t.value="";
     return;
   }
   if(t.dataset.eq){
     const [i,campo]=t.dataset.eq.split("|");
     p.cabecalho.equipamentos[i][campo]=t.value; await salvarFicha();
+    return;
+  }
+  if(t.dataset.eqpemp!=null){
+    const i=Number(t.dataset.eqpemp), row=p.cabecalho.equipe[i]; if(!row) return;
+    if(t.value==="__livre") return;
+    const e=empreiteiras.find(x=>x.id===t.value);
+    row.empreiteiraId=e?e.id:""; row.nome=e?e.nome:"";
+    await salvarFicha();
+    const pe=document.getElementById("painelEquipe"); if(pe) pe.classList.toggle("falta-equipe",!p.cabecalho.equipe.some(r=>String(r.nome||"").trim()));
     return;
   }
   if(t.dataset.eqp){
@@ -5654,11 +6008,16 @@ $("#fichaArea").addEventListener("click", async e=>{
   const {p,m}=fichaAtiva, t=e.target;
   if(t.dataset&&t.dataset.marcar){
     const [n,tipo]=t.dataset.marcar.split("|"), r=p.respostas[n]||{};
-    const id=tipo==="reinspecao"?(r.reinspecao&&r.reinspecao.fotoId):r.fotoId;
-    const mid=id&&await DB.obter("midias",id);
+    const alvo=tipo==="reinspecao"?(r.reinspecao||{}):r;
+    // reabre a foto sem marcação com os traços anteriores (assim o Desfazer remove até os antigos)
+    const baseId=alvo.fotoBase||null;
+    const mid=await DB.obter("midias",baseId||alvo.fotoId);
     if(!mid){ toast("Foto não encontrada na base."); return; }
-    const marcada=await anotarFoto(mid.blob);
-    if(marcada&&marcada!==mid.blob) await trocarFotoItem(n,marcada,tipo);
+    const an=await anotarFoto(mid.blob,{marcas:baseId?alvo.fotoMarcas:[]});
+    if(!an) return;
+    if(!an.marcas.length&&!baseId) return;   // nada mudou
+    if(!an.marcas.length) await trocarFotoItem(n,mid.blob,tipo,{marcas:[]});
+    else await trocarFotoItem(n,an.arquivo,tipo,{baseId:baseId||null,base:baseId?null:mid.blob,marcas:an.marcas});
     return;
   }
   if(t.dataset&&t.dataset.antesdepois){ await mostrarAntesDepois(t.parentElement.querySelector(".foto-ciclo"),t.dataset.antesdepois); return; }
@@ -5675,7 +6034,13 @@ $("#fichaArea").addEventListener("click", async e=>{
   if(fichaAtiva.leitura) return;
   if(t.id==="btnAddEq"){ p.cabecalho.equipamentos.push({label:"",patrimonio:""}); await salvarFicha(); await montarFicha(p,m,{remontar:true}); }
   if(t.dataset.eqdel!=null){ p.cabecalho.equipamentos.splice(Number(t.dataset.eqdel),1); await salvarFicha(); await montarFicha(p,m,{remontar:true}); }
-  if(t.id==="btnAddEqp"){ p.cabecalho.equipe.push({nome:"",funcao:"",dataInicio:"",dataTermino:""}); await salvarFicha(); await montarFicha(p,m,{remontar:true}); }
+  if(t.dataset&&t.dataset.empnova){ const e=await cadastrarEmpreiteiraRapido(); if(e) await remontarFicha(); return; }
+  if(t.dataset&&t.dataset.emppedir){
+    const r=await perguntar("Pedir cadastro de empreiteira","Informe o nome (e o CNPJ, se souber). O controle recebe o pedido no registro de operações e cadastra a empresa.",[{rot:"Cancelar",valor:null},{rot:"Enviar pedido",valor:"ok",primario:true,exigeTexto:true}],{campo:"Nome da empreiteira"});
+    if(r&&r.valor==="ok"){ await registrar("Pedido de cadastro de empreiteira",r.texto.trim()+" · "+(m.codigo||m.titulo)+" · casa "+p.unidade); toast("Pedido enviado ao controle."); }
+    return;
+  }
+  if(t.id==="btnAddEqp"){ p.cabecalho.equipe.push({nome:"",empreiteiraId:"",funcao:"",dataInicio:"",dataTermino:""}); await salvarFicha(); await montarFicha(p,m,{remontar:true}); }
   if(t.dataset.eqpdel!=null){ p.cabecalho.equipe.splice(Number(t.dataset.eqpdel),1); await salvarFicha(); await montarFicha(p,m,{remontar:true}); }
 });
 
