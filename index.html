@@ -702,6 +702,7 @@ ul.docs>li:first-child{border-top:none}
 .parou-aqui::before,.parou-aqui::after{content:"";flex:1;height:1px;background:var(--seal);opacity:.45}
 .item-quem{padding:6px 18px;font-size:12.5px;color:var(--ink3);border-bottom:1px solid var(--line2)}
 .item-quem b{color:var(--ink2);font-weight:600}
+.item-quem.nao-salvo{color:var(--warn);font-style:italic}
 .status-pill{display:inline-block;margin-left:8px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;vertical-align:1px;white-space:nowrap}
 .status-pill.st-andamento{background:var(--line2);color:var(--ink2)}
 .status-pill.st-reinsp{background:var(--flag-soft);color:var(--flag)}
@@ -2825,10 +2826,21 @@ function guardarLocal(reg){
 
 /* ---- Histórico do item: cada reprovação vira um "ciclo" guardado; cada troca de resultado vira um evento ---- */
 function quemSou(){ return user?(user.nome||user.email):"—"; }
-function registrarEventoItem(r,de,para){
-  r.eventos=r.eventos||[];
-  r.eventos.push({quando:new Date().toISOString(),quem:quemSou(),de:de||null,para:para||null});
-  if(r.eventos.length>40) r.eventos.shift();
+// O histórico só é escrito ao salvar: durante a edição nada é registrado; no salvamento,
+// cada item cujo resultado mudou desde a última gravação ganha um evento (de → para).
+function registrarEventoItem(r,de,para){}
+function resultadosDe(resp){ const o={}; Object.keys(resp||{}).forEach(n=>{ const r=resp[n]; if(r&&r.resultado) o[n]=r.resultado; }); return o; }
+function registrarHistoricoAoSalvar(p,quando){
+  const base=edicao.resBase||{}, atual=resultadosDe(p.respostas), mudados=[];
+  new Set(Object.keys(base).concat(Object.keys(atual))).forEach(n=>{
+    if((base[n]||null)===(atual[n]||null)) return;
+    mudados.push(n);
+    const r=p.respostas[n]=p.respostas[n]||{};
+    r.eventos=r.eventos||[];
+    r.eventos.push({quando,quem:quemSou(),de:base[n]||null,para:atual[n]||null});
+    if(r.eventos.length>40) r.eventos.shift();
+  });
+  return mudados;
 }
 function arquivarCiclo(r,desfecho){
   r.ciclos=r.ciclos||[];
@@ -2963,7 +2975,7 @@ function cardHTML(it,p){
   }
   return '<div class="item-card'+(r.resultado?" done":"")+'" id="card-'+esc(it.n)+'">'+
     '<div class="item-head"><div class="item-n">'+esc(it.n)+'</div><b>Item de inspeção '+esc(it.n)+'</b><span class="badge '+(r.resultado||"")+'" id="bdg-'+esc(it.n)+'">'+(r.resultado?esc(r.resultado):"pendente")+'</span></div>'+
-    respondidoHTML(r)+
+    respondidoHTML(r,it.n)+
     '<div class="item-body">'+
       '<div class="protegido">'+
         '<div class="lbl">Item de inspeção</div><p>'+esc(it.item)+'</p>'+
@@ -2977,7 +2989,7 @@ function cardHTML(it,p){
         '<div><label>Data da inspeção</label><input type="date" value="'+esc(r.data||"")+'" data-data="'+esc(it.n)+'"></div>'+
       '</div>'+
       extra+
-      historicoItemHTML(it.n,r)+
+      historicoItemHTML(it.n,(edicao.id===p.id&&edicao.salvoResp)?(edicao.salvoResp[it.n]||{}):r)+
     '</div></div>';
 }
 function historicoItemHTML(n,r){
@@ -3045,7 +3057,7 @@ async function montarFicha(p,m,opts){
   }
   // fichas salvas antes do botão Salvar travar o R: as reprovações já gravadas contam como salvas
   if(!p.salvoManual){ Object.values(p.respostas||{}).forEach(r=>{ if(r&&r.resultado==="R"&&!r.travadoEm) r.travadoEm=p.atualizadoEm||new Date().toISOString(); }); p.salvoManual=1; }
-  if(novaAbertura) edicao.base=edicao.existe?(p.atualizadoEm||""):"";
+  if(novaAbertura){ edicao.base=edicao.existe?(p.atualizadoEm||""):""; edicao.resBase=edicao.existe?resultadosDe(p.respostas):{}; edicao.salvoResp=JSON.parse(JSON.stringify(edicao.existe?(p.respostas||{}):{})); }
   // trava: se outra pessoa está com esta ficha aberta agora, abre só para consulta
   const dono=await ocuparFicha(p.id);
   if(!dono&&user){
@@ -3227,8 +3239,9 @@ function retomarHTML(ret){
     (ret.proximo?'<button type="button" class="btn-retomar" data-retomar="'+esc(ret.proximo.n)+'">Ir para o item '+esc(ret.proximo.n)+' ›</button>':'')+'</div>';
 }
 /* ---- Quem respondeu cada item (vem do histórico de trocas do resultado; não vai para o PDF) ---- */
-function respondidoHTML(r){
+function respondidoHTML(r,n){
   if(!r||!r.resultado) return "";
+  if(n!=null&&edicao.resBase&&fichaAtiva&&edicao.id===fichaAtiva.p.id&&(edicao.resBase[n]||null)!==r.resultado) return '<div class="item-quem nao-salvo">Resultado ainda não salvo</div>';
   const ev=(r.eventos||[]).filter(e=>e.para).slice(-1)[0];
   if(!ev||ev.para!==r.resultado) return r.data?'<div class="item-quem">Inspecionado em '+esc(dataBR(r.data))+'</div>':"";
   return '<div class="item-quem">'+esc(ROT_RES[ev.para]||ev.para)+' por <b>'+esc(ev.quem||"—")+'</b> em '+esc(diaMesHora(ev.quando))+'</div>';
@@ -3320,6 +3333,8 @@ async function gravarFicha(modo){
   const agora=new Date().toISOString(), travar=[];
   if(modo==="manual") Object.keys(p.respostas||{}).forEach(n=>{ const r=p.respostas[n]; if(r&&r.resultado==="R"&&!r.travadoEm){ r.travadoEm=agora; travar.push(n); } });
   p.salvoManual=1;
+  const eventosAntes=JSON.stringify(Object.keys(p.respostas||{}).map(n=>[n,(p.respostas[n]&&p.respostas[n].eventos||[]).length]));
+  const mudados=registrarHistoricoAoSalvar(p,agora);
   registrarEdicao(p);
   p.atualizadoEm=agora;
   atualizarSalvo(true);
@@ -3338,10 +3353,12 @@ async function gravarFicha(modo){
     } else await DB.gravar("preenchimentos",p);
   }catch(e){
     travar.forEach(n=>delete p.respostas[n].travadoEm);
+    JSON.parse(eventosAntes).forEach(([n,k])=>{ const r=p.respostas[n]; if(r&&r.eventos) r.eventos.length=k; });
     edicao.sujo=true; agendarAutomatico(); atualizarSalvo();
     toast("Não foi possível salvar: "+(e.message||e)); return false;
   }
   edicao.sujo=false; edicao.base=p.atualizadoEm;
+  edicao.resBase=resultadosDe(p.respostas); edicao.salvoResp=JSON.parse(JSON.stringify(p.respostas||{}));
   apagarRascunho(p.id);
   const usadas=JSON.stringify(p.respostas||{});
   (edicao.aRemover||[]).splice(0).forEach(id=>{ if(!usadas.includes(id)) DB.remover("midias",id).catch(()=>{}); });
@@ -3349,7 +3366,10 @@ async function gravarFicha(modo){
   guardarLocal(JSON.parse(JSON.stringify(p)));   // atualiza só a ficha salva, sem baixar todas de novo
   renderMeus(); renderGraficoReprovacoes(); renderPainel();
   // reprovações que acabaram de travar: troca os botões e libera a reinspeção
-  travar.forEach(n=>{ const c=document.getElementById("card-"+n); if(c&&fichaAtiva.itemPorN[n]){ c.outerHTML=cardHTML(fichaAtiva.itemPorN[n],p); carregarPreviewFoto(n,p); carregarPreviewReinsp(n,p); } });
+  // itens que mudaram ou travaram: redesenha (histórico novo, linha "respondido por", reinspeção)
+  const atualN=(document.querySelector("#fichaArea .item-card.atual")||{}).id;
+  [...new Set(mudados.concat(travar))].forEach(n=>{ const c=document.getElementById("card-"+n); if(c&&fichaAtiva.itemPorN[n]){ c.outerHTML=cardHTML(fichaAtiva.itemPorN[n],p); carregarPreviewFoto(n,p); carregarPreviewReinsp(n,p); } });
+  if(atualN){ const c=document.getElementById(atualN); if(c) c.classList.add("atual"); }
   atualizarStatusGeracao();
   return true;
 }
