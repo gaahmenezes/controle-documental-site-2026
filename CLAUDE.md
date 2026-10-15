@@ -25,6 +25,9 @@
 - Ficha: pendências para gerar o documento (`pendenciasFicha`, `#pendLista`); controle desfaz R travado com motivo (`desfazerReprovacao`, guarda `reprovacoesDesfeitas`, sem evento de troca). Antes e depois (`mostrarAntesDepois`) no histórico e na ficha da casa.
 - Ficha da casa (`abrirCasa`, `#dlgCasa`): tocar numa casa do mapa abre todas as FVS dela. Busca rápida (`#buscaRapida`, tecla /). Modo apresentação (`abrirApresentacao`, `#apres`) na aba Indicadores.
 - Lixeira (coleção `lixeira`, `moverParaLixeira`, `renderLixeira`): fichas, documentos e modelos excluídos ficam 30 dias; arquivos dos documentos só são apagados ao vencer. Registro de operações com filtros (`filtrarLog`).
+- Envios com problema: cada aparelho (`idAparelho`) informa à coleção `aparelhos` pendências, recusas (`cd_recusados`, com cópia local) e rascunhos (`relatarAparelho`); o controle vê em `renderEnvios` no Painel.
+- Guia de primeiro uso (`GUIA_PASSOS`, `abrirGuia`, por e-mail em `cd_guia_<email>`) e Novidades (`NOVIDADES`, a mais recente primeiro — acrescente uma entrada a cada atualização visível para a equipe).
+- Acessibilidade: janelas com foco preso e devolvido (observador das classes `show`); `--ink3` #5B6B73 (claro) / #98AAB3 (escuro) para contraste ≥ 4,5; campos da ficha com `aria-label`. `.folha` e o relatório mantêm as cores originais.
 - Melhorias visuais de computador ficam em `@media (min-width:821px)` / `(hover:hover) and (pointer:fine)`; respeitar `prefers-reduced-motion`.
 
 ## Backend
