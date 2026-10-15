@@ -186,8 +186,8 @@ header.topbar{background:var(--chrome);border-bottom:3px solid var(--laranja);co
 .situ-lin td.seta{color:var(--ink3);width:18px;text-align:center}
 .situ-lin td.seta span{display:inline-block;transition:transform .15s}
 .situ-lin[aria-expanded="true"] td.seta span{transform:rotate(90deg)}
-.situ-grade{grid-template-columns:minmax(0,3fr) minmax(0,2fr)}
-@media (max-width:900px){.situ-grade{grid-template-columns:1fr}}
+.situ-grade{margin-bottom:16px}
+.lnk{font:inherit;color:var(--seal);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
 .situ-det td{background:var(--canvas);padding:8px}
 .situ-lista{list-style:none;margin:0;padding:0;display:grid;gap:4px;max-height:280px;overflow:auto}
 .situ-lista li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 8px;background:var(--paper);border-radius:4px;font-size:13px}
@@ -1216,8 +1216,7 @@ table.editor textarea{min-height:60px;resize:vertical}
         <p id="indObra"></p>
       </div>
 <div id="acompanhamento">
-      <div class="painel-stats" id="painelStats"></div>
-      <div class="panel">
+      <div class="panel" id="painelPendPainel">
         <div class="panel-head"><h3>Reinspeções pendentes</h3><span class="count" id="painelPendCount"></span></div>
         <ul class="docs" id="painelPend"></ul>
         <div class="empty" id="painelPendVazio" style="display:none"><b>Nenhuma reinspeção pendente</b>Todos os itens reprovados desta obra já foram reinspecionados.</div>
@@ -1238,7 +1237,7 @@ table.editor textarea{min-height:60px;resize:vertical}
 </div>
       <div class="view-head" style="margin:30px 0 14px">
         <h2 style="font-size:20px">Evolução e desempenho</h2>
-        <p>Escolha a FVS, a empreiteira e o período. Os quadros acima consideram a obra inteira.</p>
+        <p>Os números abaixo mudam com a FVS e a empreiteira escolhidas. O período muda só os gráficos por semana.</p>
       </div>
       <div class="toolbar">
         <select id="indFvs" aria-label="FVS" style="flex:1 1 320px;min-width:0;max-width:100%"></select>
@@ -4446,40 +4445,13 @@ function renderPainel(){
   const {cobertura}=resumoObra();
   renderCobertura(cobertura);
 }
-// Acompanhamento (fica no topo de Indicadores): números da obra, reinspeções pendentes,
+// Acompanhamento (fica no topo de Indicadores): reinspeções pendentes,
 // envios com problema e fichas paradas
 function renderAcompanhamento(){
-  const elStats=$("#painelStats"); if(!elStats) return;
-  if(!obra){ elStats.innerHTML=""; return; }
+  const elPend=$("#painelPend"); if(!elPend) return;
+  if(!obra){ elPend.innerHTML=""; return; }
   if(!$("#view-indicadores").classList.contains("active")) return;
-  const {fichas,modelosOrd,cobertura,totConc,totalPrevisto,pend}=resumoObra();
-
-  // ---- aprovados de primeira no mês corrente: A / (A + R + AR) ----
-  const ym=hojeLocalISO().slice(0,7);
-  let a1=0,r1=0,ar1=0;
-  fichas.forEach(({p,m})=>itensRespondiveis(m).forEach(it=>{
-    const x=p.respostas[it.n];
-    if(!x||!x.data||x.data.slice(0,7)!==ym) return;
-    // "de primeira" = aprovado sem nenhuma reprovação no histórico do item
-    if(x.resultado==="A"&&!(x.ciclos||[]).length) a1++; else if(x.resultado==="R") r1++; else if(x.resultado==="AR"||x.resultado==="A") ar1++;
-  }));
-  const base=a1+r1+ar1;
-
-  // ---- indicadores (sem repetir filtros da aba Preenchimentos) ----
-  const antiga=pend.length&&pend[0].dias!=null?pend[0].dias:null;
-  const cards=[
-    {cls:"ok",val:totalPrevisto?Math.round(totConc/totalPrevisto*100)+"%":"—",rot:"Cobertura concluída",
-      sub:totalPrevisto?(totConc+" de "+totalPrevisto+" fichas previstas ("+modelosOrd.length+(modelosOrd.length===1?" FVS":" FVS")+" × "+obra.casas+" casas)"):"nenhum modelo de FVS cadastrado"},
-    {cls:"reinsp",val:pend.length,rot:"Reinspeções pendentes",ancora:pend.length>0,
-      sub:pend.length?("itens reprovados em aberto"+(antiga!=null?" · o mais antigo há "+antiga+(antiga===1?" dia":" dias"):"")):"nenhum item reprovado em aberto"},
-    {cls:"conf",val:base?Math.round(a1/base*100)+"%":"—",rot:"Aprovados de primeira (mês)",
-      sub:base?(a1+" de "+base+" itens inspecionados no mês"):"sem itens inspecionados neste mês"}
-  ];
-  elStats.innerHTML=cards.map(c=>{
-    const interno='<b>'+c.val+'</b><span class="rot">'+c.rot+'</span><small>'+c.sub+'</small>';
-    return c.ancora?'<button type="button" class="pn-card '+c.cls+'" data-pnancora="1">'+interno+'</button>'
-                   :'<div class="pn-card '+c.cls+'">'+interno+'</div>';
-  }).join("");
+  const {fichas,pend}=resumoObra();
 
   // ---- lista de reinspeções pendentes ----
   const LIM=10;
@@ -4764,7 +4736,8 @@ $("#btnGuia").addEventListener("click",abrirGuia);
 const NOVIDADES=[
   {data:"2026-10-15.3",titulo:"Indicadores reorganizados",itens:[
     "Reinspeções pendentes, envios com problema e fichas paradas agora ficam no topo de Indicadores.",
-    "O Painel da obra ficou só com o mapa das casas e a cobertura de cada FVS."]},
+    "O Painel da obra ficou só com o mapa das casas e a cobertura de cada FVS.",
+    "Indicadores sem números repetidos: cada número aparece uma vez só, e o aprovado de primeira do mês aparece junto com o total."]},
   {data:"2026-10-15.2",titulo:"Atualização de 15/10 (tarde)",itens:[
     "Fotos saem com data, hora e localização (GPS) escritas na própria imagem.",
     "Equipe de execução agora é escolhida da lista de empreiteiras e é obrigatória para gerar o documento.",
@@ -4945,10 +4918,12 @@ function reprovacoesDoItem(r){
   else if(r.resultado==="AR"&&!(r.ciclos||[]).length) lista.push({em:r.data||null, corrigidoEm:(r.reinspecao&&r.reinspecao.data)||null});
   return lista;
 }
-function indPrimeira(fichas){
+function indPrimeira(fichas,mes){
   let ok=0,total=0;
   fichas.forEach(({p,m})=>itensRespondiveis(m).forEach(it=>{ const r=p.respostas[it.n];
-    if(!r||!r.resultado||r.resultado==="NA") return; total++; if(!numReprovacoes(r)) ok++; }));
+    if(!r||!r.resultado||r.resultado==="NA") return;
+    if(mes&&!(r.data&&r.data.slice(0,7)===mes)) return;
+    total++; if(!numReprovacoes(r)) ok++; }));
   return {ok,total};
 }
 function calcularIndicadores(fvsId,semanas,o,lista){
@@ -5002,7 +4977,7 @@ function calcularIndicadores(fvsId,semanas,o,lista){
   const acum=[]; concSem.reduce((s,v,i)=>(acum[i]=s+v),antesIni);
   // indicadores do topo
   const previstas=o.casas*mods.length, concluidas=conc.length;
-  const prim=indPrimeira(fichas);
+  const prim=indPrimeira(fichas), primMes=indPrimeira(fichas,hoje.slice(0,7));
   const abertas=base.pend.filter(x=>mods.some(m=>m.id===x.m.id));
   const tempos=[].concat(...Object.values(porFvs).map(f=>f.tempos));
   const ult4=concSem.slice(-4), ritmo=ult4.length?ult4.reduce((a,b)=>a+b,0)/ult4.length:0;
@@ -5017,7 +4992,7 @@ function calcularIndicadores(fvsId,semanas,o,lista){
     });
   });
   const corrigidas=reps.filter(x=>x.corrigidoEm).length;
-  return {situ,corrigidas,mods,fichas,sem,concSem,repSem,corSem,acum,previstas,concluidas,prim,abertas,tempos,ritmo,
+  return {situ,corrigidas,mods,fichas,sem,concSem,repSem,corSem,acum,previstas,concluidas,prim,primMes,abertas,tempos,ritmo,
     pareto:Object.values(pareto).sort((a,b)=>b.n-a.n), porQuadra:Object.values(porQuadra).sort((a,b)=>a.q.localeCompare(b.q)), porFvs:Object.values(porFvs), impl,
     porEquipe:Object.values(porEquipe).map(e=>Object.assign(e,{nome:Object.entries(e.grafias).sort((a,b)=>b[1]-a[1]||(a[0]===a[0].toUpperCase())-(b[0]===b[0].toUpperCase())||a[0].localeCompare(b[0]))[0][0]})).sort((a,b)=>b.fichas-a.fichas||a.nome.localeCompare(b.nome,"pt-BR")),
     semEquipe};
@@ -5097,9 +5072,9 @@ function renderIndicadores(opts){
   const kpi=(rot,val,sub)=>'<div class="ind-kpi"><span>'+rot+'</span><b>'+val+'</b><small>'+sub+'</small></div>';
   let h='<div class="ind-kpis">'+
     kpi("Fichas concluídas",fmtNum(d.concluidas),fmtPct(d.concluidas,d.previstas)+" das "+fmtNum(d.previstas)+" previstas")+
-    kpi("Aprovado de primeira",fmtPct(d.prim.ok,d.prim.total),fmtNum(d.prim.ok)+" de "+fmtNum(d.prim.total)+" itens respondidos")+
-    kpi("Reprovações em aberto",fmtNum(d.abertas.length),maisAntiga!=null?"a mais antiga há "+maisAntiga+(maisAntiga===1?" dia":" dias"):"nenhuma aguardando reinspeção")+
-    kpi("Tempo médio até corrigir",tm==null?"—":(Math.round(tm*10)/10).toLocaleString("pt-BR")+" dias",tm==null?"sem correções registradas":"da reprovação à reinspeção ("+d.tempos.length+")")+
+    kpi("Aprovado de primeira",fmtPct(d.prim.ok,d.prim.total),fmtNum(d.prim.ok)+" de "+fmtNum(d.prim.total)+" itens desde o início"+(d.primMes.total?" · "+fmtPct(d.primMes.ok,d.primMes.total)+" neste mês":""))+
+    kpi("Reprovações em aberto",fmtNum(d.abertas.length),(maisAntiga!=null?"a mais antiga há "+maisAntiga+(maisAntiga===1?" dia":" dias"):"nenhuma aguardando reinspeção")+(d.abertas.length?' · <button type="button" class="lnk" data-irancora="pend">ver a lista</button>':''))+
+    kpi("Tempo médio até corrigir",tm==null?"—":(Math.round(tm*10)/10).toLocaleString("pt-BR")+" dias",(d.corrigidas?fmtNum(d.corrigidas)+(d.corrigidas===1?" reprovação corrigida":" reprovações corrigidas"):"sem correções registradas")+(tm==null?"":" · da reprovação à reinspeção"))+
     kpi("Ritmo (fichas por semana)",(Math.round(d.ritmo*10)/10).toLocaleString("pt-BR"),proj?"no ritmo atual, ~"+proj+(proj===1?" semana":" semanas")+" para concluir":(restante>0?"sem conclusões nas últimas 4 semanas":"todas as fichas previstas concluídas"))+
   '</div>';
   h+=situacaoHTML(d);
@@ -5200,21 +5175,11 @@ function situacaoHTML(d){
     return '<tr'+(abre?' class="situ-lin" data-situ="'+g.k+'" tabindex="0" role="button" aria-expanded="'+(indSituAberta===g.k)+'"':'')+' data-k="'+g.k+'"><td>'+cel+'</td><td class="num">'+fmtNum(g.n)+'</td><td class="num">'+pct(g.n)+'</td><td class="seta">'+(abre?'<span>›</span>':'')+'</td></tr>'+
       (abre&&indSituAberta===g.k?'<tr class="situ-det"><td colspan="4">'+situListaHTML(g)+'</td></tr>':'');
   }).join("");
-  const fichasAb=new Set(d.abertas.map(x=>x.p.id)).size;
-  const box=(cls,rot,n,sub,ir)=>'<'+(ir?'button type="button" data-irancora="pend"':'div')+' class="reinsp-box2 '+cls+'"><span class="rb-tit">'+rot+'</span><b>'+fmtNum(n)+'</b><small>'+sub+'</small></'+(ir?'button':'div')+'>';
-  return '<div class="ind-grade situ-grade">'+
+  return '<div class="situ-grade">'+
     '<div class="panel"><div class="panel-head"><h3>Situação das fichas</h3><span class="count">'+fmtNum(total)+' previstas</span></div><div class="panel-body situ-corpo">'+
       roscaSVG(grupos,total)+
       '<div class="situ-tab"><table class="ind-tab"><thead><tr><th>Situação</th><th class="num">Total</th><th class="num">%</th><th></th></tr></thead><tbody>'+linhas+'</tbody></table>'+
       '<p class="note" style="margin:8px 0 0">Cada ficha prevista é uma FVS numa casa. Toque numa linha para ver as fichas.</p></div>'+
-    '</div></div>'+
-    '<div class="panel"><div class="panel-head"><h3>Reinspeções</h3><span class="count">itens reprovados</span></div><div class="panel-body">'+
-      '<div class="reinsp-boxes">'+
-        box("ab","Aguardando reinspeção",d.abertas.length,"itens reprovados em aberto",d.abertas.length>0)+
-        box("ok","Corrigidas",d.corrigidas,"reprovações com reinspeção aprovada")+
-        box("fi","Fichas afetadas",fichasAb,"fichas com ao menos um item em aberto")+
-      '</div>'+
-      '<p class="note" style="margin:12px 0 0">'+(d.abertas.length?'Toque em “Aguardando reinspeção” para ir à lista de reinspeções pendentes, no topo desta aba.':'Nenhum item reprovado aguardando reinspeção nesta seleção.')+'</p>'+
     '</div></div>'+
   '</div>';
 }
