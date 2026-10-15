@@ -273,6 +273,21 @@ body.alto-contraste .item-card.atual{box-shadow:0 0 0 4px #0A3B78}
 #painelCobertura[data-filtro="aberto"] .mp:not(.aberto),
 #painelCobertura[data-filtro="sem"] .mp.concluida,#painelCobertura[data-filtro="sem"] .mp.reinsp,#painelCobertura[data-filtro="sem"] .mp.aberto{opacity:.14}
 #painelCobertura[data-filtro] .qd-card{transition:opacity .18s}
+/* ---- Renomear FVS / documento (conta de controle) ---- */
+#dlgNome{position:fixed;inset:0;z-index:85;background:rgba(14,28,36,.6);display:none;align-items:center;justify-content:center;padding:16px}
+#dlgNome.show{display:flex}
+#dlgNome .dlg-caixa{background:var(--paper);color:var(--ink);border-radius:10px;width:min(640px,100%);max-height:100%;overflow:auto;box-shadow:0 20px 50px -12px rgba(0,0,0,.5)}
+#dlgNome .dlg-topo{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+#dlgNome .dlg-topo b{font-size:16px}
+#dlgNome .dlg-corpo{padding:16px 18px}
+#dlgNome .dlg-orig{font-size:12.5px;color:var(--ink3);background:var(--line2);border-radius:6px;padding:8px 10px;margin-bottom:14px;white-space:pre-wrap;word-break:break-word}
+#dlgNome .dlg-orig b{color:var(--ink2);font-weight:600}
+#dlgNome .dlg-linha{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+#dlgNome .dlg-linha .field:first-child{grid-column:1/-1}
+#dlgNome .dlg-sugerir{font:inherit;font-size:13px;border:1px dashed var(--seal);color:var(--seal);background:var(--seal-soft);border-radius:6px;padding:7px 12px;cursor:pointer;margin:-4px 0 14px}
+#dlgNome .dlg-acoes{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;padding:12px 18px;border-top:1px solid var(--line)}
+#dlgNome .dlg-acoes .btn{width:auto}
+@media (max-width:640px){#dlgNome{padding:0;align-items:flex-end}#dlgNome .dlg-caixa{border-radius:12px 12px 0 0}#dlgNome .dlg-linha{grid-template-columns:1fr 1fr}#dlgNome .dlg-linha .field:first-child{grid-column:1/-1}}
 .sync-pill{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:12px;border:0;cursor:pointer;background:#F1DFA6;color:#5C4508;white-space:nowrap}
 .sync-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.75}
 .sync-pill.enviando{background:#D7E7EE;color:#1E5368}
@@ -1131,6 +1146,23 @@ table.editor textarea{min-height:60px;resize:vertical}
   </div>
 </div>
 <div id="vzTip" role="tooltip"></div>
+<div id="dlgNome" role="dialog" aria-modal="true" aria-labelledby="dlgNomeTit">
+  <div class="dlg-caixa">
+    <div class="dlg-topo"><b id="dlgNomeTit">Nome oficial da FVS</b><button type="button" class="an-fechar" data-dlgfechar aria-label="Fechar">×</button></div>
+    <div class="dlg-corpo">
+      <div class="dlg-orig" id="dlgNomeOrig"></div>
+      <div class="dlg-linha">
+        <div class="field"><label for="dlgNomeTitulo" id="dlgNomeRot">Nome oficial</label><input type="text" id="dlgNomeTitulo" autocomplete="off"></div>
+        <div class="field dlg-so-modelo"><label for="dlgNomeCodigo">Código</label><input type="text" id="dlgNomeCodigo" autocomplete="off"></div>
+        <div class="field dlg-so-modelo"><label for="dlgNomeRev">Revisão</label><input type="text" id="dlgNomeRev" autocomplete="off"></div>
+      </div>
+      <div class="field dlg-so-modelo"><label for="dlgNomeServico">Serviço / subtítulo</label><input type="text" id="dlgNomeServico" autocomplete="off"></div>
+      <button type="button" class="dlg-sugerir" id="dlgNomeSugerir">✨ Arrumar a formatação automaticamente</button>
+      <p class="note" id="dlgNomeNota" style="margin:0"></p>
+    </div>
+    <div class="dlg-acoes"><button type="button" class="btn" data-dlgfechar>Cancelar</button><button type="button" class="btn btn-primary" id="dlgNomeSalvar">Salvar nome</button></div>
+  </div>
+</div>
 <div id="cargaBarra" aria-hidden="true"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -2418,7 +2450,7 @@ function renderRepo(){
     const li=document.createElement("li");
     li.innerHTML='<div class="doc-row"><div class="ext '+classeExt(d.ext)+'">'+d.ext.toUpperCase()+'</div>'+
       '<div class="doc-meta"><b>'+esc(d.nome)+'<span class="vtag">v'+d.versaoAtual+'</span>'+(temModelo?'<span class="vtag">questionário ativo</span>':(EXT_PLANILHA.includes(d.ext)?'<span class="vtag warn">sem leitura automática</span>':''))+'</b><span>'+bytes(u.tamanho)+" · atualizado em "+dataHora(d.atualizadoEm)+(u.enviadoPor?" por "+esc(u.enviadoPor):"")+'</span></div>'+
-      '<div class="row-actions"><button class="icon-btn" data-hist="'+d.id+'">Histórico</button><button class="icon-btn" data-dl="'+d.id+'">Baixar</button><button class="icon-btn" data-mod="'+d.id+'">'+(temModelo?"Editar questionário":"Criar questionário")+'</button><button class="icon-btn danger" data-rm="'+d.id+'">Remover</button></div></div>'+
+      '<div class="row-actions"><button class="icon-btn" data-rendoc="'+d.id+'">Renomear</button><button class="icon-btn" data-hist="'+d.id+'">Histórico</button><button class="icon-btn" data-dl="'+d.id+'">Baixar</button><button class="icon-btn" data-mod="'+d.id+'">'+(temModelo?"Editar questionário":"Criar questionário")+'</button><button class="icon-btn danger" data-rm="'+d.id+'">Remover</button></div></div>'+
       '<div class="hist" id="h-'+d.id+'"></div>';
     let t='<table><thead><tr><th>Versão</th><th>Enviado em</th><th>Responsável</th><th>Tamanho</th><th></th></tr></thead><tbody>';
     [...d.versoes].reverse().forEach(v=>{
@@ -2437,10 +2469,94 @@ function renderModelos(){
   modelos.forEach(m=>{
     const li=document.createElement("li");
     li.innerHTML='<div class="doc-row"><div class="ext">FVS</div><div class="doc-meta"><b>'+esc(m.titulo)+(m.demonstracao?'<span class="vtag">demonstração</span>':'')+'</b><span>'+m.itens.filter(i=>!i.secao).length+' itens · '+esc(m.codigo||"sem código")+(m.revisao?" · rev. "+esc(m.revisao):"")+'</span></div>'+
-      '<div class="row-actions"><button class="icon-btn" data-edit="'+m.id+'">Editar</button><button class="icon-btn danger" data-delmod="'+m.id+'">Excluir</button></div></div>';
+      '<div class="row-actions"><button class="icon-btn" data-renmod="'+m.id+'">Renomear</button><button class="icon-btn" data-edit="'+m.id+'">Editar</button><button class="icon-btn danger" data-delmod="'+m.id+'">Excluir</button></div></div>';
     ul.appendChild(li);
   });
 }
+
+/* ---------------- Nome oficial (conta de controle) ----------------
+   Os nomes vindos das planilhas chegam em maiúsculas, com quebras de linha e
+   sobras como "Identificação: FVS.115" ou "(1).xlsx". O controle define aqui o
+   nome oficial; o nome original fica guardado e a troca vai para o registro. */
+const MINUSCULAS_PT=new Set(["a","à","ao","aos","as","com","da","das","de","do","dos","e","em","na","nas","no","nos","o","os","ou","para","pela","pelo","por","sem","sob","sobre"]);
+function capitalizarPT(frase,primeiraMaiuscula){
+  return frase.split(/(\s+)/).map((w,i)=>{
+    if(/^\s+$/.test(w)||!w) return w;
+    if(/\d/.test(w)&&/[A-Z]/.test(w)) return w;                       // FVS.115, 3MM, 02A…
+    const lw=w.toLocaleLowerCase("pt-BR");
+    if(i>0&&MINUSCULAS_PT.has(lw)) return lw;
+    return primeiraMaiuscula||i===0 ? lw.charAt(0).toLocaleUpperCase("pt-BR")+lw.slice(1) : lw;
+  }).join("");
+}
+function formatarNomeOficial(bruto,codigo){
+  let t=String(bruto||"").replace(/\r/g,"");
+  t=t.replace(/\s*Identifica[cç][aã]o\s*:\s*[\w.\-]+\s*$/i,"");      // "Identificação: FVS.115"
+  if(codigo) t=t.replace(new RegExp("\\s*[-–—:]?\\s*"+codigo.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\s*$","i"),"");
+  const partes=t.split(/\n+/).map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean);
+  const fmt=partes.map(x=>{ const letras=x.replace(/[^A-Za-zÀ-ÿ]/g,""), mai=letras.replace(/[^A-ZÀ-Þ]/g,"");
+    return letras&&mai.length/letras.length>0.6 ? capitalizarPT(x,true) : x; });
+  return fmt.join(" — ").replace(/\s+—\s+—\s+/g," — ");
+}
+function formatarNomeArquivo(nome){
+  const m=String(nome||"").match(/^(.*?)(\.[A-Za-z0-9]{1,5})?$/), base=m[1], ext=m[2]||"";
+  let b=base.replace(/_/g," ").replace(/\s*\(\d+\)\s*$/,"").replace(/\s+/g," ").trim();
+  const letras=b.replace(/[^A-Za-zÀ-ÿ]/g,""), mai=letras.replace(/[^A-ZÀ-Þ]/g,"");
+  if(letras&&mai.length/letras.length>0.6) b=capitalizarPT(b,true);
+  return b+ext.toLowerCase();
+}
+let dlgNomeAlvo=null;
+function abrirRenomear(tipo,obj){
+  if(!ehControle) return toast("Somente a conta de controle pode alterar nomes.");
+  if(!obj) return;
+  dlgNomeAlvo={tipo,obj};
+  const dlg=$("#dlgNome"), modelo=tipo==="modelo";
+  dlg.querySelectorAll(".dlg-so-modelo").forEach(el=>el.style.display=modelo?"":"none");
+  $("#dlgNomeTit").textContent=modelo?"Nome oficial da FVS":"Nome do documento no Repositório";
+  $("#dlgNomeRot").textContent=modelo?"Nome oficial":"Nome do arquivo";
+  const original=modelo?(obj.tituloOriginal||obj.titulo):(obj.nomeOriginal||obj.nome);
+  $("#dlgNomeOrig").innerHTML='<b>Como veio da planilha:</b> '+esc(original);
+  $("#dlgNomeTitulo").value=String(modelo?obj.titulo:obj.nome).replace(/\s*\r?\n\s*/g," — ");
+  if(modelo){ $("#dlgNomeCodigo").value=obj.codigo||""; $("#dlgNomeRev").value=obj.revisao||""; $("#dlgNomeServico").value=obj.servico||""; }
+  $("#dlgNomeNota").textContent=modelo
+    ? "O nome oficial aparece no site e no cabeçalho do documento e do PDF de todas as fichas desta FVS, inclusive as já preenchidas. Os itens do questionário não mudam."
+    : "Muda o nome mostrado no Repositório e o nome do arquivo ao baixar. O conteúdo da planilha não muda.";
+  dlg.classList.add("show"); setTimeout(()=>$("#dlgNomeTitulo").focus(),50);
+}
+function fecharRenomear(){ $("#dlgNome").classList.remove("show"); dlgNomeAlvo=null; }
+$("#dlgNome").addEventListener("click",e=>{ if(e.target.id==="dlgNome"||e.target.closest("[data-dlgfechar]")) fecharRenomear(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&$("#dlgNome").classList.contains("show")) fecharRenomear(); });
+$("#dlgNomeSugerir").addEventListener("click",()=>{
+  if(!dlgNomeAlvo) return;
+  const {tipo,obj}=dlgNomeAlvo;
+  if(tipo==="modelo"){
+    const cod=$("#dlgNomeCodigo").value.trim()||obj.codigo||"";
+    const nome=formatarNomeOficial(obj.tituloOriginal||obj.titulo,cod);
+    $("#dlgNomeTitulo").value=nome;
+    if(!$("#dlgNomeServico").value.trim()){ const partes=nome.split(" — "); if(partes.length>1){ const sv=partes.slice(1).join(" — "); $("#dlgNomeServico").value=sv.charAt(0)+sv.slice(1).toLocaleLowerCase("pt-BR"); } }
+  } else $("#dlgNomeTitulo").value=formatarNomeArquivo(obj.nomeOriginal||obj.nome);
+});
+$("#dlgNomeSalvar").addEventListener("click",async()=>{
+  if(!dlgNomeAlvo) return;
+  const {tipo,obj}=dlgNomeAlvo, novo=$("#dlgNomeTitulo").value.replace(/\s+/g," ").trim();
+  if(!novo) return toast("Informe o nome.");
+  if(tipo==="modelo"){
+    const antes=obj.titulo;
+    if(!obj.tituloOriginal) obj.tituloOriginal=obj.titulo;
+    obj.titulo=novo; obj.codigo=$("#dlgNomeCodigo").value.trim(); obj.revisao=$("#dlgNomeRev").value.trim(); obj.servico=$("#dlgNomeServico").value.trim();
+    obj.atualizadoEm=new Date().toISOString(); obj.renomeadoPor=user?user.email:"";
+    await DB.gravar("modelos",obj);
+    await registrar("Nome oficial da FVS alterado",String(antes).replace(/\s+/g," ")+" → "+novo);
+  } else {
+    const ext=(obj.nome.match(/\.[A-Za-z0-9]{1,5}$/)||[""])[0];
+    const nome=/\.[A-Za-z0-9]{1,5}$/.test(novo)?novo:novo+ext;
+    const antes=obj.nome;
+    if(!obj.nomeOriginal) obj.nomeOriginal=obj.nome;
+    obj.nome=nome; obj.atualizadoEm=new Date().toISOString();
+    await DB.gravar("documentos",obj);
+    await registrar("Documento renomeado",antes+" → "+nome);
+  }
+  fecharRenomear(); toast("Nome salvo."); await render();
+});
 
 function abrirEditor(m){
   if(!ehControle) return toast("Somente a conta de controle pode editar modelos.");
@@ -3995,6 +4111,7 @@ $("#filtroUnidadePre").addEventListener("input",renderMeus);
 
 $("#list").addEventListener("click",async e=>{
   const t=e.target;
+  if(t.dataset.rendoc) return abrirRenomear("documento",docs.find(d=>d.id===t.dataset.rendoc));
   if(t.dataset.dl){ const d=docs.find(x=>x.id===t.dataset.dl); return baixarVersao(d.id,d.versaoAtual); }
   if(t.dataset.dlv){ const [id,v]=t.dataset.dlv.split("|"); return baixarVersao(id,v); }
   if(t.dataset.hist) return $("#h-"+t.dataset.hist).classList.toggle("open");
@@ -4026,6 +4143,7 @@ $("#list").addEventListener("click",async e=>{
 /* ---------------- Eventos: modelos ---------------- */
 $("#listaModelos").addEventListener("click",async e=>{
   const t=e.target;
+  if(t.dataset.renmod) return abrirRenomear("modelo",modelos.find(m=>m.id===t.dataset.renmod));
   if(t.dataset.edit) return abrirEditor(modelos.find(m=>m.id===t.dataset.edit));
   if(t.dataset.delmod){
     if(!ehControle) return toast("Somente a conta de controle pode excluir modelos.");
