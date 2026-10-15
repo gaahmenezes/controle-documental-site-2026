@@ -52,7 +52,8 @@ As tabelas e índices são criados sozinhos quando o servidor sobe (`src/db.js` 
 | Primeira tela demora ~30 s | Render gratuito "dormiu" | Conferir se o cron-job.org está ativo |
 | Site mostra "modo local" | API fora do ar ou chave diferente | Testar `/api/status`; conferir `API_KEY` × `CONFIG.apiKey` |
 | Erro 500 na API | Banco inacessível | Ver logs no Render; conferir `DATABASE_URL` e o painel do Neon |
-| Fotos antigas sumiram | Disco do Render gratuito é apagado a cada deploy | Pendente: mover fotos para armazenamento durável |
+| Foto antiga não abre | Foi enviada antes de 14/10/2026, quando as fotos ficavam no disco do Render | Fotos novas ficam no banco; as perdidas aparecem listadas no log do servidor |
+| Pílula "Sem conexão · N para enviar" | Aparelho sem internet ou servidor acordando | Nada a fazer: o site envia sozinho quando a conexão volta (tocar na pílula tenta na hora) |
 
 ## Segurança
 
@@ -76,3 +77,20 @@ Preparado nas branches `login-365` dos dois repositórios (ainda não publicado)
    A partir daí, a API só responde a quem entrou com conta @vivaconstrucoes.com.br.
 
 Voltar atrás: `AUTH_MODO=chave` no Render (e o `apiKey` de volta no site, se já tiver sido apagado).
+
+## Sem internet na obra
+
+Com o servidor configurado, o site guarda no próprio aparelho tudo o que
+recebe e tudo o que é gravado. Sem conexão, as alterações (respostas, fotos,
+fichas novas) entram numa fila no aparelho e são enviadas sozinhas quando a
+internet volta — mesmo que o site tenha sido fechado e aberto de novo.
+
+- A pílula no topo mostra "Sem conexão · N para enviar" e some quando tudo foi enviado.
+- Se a mesma ficha foi criada em dois aparelhos sem internet, fica a versão alterada por último.
+- Limpar os dados do navegador apaga a fila: com pendências na pílula, não limpe antes de enviar.
+
+## Backup
+
+Cópia diária automática do banco (dados e fotos) na branch `backup` do
+repositório da API — veja o README de lá. Precisa do segredo `DATABASE_URL`
+configurado no GitHub (Settings → Secrets and variables → Actions).

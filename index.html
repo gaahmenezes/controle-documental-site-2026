@@ -101,6 +101,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--seal)}
 #app{display:none;min-height:100svh;flex-direction:column}
 header.topbar{background:var(--ink);border-bottom:3px solid var(--laranja);color:#fff;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;position:sticky;top:0;z-index:20;flex-wrap:wrap}
 .who{display:flex;align-items:center;gap:10px;font-size:13px;color:#B7C7CD;flex-wrap:wrap}
+.sync-pill{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:12px;border:0;cursor:pointer;background:#F1DFA6;color:#5C4508;white-space:nowrap}
+.sync-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.75}
+.sync-pill.enviando{background:#D7E7EE;color:#1E5368}
+.sync-pill.enviando::before{animation:syncPulsa 1s ease-in-out infinite}
+.sync-pill[hidden]{display:none}
+@keyframes syncPulsa{50%{opacity:.2}}
 .avatar{width:30px;height:30px;border-radius:50%;background:#2B4049;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:600}
 .linkbtn{background:none;border:none;color:#93A8B0;cursor:pointer;font-size:13px;text-decoration:underline;text-underline-offset:3px;padding:6px}
 .linkbtn:hover{color:#fff}
@@ -993,11 +999,20 @@ const DB = (() => {
     if(t) h["Authorization"]="Bearer "+t;
     return h;
   }
+  // Falha "de rede": sem internet, servidor dormindo/fora do ar, tempo esgotado ou
+  // sessão vencida. Nesses casos a alteração fica na fila do aparelho e é enviada depois.
+  class ErroRede extends Error {}
+  const statusRepetivel=st=>st>=500||st===401||st===408||st===429;
+  function falha(r,msg){ return statusRepetivel(r.status) ? new ErroRede(msg+" ("+r.status+")") : new Error(msg+" ("+r.status+")"); }
   async function apiFetch(caminho,opts){
     opts=opts||{};
     const json=opts.body!=null && !(opts.body instanceof FormData);
     const headers=Object.assign({}, json?{"Content-Type":"application/json"}:{}, await headersAuth(), opts.headers||{});
-    const r=await fetch(urlApi(caminho),Object.assign({},opts,{headers}));
+    const ctl=new AbortController(), tm=setTimeout(()=>ctl.abort(), opts.timeout||25000);
+    let r;
+    try{ r=await fetch(urlApi(caminho),Object.assign({},opts,{headers,signal:ctl.signal})); }
+    catch(e){ throw new ErroRede("Sem conexão com o servidor"); }
+    finally{ clearTimeout(tm); }
     if(r.status===401 && typeof Auth365!=="undefined") Auth365.respostaNaoAutorizada(r.clone());
     return r;
   }
@@ -1011,70 +1026,48 @@ const DB = (() => {
     }catch(e){ return false; }
     finally{ clearTimeout(temporizador); }
   }
-  // Se o backend estiver "dormindo" (comum no plano gratuito do Render após
-  // alguns minutos sem uso), a primeira tentativa acima desiste rápido para
-  // não travar a tela de login. Continuamos tentando em segundo plano; assim
-  // que o servidor acordar, o site troca para a base compartilhada sozinho,
-  // sem precisar recarregar a página.
-  function tentarReconectarRemotoEmSegundoPlano(){
-    let tentativas=0;
-    const maxTentativas=8;
-    const intervalo=setInterval(async ()=>{
-      tentativas++;
-      const ok=await tentarRemoto(6000);
-      if(ok){
-        clearInterval(intervalo);
-        modo="remoto";
-        const appVisivel=document.getElementById("app") && document.getElementById("app").style.display==="flex";
-        if(appVisivel && typeof toast==="function") toast("Servidor conectado — a base compartilhada está ativa agora.");
-        if(appVisivel && typeof render==="function") render();
-      } else if(tentativas>=maxTentativas){
-        clearInterval(intervalo);
-      }
-    },7000);
-  }
   async function remotoListarJson(l,filtro){
     // o servidor novo filtra pela obra; o antigo ignora o parâmetro e o filtro é refeito aqui
     const qs=filtro?Object.keys(filtro).filter(k=>filtro[k]!=null).map(k=>encodeURIComponent(k)+"="+encodeURIComponent(filtro[k])).join("&"):"";
     const r=await apiFetch("/api/colecoes/"+l+(qs?"?"+qs:""));
-    if(!r.ok) throw new Error("Falha ao listar "+l+" ("+r.status+")");
+    if(!r.ok) throw falha(r,"Falha ao listar "+l);
     return r.json();
   }
   async function remotoCriarJson(l,reg){
     // "If-None-Match: *" = só cria se ainda não existir (o servidor novo responde 409 se já existir)
     const r=await apiFetch("/api/colecoes/"+l+"/"+encodeURIComponent(reg.id),{method:"PUT",headers:{"If-None-Match":"*"},body:JSON.stringify(reg)});
     if(r.status===409){ let ex=null; try{ const j=await r.json(); ex=j&&j.existente?j.existente:null; }catch(e){} return {criado:false,existente:ex}; }
-    if(!r.ok) throw new Error("Falha ao criar "+l+" ("+r.status+")");
+    if(!r.ok) throw falha(r,"Falha ao criar "+l);
     return {criado:true};
   }
   async function remotoObterJson(l,id){
     const r=await apiFetch("/api/colecoes/"+l+"/"+encodeURIComponent(id));
     if(r.status===404) return undefined;
-    if(!r.ok) throw new Error("Falha ao obter "+l+" ("+r.status+")");
+    if(!r.ok) throw falha(r,"Falha ao obter "+l);
     return r.json();
   }
   async function remotoGravarJson(l,reg){
     const r=await apiFetch("/api/colecoes/"+l+"/"+encodeURIComponent(reg.id),{method:"PUT",body:JSON.stringify(reg)});
-    if(!r.ok) throw new Error("Falha ao gravar "+l+" ("+r.status+")");
+    if(!r.ok) throw falha(r,"Falha ao gravar "+l);
     return reg.id;
   }
   async function remotoRemoverJson(l,id){
     const r=await apiFetch("/api/colecoes/"+l+"/"+encodeURIComponent(id),{method:"DELETE"});
-    if(!r.ok) throw new Error("Falha ao remover "+l+" ("+r.status+")");
+    if(!r.ok) throw falha(r,"Falha ao remover "+l);
   }
   async function remotoAuditoriaListar(){
     const r=await apiFetch("/api/auditoria");
-    if(!r.ok) throw new Error("Falha ao ler auditoria ("+r.status+")");
+    if(!r.ok) throw falha(r,"Falha ao ler auditoria");
     return r.json();
   }
   async function remotoAuditoriaGravar(evento){
     const r=await apiFetch("/api/auditoria",{method:"POST",body:JSON.stringify(evento)});
-    if(!r.ok) throw new Error("Falha ao gravar evento ("+r.status+")");
+    if(!r.ok) throw falha(r,"Falha ao gravar evento");
     return evento.id;
   }
   async function remotoBlobListarMeta(loja){
     const r=await apiFetch("/api/arquivos-bin/"+loja);
-    if(!r.ok) throw new Error("Falha ao listar arquivos de "+loja+" ("+r.status+")");
+    if(!r.ok) throw falha(r,"Falha ao listar arquivos de "+loja);
     return r.json();
   }
   async function remotoBlobBaixar(meta){
@@ -1089,19 +1082,207 @@ const DB = (() => {
     const {id,blob}=registro;
     const fd=new FormData();
     fd.append("id",id); fd.append("nome",blob.name||""); fd.append("arquivo",blob,blob.name||id);
-    const r=await apiFetch("/api/arquivos-bin/"+loja,{method:"POST",body:fd});
-    if(!r.ok) throw new Error("Falha ao enviar arquivo ("+r.status+")");
+    const r=await apiFetch("/api/arquivos-bin/"+loja,{method:"POST",body:fd,timeout:120000});
+    if(!r.ok) throw falha(r,"Falha ao enviar arquivo");
     return id;
   }
   async function remotoBlobObter(loja,id){
     const r=await apiFetch("/api/arquivos-bin/"+loja+"/"+encodeURIComponent(id));
     if(r.status===404) return undefined;
-    if(!r.ok) throw new Error("Falha ao consultar arquivo ("+r.status+")");
+    if(!r.ok) throw falha(r,"Falha ao consultar arquivo");
     return remotoBlobBaixar(await r.json());
   }
   async function remotoBlobRemover(loja,id){
     const r=await apiFetch("/api/arquivos-bin/"+loja+"/"+encodeURIComponent(id),{method:"DELETE"});
-    if(!r.ok) throw new Error("Falha ao remover arquivo ("+r.status+")");
+    if(!r.ok) throw falha(r,"Falha ao remover arquivo");
+  }
+
+  /* ---- cópia no aparelho + fila de envio (modo backend próprio) ----
+     Tudo o que o servidor devolve fica guardado no aparelho (IndexedDB
+     "controle_documental_cache"). Gravações vão primeiro para o aparelho e
+     depois para o servidor; se não houver conexão, entram numa fila que é
+     enviada sozinha quando a internet volta — inclusive depois de fechar e
+     reabrir o site. */
+  let cdb=null, cmem={}, online=false, sincronizando=false, timerSync=null, timerPing=null;
+  const ouvintes=[];
+  LOJAS.concat(["fila"]).forEach(l=>cmem[l]=new Map());
+  function abrirCache(){
+    return new Promise(res=>{
+      try{
+        const r=indexedDB.open("controle_documental_cache",1);
+        r.onupgradeneeded=e=>{ const d=e.target.result;
+          LOJAS.forEach(l=>{ if(!d.objectStoreNames.contains(l)) d.createObjectStore(l,{keyPath:"id"}); });
+          if(!d.objectStoreNames.contains("fila")) d.createObjectStore("fila",{keyPath:"chave"}); };
+        r.onsuccess=e=>{ cdb=e.target.result; cdb.onversionchange=()=>{ try{cdb.close();}catch(err){} }; res(true); };
+        r.onerror=()=>res(false); r.onblocked=()=>res(false);
+      }catch(e){ res(false); }
+    });
+  }
+  const cop=(loja,m,fn)=>new Promise((res,rej)=>{
+    const t=cdb.transaction(loja,m), q=fn(t.objectStore(loja));
+    q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error); t.onerror=()=>rej(t.error);
+  });
+  const cGet=async(l,id)=> cdb ? cop(l,"readonly",st=>st.get(id)) : cmem[l].get(id);
+  const cAll=async(l)=> cdb ? ((await cop(l,"readonly",st=>st.getAll()))||[]) : Array.from(cmem[l].values());
+  const cPut=async(l,r)=>{ if(cdb) return cop(l,"readwrite",st=>st.put(r)); cmem[l].set(r[l==="fila"?"chave":"id"],r); };
+  const cDel=async(l,id)=>{ if(cdb) return cop(l,"readwrite",st=>st.delete(id)); cmem[l].delete(id); };
+  const filtrar=(lista,filtro)=> !filtro ? lista : lista.filter(x=>Object.keys(filtro).every(k=>filtro[k]==null||String(x[k])===String(filtro[k])));
+
+  let seqFila=Date.now();
+  async function filaTodas(){ return (await cAll("fila")).sort((a,b)=>a.seq-b.seq); }
+  async function pendente(loja,id){ return cGet("fila",loja+"|"+id); }
+  // Uma entrada por registro: gravações seguidas da mesma ficha viram um envio só,
+  // sempre com a versão mais recente guardada no aparelho.
+  async function enfileirar(tipo,loja,id,dados){
+    const chave=loja+"|"+id, ex=await cGet("fila",chave);
+    if(ex){
+      if(tipo==="remover"&&(ex.tipo==="criar"||ex.tipo==="blob")){ await cDel("fila",chave); avisar(); return; } // nunca chegou ao servidor
+      if(tipo==="gravar"&&ex.tipo==="criar"){ avisar(); agendarSync(400); return; }
+      if(tipo==="criar"&&ex.tipo==="remover") tipo="gravar";
+    }
+    await cPut("fila",{chave,tipo,loja,id,dados:dados||null,seq:ex?ex.seq:++seqFila,tentativas:0});
+    avisar(); agendarSync(400);
+  }
+  async function contarPendentes(){ return (await cAll("fila")).length; }
+  async function avisar(){ const n=await contarPendentes().catch(()=>0); ouvintes.forEach(f=>{ try{ f({online,pendentes:n,sincronizando}); }catch(e){} }); }
+  function agendarSync(ms){ clearTimeout(timerSync); timerSync=setTimeout(()=>sincronizar(),ms||0); }
+  function marcarOnline(v){
+    const antes=online; online=v;
+    if(v&&!antes){ clearInterval(timerPing); timerPing=null; agendarSync(0); }
+    if(!v&&!timerPing) timerPing=setInterval(async()=>{ if(await tentarRemoto(8000)) marcarOnline(true); },15000);
+    if(antes!==v) avisar();
+  }
+  // Envia a fila na ordem em que as alterações foram feitas.
+  async function sincronizar(){
+    if(modo!=="remoto"||sincronizando) return;
+    let fila=await filaTodas(); if(!fila.length) return;
+    sincronizando=true; avisar();
+    let enviados=0, conflitos=0, recusados=0;
+    try{
+      for(const e of fila){
+        try{
+          if(e.tipo==="gravar"||e.tipo==="criar"){
+            const reg=await cGet(e.loja,e.id);
+            if(reg){
+              if(e.tipo==="criar"){
+                const res=await remotoCriarJson(e.loja,reg);
+                if(!res.criado){
+                  const srv=res.existente||await remotoObterJson(e.loja,e.id);
+                  // a mesma ficha foi criada em outro aparelho: fica a versão alterada por último
+                  if(srv && String(srv.atualizadoEm||"")>String(reg.atualizadoEm||"")){ await cPut(e.loja,srv); }
+                  else await remotoGravarJson(e.loja,reg);
+                  conflitos++;
+                }
+              } else await remotoGravarJson(e.loja,reg);
+            }
+          } else if(e.tipo==="remover"){
+            const r=await apiFetch("/api/colecoes/"+e.loja+"/"+encodeURIComponent(e.id),{method:"DELETE"});
+            if(!r.ok&&r.status!==404) throw falha(r,"Falha ao remover "+e.loja);
+          } else if(e.tipo==="blob"){
+            const reg=await cGet(e.loja,e.id);
+            if(reg&&reg.blob) await remotoBlobGravar(e.loja,reg);
+          } else if(e.tipo==="blobRemover"){
+            const r=await apiFetch("/api/arquivos-bin/"+e.loja+"/"+encodeURIComponent(e.id),{method:"DELETE"});
+            if(!r.ok&&r.status!==404) throw falha(r,"Falha ao remover arquivo");
+          } else if(e.tipo==="auditoria"){
+            await remotoAuditoriaGravar(e.dados);
+          }
+          await cDel("fila",e.chave); enviados++; avisar();
+        }catch(err){
+          if(err instanceof ErroRede){ marcarOnline(false); break; }
+          console.warn("Alteração recusada pelo servidor e descartada:",e,err);
+          await cDel("fila",e.chave); recusados++;
+        }
+      }
+      if(enviados) marcarOnline(true);
+    } finally {
+      sincronizando=false; await avisar();
+      const resto=await contarPendentes();
+      if(resto&&online) agendarSync(5000);
+      if(typeof toast==="function"){
+        if(recusados) toast(recusados+(recusados===1?" alteração não pôde ser enviada":" alterações não puderam ser enviadas")+" ao servidor. Confira os dados.");
+        else if(conflitos) toast("Algumas fichas também tinham sido criadas em outro aparelho — ficou a versão alterada por último.");
+        else if(enviados&&!resto) toast("Tudo enviado — as alterações feitas sem internet já estão no servidor.");
+      }
+    }
+  }
+  if(typeof window!=="undefined"){
+    window.addEventListener("online",()=>{ tentarRemoto(8000).then(ok=>{ if(ok) marcarOnline(true); }); });
+    window.addEventListener("offline",()=>marcarOnline(false));
+    document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&modo==="remoto") agendarSync(300); });
+  }
+
+  // --- leituras e gravações do modo backend próprio, passando pela cópia local ---
+  async function rListar(l,filtro){
+    if(l==="auditoria"){
+      try{ const r=await remotoAuditoriaListar(); marcarOnline(true); return r; }
+      catch(e){ if(!(e instanceof ErroRede)) throw e; marcarOnline(false);
+        return (await filaTodas()).filter(x=>x.tipo==="auditoria").map(x=>x.dados); }
+    }
+    if(LOJAS_BLOB.includes(l)){
+      try{
+        const metas=await remotoBlobListarMeta(l); marcarOnline(true);
+        const pares=await Promise.all(metas.map(m=>rObterBlob(l,m.id,m)));
+        const ids=new Set(metas.map(m=>m.id));
+        const locais=(await cAll(l)).filter(x=>!ids.has(x.id));
+        for(const x of locais) if(await pendente(l,x.id)) pares.push(x);
+        return pares.filter(Boolean);
+      }catch(e){ if(!(e instanceof ErroRede)) throw e; marcarOnline(false); return cAll(l); }
+    }
+    try{
+      const lista=await remotoListarJson(l,filtro); marcarOnline(true);
+      const doServidor=new Map(lista.map(x=>[x.id,x]));
+      const pend=new Map((await filaTodas()).filter(x=>x.loja===l).map(x=>[x.id,x]));
+      for(const x of lista) if(!pend.has(x.id)) await cPut(l,x);
+      // o que sumiu do servidor some do aparelho (menos o que ainda está para enviar)
+      for(const x of filtrar(await cAll(l),filtro)) if(!doServidor.has(x.id)&&!pend.has(x.id)) await cDel(l,x.id);
+      const res=lista.filter(x=>!pend.has(x.id));
+      for(const [id,e] of pend){ if(e.tipo==="remover") continue; const loc=await cGet(l,id); if(loc) res.push(loc); }
+      return filtrar(res,filtro);
+    }catch(e){ if(!(e instanceof ErroRede)) throw e; marcarOnline(false); return filtrar(await cAll(l),filtro); }
+  }
+  async function rObter(l,id){
+    if(LOJAS_BLOB.includes(l)) return rObterBlob(l,id);
+    if(l==="auditoria") return (await rListar("auditoria")).find(x=>x.id===id);
+    const pend=await pendente(l,id);
+    if(pend) return pend.tipo==="remover" ? undefined : cGet(l,id); // a versão do aparelho é a mais nova
+    try{
+      const r=await remotoObterJson(l,id); marcarOnline(true);
+      if(r) await cPut(l,r); else await cDel(l,id);
+      return r;
+    }catch(e){ if(!(e instanceof ErroRede)) throw e; marcarOnline(false); return cGet(l,id); }
+  }
+  // Fotos e documentos não mudam depois de enviados: a cópia do aparelho vale.
+  async function rObterBlob(l,id,meta){
+    const loc=await cGet(l,id); if(loc&&loc.blob) return loc;
+    try{
+      const reg=meta ? await remotoBlobBaixar(meta) : await remotoBlobObter(l,id);
+      if(reg){ marcarOnline(true); await cPut(l,reg).catch(()=>{}); }
+      return reg;
+    }catch(e){ if(!(e instanceof ErroRede)) throw e; marcarOnline(false); return undefined; }
+  }
+  async function rGravar(l,r){
+    if(LOJAS_BLOB.includes(l)){ await cPut(l,{id:r.id,blob:r.blob}); await enfileirar("blob",l,r.id); return r.id; }
+    if(l==="auditoria"){ await enfileirar("auditoria",l,r.id,r); return r.id; }
+    await cPut(l,r); await enfileirar("gravar",l,r.id); return r.id;
+  }
+  async function rRemover(l,id){
+    if(l==="auditoria") return;
+    await cDel(l,id);
+    await enfileirar(LOJAS_BLOB.includes(l)?"blobRemover":"remover",l,id);
+  }
+  async function rCriar(l,r){
+    const pend=await pendente(l,r.id), loc=await cGet(l,r.id);
+    if(pend&&pend.tipo!=="remover"&&loc) return {criado:false,existente:loc};
+    if(online&&!(await contarPendentes())){
+      try{
+        const res=await remotoCriarJson(l,r);
+        if(!res.criado&&!res.existente) res.existente=await remotoObterJson(l,r.id);
+        await cPut(l,res.criado?r:res.existente);
+        return res;
+      }catch(e){ if(!(e instanceof ErroRede)) throw e; marcarOnline(false); }
+    } else if(loc) return {criado:false,existente:loc};
+    await cPut(l,r); await enfileirar("criar",l,r.id); return {criado:true};
   }
 
   /* ---- nuvem compartilhada (capabilities db + assets) ---- */
@@ -1186,12 +1367,19 @@ const DB = (() => {
   }
 
   async function init(){
-    if(await tentarRemoto(5000)){ modo="remoto"; }
+    if(CONFIG.apiBaseUrl){
+      // com servidor configurado, o site trabalha sempre com ele — se estiver sem
+      // conexão (ou o servidor acordando), usa a cópia do aparelho e envia depois
+      modo="remoto";
+      const cacheOk=await abrirCache();
+      if(!cacheOk) console.warn("Sem gravação permanente no aparelho: a fila vale só nesta sessão.");
+      marcarOnline(await tentarRemoto(6000));
+      if(online) agendarSync(0);
+    }
     else if(await tentarNuvem()){ modo="claude"; }
     else { modo="local"; }
     const localOk = await abrirLocal();
     if(modo==="local" && !localOk) emMemoria=true;
-    if(modo!=="remoto" && CONFIG.apiBaseUrl) tentarReconectarRemotoEmSegundoPlano();
   }
 
   return {
@@ -1209,17 +1397,19 @@ const DB = (() => {
       if(!filtro) return lista;
       return lista.filter(x=>Object.keys(filtro).every(k=>filtro[k]==null||String(x[k])===String(filtro[k])));
     },
+    get online(){return modo!=="remoto"||online},
+    get cacheOk(){return !!cdb},
+    pendentes: ()=>modo==="remoto"?contarPendentes():Promise.resolve(0),
+    sincronizar: ()=>sincronizar(),
+    aoMudar(f){ ouvintes.push(f); avisar(); },
     async criar(l,r){
-      if(modo==="remoto"){
-        const res=await remotoCriarJson(l,r);
-        if(!res.criado&&!res.existente) res.existente=await remotoObterJson(l,r.id);
-        return res;
-      }
+      if(modo==="remoto") return rCriar(l,r);
       const ex=await this.obter(l,r.id);
       if(ex) return {criado:false,existente:ex};
       await this.gravar(l,r); return {criado:true};
     },
     async _listar(l,filtro){
+      if(modo==="remoto") return rListar(l,filtro);
       if(l==="auditoria"){
         if(modo==="remoto") return remotoAuditoriaListar();
         if(modo==="claude") return auditoriaListar();
@@ -1242,6 +1432,7 @@ const DB = (() => {
       return localGetAll(l);
     },
     async obter(l,id){
+      if(modo==="remoto") return rObter(l,id);
       if(LOJAS_BLOB.includes(l)){
         if(modo==="remoto") return remotoBlobObter(l,id);
         return blobObter(l,id);
@@ -1255,6 +1446,7 @@ const DB = (() => {
       return localGet(l,id);
     },
     async gravar(l,r){
+      if(modo==="remoto"){ if(r.id==null) r.id=(crypto.randomUUID?crypto.randomUUID():String(++seq)); return rGravar(l,r); }
       if(LOJAS_BLOB.includes(l)){
         if(modo==="remoto") return remotoBlobGravar(l,r);
         return blobGravar(l,r);
@@ -1269,6 +1461,7 @@ const DB = (() => {
       return localPut(l,r);
     },
     async remover(l,id){
+      if(modo==="remoto") return rRemover(l,id);
       if(LOJAS_BLOB.includes(l)){
         if(modo==="remoto") return remotoBlobRemover(l,id);
         return blobRemover(l,id);
@@ -1304,10 +1497,59 @@ const DB = (() => {
           }
         }
       }
+      if(modo==="remoto"){ for(const l of LOJAS.concat(["fila"])){ const atuais=await cAll(l).catch(()=>[]); for(const r of atuais) await cDel(l,r[l==="fila"?"chave":"id"]).catch(()=>{}); } avisar(); }
       if(db||emMemoria){ for(const l of LOJAS){ const atuais=await localGetAll(l).catch(()=>[]); for(const r of atuais) await localDel(l,r.id).catch(()=>{}); } }
     }
   };
 })();
+
+/* ---------------- Fotos: redução antes de guardar/enviar ----------------
+   Fotos de celular têm 3–8 MB. Reduzimos para no máximo 1600 px no lado maior,
+   em JPEG de boa qualidade (~200–400 KB): o envio fica rápido no canteiro e o
+   banco comporta milhares de fotos. Se algo falhar, usa a foto original. */
+async function prepararFoto(arq){
+  try{
+    if(!arq||!/^image\/(jpeg|png|webp|heic|heif)$/i.test(arq.type||"")) return arq;
+    const MAX=1600;
+    let fonte, w, h;
+    if(window.createImageBitmap){
+      try{ fonte=await createImageBitmap(arq,{imageOrientation:"from-image"}); }catch(e){ fonte=await createImageBitmap(arq); }
+      w=fonte.width; h=fonte.height;
+    } else {
+      fonte=await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=URL.createObjectURL(arq); });
+      w=fonte.naturalWidth; h=fonte.naturalHeight;
+    }
+    if(arq.size<450*1024 && Math.max(w,h)<=MAX) return arq;
+    const k=Math.min(1,MAX/Math.max(w,h)), cw=Math.round(w*k), ch=Math.round(h*k);
+    const cv=document.createElement("canvas"); cv.width=cw; cv.height=ch;
+    const cx=cv.getContext("2d"); cx.fillStyle="#fff"; cx.fillRect(0,0,cw,ch); cx.drawImage(fonte,0,0,cw,ch);
+    if(fonte.close) fonte.close();
+    const blob=await new Promise(res=>cv.toBlob(res,"image/jpeg",0.82));
+    if(!blob||blob.size>=arq.size) return arq;
+    const nome=(arq.name||"foto").replace(/\.[^.]+$/,"")+".jpg";
+    return new File([blob],nome,{type:"image/jpeg",lastModified:Date.now()});
+  }catch(e){ console.warn("Não foi possível reduzir a foto; usando a original.",e); return arq; }
+}
+
+/* ---------------- Situação da conexão (pílula no topo) ---------------- */
+function iniciarIndicadorSync(){
+  const pills=[...document.querySelectorAll(".who")].map(w=>{
+    const b=document.createElement("button"); b.type="button"; b.className="sync-pill"; b.hidden=true;
+    b.title="Tocar para tentar enviar agora"; b.addEventListener("click",()=>DB.sincronizar());
+    w.prepend(b); return b;
+  });
+  let estavaOnline=true;
+  DB.aoMudar(({online,pendentes,sincronizando})=>{
+    let txt="", cls="";
+    if(sincronizando&&pendentes){ txt="Enviando "+pendentes+"…"; cls="enviando"; }
+    else if(!online) txt="Sem conexão"+(pendentes?" · "+pendentes+" para enviar":"");
+    else if(pendentes) txt=pendentes+" para enviar";
+    pills.forEach(b=>{ b.hidden=!txt; b.textContent=txt; b.className="sync-pill"+(cls?" "+cls:""); });
+    // voltou a conexão com a tela aberta: atualiza com o que mudou no servidor
+    if(online&&!estavaOnline&&!sincronizando&&user&&typeof render==="function"){ const ap=document.getElementById("app"); if(ap&&ap.style.display==="flex") render(); }
+    estavaOnline=online;
+  });
+}
 
 /* ---------------- Estado ---------------- */
 let user=null, obra=null, ehControle=false;
@@ -1581,7 +1823,7 @@ async function entrar(u,restaurando){
   $("#login").style.display="none";
   telaObras();
   if(restaurando) return;
-  if(DB.motor.startsWith("Backend próprio")) toast("Conectado ao backend próprio — todos os aparelhos compartilham a mesma base.");
+  if(DB.motor.startsWith("Backend próprio")) toast(DB.online ? "Conectado ao backend próprio — todos os aparelhos compartilham a mesma base." : "Sem conexão com o servidor agora. Pode preencher normalmente: tudo fica guardado neste aparelho e é enviado quando a internet voltar.");
   else if(DB.motor.startsWith("Nuvem compartilhada")) toast("Conectado à base compartilhada do Claude — todos que abrem este link com acesso veem e editam os mesmos dados.");
   else if(DB.emMemoria) toast("Não foi possível abrir a gravação permanente (pode haver outra aba deste site aberta). A base vale apenas para esta sessão — feche outras abas do site e recarregue a página.");
   else toast("Base compartilhada não configurada: gravando apenas no armazenamento local deste navegador.");
@@ -3185,7 +3427,7 @@ $("#fichaArea").addEventListener("change", async e=>{
     return;
   }
   if(t.dataset.foto){
-    const n=t.dataset.foto, arq=t.files[0];
+    const n=t.dataset.foto, arq=await prepararFoto(t.files[0]);
     if(arq){
       const midiaId=uid();
       await DB.gravar("midias",{id:midiaId,blob:arq});
@@ -3216,7 +3458,7 @@ $("#fichaArea").addEventListener("change", async e=>{
     return;
   }
   if(t.dataset.reinspfoto){
-    const n=t.dataset.reinspfoto, arq=t.files[0];
+    const n=t.dataset.reinspfoto, arq=await prepararFoto(t.files[0]);
     if(arq){
       const midiaId=uid();
       await DB.gravar("midias",{id:midiaId,blob:arq});
@@ -3363,13 +3605,14 @@ async function prepararBase(){
   const login=await Auth365.iniciar();
 
   await DB.init();
+  iniciarIndicadorSync();
   // Sem login 365 configurado (ou já logado), a base é preparada agora; senão, depois do login.
   if(!msalPronto() || (login&&login.conta)) await prepararBase();
 
   $("#cfgNote").textContent=msalPronto()
     ? "Use a sua conta Microsoft 365 da empresa (a mesma do Outlook e do Teams)."
     : "Login Microsoft 365 pendente de configuração. Enquanto isso, use o e-mail corporativo.";
-  if(CONFIG.apiBaseUrl && !DB.compartilhado) $("#cfgNote").textContent="O servidor da base compartilhada está iniciando (pode levar até 1 minuto na primeira vez). Você já pode entrar normalmente — a conexão completa em segundo plano.";
+  if(CONFIG.apiBaseUrl && !DB.online) $("#cfgNote").textContent="Sem conexão com o servidor agora (se ele estiver acordando, leva até 1 minuto). Você já pode entrar e preencher: tudo fica guardado neste aparelho e é enviado quando a conexão voltar.";
 
   if(msalPronto()){
     if(login&&login.erro) aviso($("#loginMsg"),"Não foi possível concluir o login Microsoft: "+(login.erro.errorCode||login.erro.message||"erro"),"error");

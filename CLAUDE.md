@@ -12,6 +12,7 @@
 - ID de ficha determinístico: `idFicha(obraId, modeloId, unidade)`; criação com `DB.criar` (PUT `If-None-Match: *`, 409 se já existir).
 - Histórico por item: `ciclos` (reprovações arquivadas) e `eventos` (trocas de resultado).
 - Listagens filtram por obra (`?obraId=`). Não recarregar listas inteiras depois de salvar.
+- Modo backend: cópia local (IndexedDB `controle_documental_cache`) + fila de envio; sem conexão grava no aparelho e sincroniza depois (`ErroRede`, `sincronizar`). Fotos são reduzidas por `prepararFoto` antes de gravar.
 - Melhorias visuais de computador ficam em `@media (min-width:821px)` / `(hover:hover) and (pointer:fine)`; respeitar `prefers-reduced-motion`.
 
 ## Backend
