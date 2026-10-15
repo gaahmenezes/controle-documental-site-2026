@@ -1183,8 +1183,8 @@ table.editor textarea{min-height:60px;resize:vertical}
       <div class="hub-head"><div class="hub-obra-logo" id="hubObraLogo" style="display:none"></div><div class="hub-head-txt"><h2 id="hubSaudacao">Início</h2><p id="hubObra"></p><p class="hub-links"><button type="button" class="linkbtn2" id="btnGuia">Guia de uso</button><span aria-hidden="true">·</span><button type="button" class="linkbtn2" id="btnNovidades">Novidades</button></p></div></div>
       <div class="hub-grid" id="hubGrid">
     <div class="hub-card destaque"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v3H9z"/><path d="M8 4.5H6a1 1 0 0 0-1 1V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5.5a1 1 0 0 0-1-1h-2"/><path d="m9 14 2 2 4-4.5"/></svg></span><button type="button" class="hub-tit" data-ir="fill">Preencher ficha</button><span class="hub-desc">Abrir ou iniciar uma FVS numa casa da obra</span><span class="hub-num" id="hubNumFill">—</span></div>
-    <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg></span><button type="button" class="hub-tit" data-ir="painel">Painel da obra</button><span class="hub-desc">Indicadores, reinspeções pendentes e mapa das casas</span><span class="hub-num" id="hubNumPainel">—</span></div>
-    <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><path d="m7 15 4-4 3 3 5-6"/></svg></span><button type="button" class="hub-tit" data-ir="indicadores">Indicadores</button><span class="hub-desc">Evolução semana a semana, itens mais reprovados e desempenho por quadra e por FVS</span><span class="hub-num" id="hubNumIndicadores">—</span></div>
+    <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg></span><button type="button" class="hub-tit" data-ir="painel">Painel da obra</button><span class="hub-desc">Mapa das casas e cobertura de cada FVS</span><span class="hub-num" id="hubNumPainel">—</span></div>
+    <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><path d="m7 15 4-4 3 3 5-6"/></svg></span><button type="button" class="hub-tit" data-ir="indicadores">Indicadores</button><span class="hub-desc">Reinspeções pendentes, fichas paradas, evolução e desempenho da obra</span><span class="hub-num" id="hubNumIndicadores">—</span></div>
     <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></span><button type="button" class="hub-tit" data-ir="meus">Preenchimentos</button><span class="hub-desc">Todas as fichas da obra, com filtros por FVS, status e casa</span><span class="hub-num" id="hubNumMeus">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M6 17v-6M11 17V6M16 17v-9M21 17v-4"/></svg></span><button type="button" class="hub-tit" data-ir="relatorio">Relatório</button><span class="hub-desc">Relatório para download e índice de reprovações por item</span><span class="hub-num" id="hubNumRelatorio">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg></span><button type="button" class="hub-tit" data-ir="repo">Repositório</button><span class="hub-desc">Documentos originais das FVS e suas versões</span><span class="hub-num" id="hubNumRepo">—</span></div>
@@ -1201,6 +1201,21 @@ table.editor textarea{min-height:60px;resize:vertical}
         <h2>Painel da obra</h2>
         <p id="painelObra"></p>
       </div>
+      <div class="view-head" style="margin:6px 0 14px">
+        <h2 style="font-size:20px">Cobertura da obra</h2>
+        <p>Cada quadrado é uma casa. Toque numa casa para ver todas as FVS dela e abrir ou iniciar a ficha. Considera que cada FVS se aplica a todas as casas da obra.</p>
+      </div>
+      <div class="toolbar"><select id="painelFvsSel" aria-label="Escolher a FVS" style="flex:1 1 320px;min-width:0;max-width:100%"></select></div>
+      <div id="painelCobertura"></div>
+    </section>
+
+    <!-- INDICADORES -->
+    <section class="view" id="view-indicadores">
+      <div class="view-head">
+        <h2>Indicadores</h2>
+        <p id="indObra"></p>
+      </div>
+<div id="acompanhamento">
       <div class="painel-stats" id="painelStats"></div>
       <div class="panel">
         <div class="panel-head"><h3>Reinspeções pendentes</h3><span class="count" id="painelPendCount"></span></div>
@@ -1220,19 +1235,10 @@ table.editor textarea{min-height:60px;resize:vertical}
           </select></div>
         <div id="painelParadas"></div>
       </div>
+</div>
       <div class="view-head" style="margin:30px 0 14px">
-        <h2 style="font-size:20px">Cobertura da obra</h2>
-        <p>Cada quadrado é uma casa. Toque numa casa para ver todas as FVS dela e abrir ou iniciar a ficha. Considera que cada FVS se aplica a todas as casas da obra.</p>
-      </div>
-      <div class="toolbar"><select id="painelFvsSel" aria-label="Escolher a FVS" style="flex:1 1 320px;min-width:0;max-width:100%"></select></div>
-      <div id="painelCobertura"></div>
-    </section>
-
-    <!-- INDICADORES -->
-    <section class="view" id="view-indicadores">
-      <div class="view-head">
-        <h2>Indicadores</h2>
-        <p id="indObra"></p>
+        <h2 style="font-size:20px">Evolução e desempenho</h2>
+        <p>Escolha a FVS, a empreiteira e o período. Os quadros acima consideram a obra inteira.</p>
       </div>
       <div class="toolbar">
         <select id="indFvs" aria-label="FVS" style="flex:1 1 320px;min-width:0;max-width:100%"></select>
@@ -4433,11 +4439,19 @@ function renderParadas(fichas){
     return '<details class="paradas-q"'+(abrir?' open':'')+'><summary>'+(q==="—"?'Sem quadra':'Quadra '+esc(q))+' <small>· '+g.length+(g.length===1?' ficha':' fichas')+' · a mais antiga há '+g[0].dias+' dias</small></summary><ul class="docs">'+g.map(linha).join("")+'</ul></details>'; }).join("");
 }
 function renderPainel(){
-  const elStats=$("#painelStats"); if(!elStats) return;
-  if(!obra){ elStats.innerHTML=""; $("#painelCobertura").innerHTML=""; return; }
+  renderAcompanhamento();
+  if(!obra){ $("#painelCobertura").innerHTML=""; return; }
   if(!$("#view-painel").classList.contains("active")) return;   // só desenha quando a aba está visível
   $("#painelObra").textContent="Obra "+obra.id+" — "+obra.nome+" · "+obra.casas+" casas";
-
+  const {cobertura}=resumoObra();
+  renderCobertura(cobertura);
+}
+// Acompanhamento (fica no topo de Indicadores): números da obra, reinspeções pendentes,
+// envios com problema e fichas paradas
+function renderAcompanhamento(){
+  const elStats=$("#painelStats"); if(!elStats) return;
+  if(!obra){ elStats.innerHTML=""; return; }
+  if(!$("#view-indicadores").classList.contains("active")) return;
   const {fichas,modelosOrd,cobertura,totConc,totalPrevisto,pend}=resumoObra();
 
   // ---- aprovados de primeira no mês corrente: A / (A + R + AR) ----
@@ -4481,7 +4495,8 @@ function renderPainel(){
 
   renderParadas(fichas);
   renderEnvios();
-
+}
+function renderCobertura(cobertura){
   // ---- cobertura: a FVS escolhida na lista suspensa, com barra de proporção e mapa das casas ----
   const cont=$("#painelCobertura"), sel=$("#painelFvsSel");
   if(!cobertura.length){
@@ -4719,7 +4734,7 @@ const GUIA_PASSOS=[
   {tit:()=>"Reprovou? Foto e tratativa",desc:"Tire a foto do problema: ela sai com data, hora e localização, e dá para desenhar sobre o defeito. Descreva a ação. Até salvar, um R marcado por engano ainda pode ser trocado.",ilus:'<div class="gi-foto"><span class="cam">📷</span><span class="circ"></span></div>'},
   {tit:()=>"Salve a ficha",desc:"O botão Salvar grava a ficha e trava as reprovações. Se esquecer, o sistema salva sozinho a cada 10 minutos. Sem internet, tudo fica no celular e é enviado quando o sinal voltar.",ilus:'<div class="gi-salvar"><span class="ns">● Não salvo</span><i>Salvar •</i></div>'},
   {tit:()=>"Reinspeção",desc:"Depois da correção, abra a ficha de novo: preencha a data e a foto da reinspeção e o item passa sozinho para AR (aprovado após reinspeção).",ilus:'<div class="gi-opts"><span class="r">✕<b>R</b></span><em>→</em><span class="ar">↻<b>AR</b></span></div>'},
-  {so:"controle",tit:()=>"Para a conta de controle",desc:"No Painel: fichas paradas e envios com problema. Em Indicadores: a situação da obra e o Modo apresentação. Em Base de dados: a lixeira e o registro de operações com busca.",ilus:'<div class="gi-ctrl"><span>Painel</span><span>Indicadores</span><span>▶ Apresentação</span><span>Lixeira</span></div>'}
+  {so:"controle",tit:()=>"Para a conta de controle",desc:"Em Indicadores: reinspeções pendentes, fichas paradas, envios com problema, a situação da obra e o Modo apresentação. No Painel: o mapa das casas. Em Base de dados: a lixeira e o registro de operações com busca.",ilus:'<div class="gi-ctrl"><span>Painel</span><span>Indicadores</span><span>▶ Apresentação</span><span>Lixeira</span></div>'}
 ];
 let guiaI=0, guiaLista=[];
 const chaveGuia=()=>"cd_guia_"+(user?user.email.toLowerCase():"");
@@ -4747,6 +4762,9 @@ $("#btnGuia").addEventListener("click",abrirGuia);
 
 // Novidades: a mais recente primeiro. Cada atualização visível para a equipe ganha uma entrada aqui.
 const NOVIDADES=[
+  {data:"2026-10-15.3",titulo:"Indicadores reorganizados",itens:[
+    "Reinspeções pendentes, envios com problema e fichas paradas agora ficam no topo de Indicadores.",
+    "O Painel da obra ficou só com o mapa das casas e a cobertura de cada FVS."]},
   {data:"2026-10-15.2",titulo:"Atualização de 15/10 (tarde)",itens:[
     "Fotos saem com data, hora e localização (GPS) escritas na própria imagem.",
     "Equipe de execução agora é escolhida da lista de empreiteiras e é obrigatória para gerar o documento.",
@@ -5064,6 +5082,7 @@ function contarNumeros(raiz){
 function renderIndicadores(opts){
   const cont=$("#indConteudo"); if(!cont) return;
   if(!obra||!$("#view-indicadores").classList.contains("active")) return;
+  renderAcompanhamento();
   $("#indObra").textContent="Obra "+obra.id+" — "+obra.nome+" · "+obra.casas+" casas · semanas de segunda a domingo";
   popularIndFvs();
   if(!modelos.length){ cont.innerHTML='<div class="panel empty"><b>Nenhum modelo de FVS</b>Quando houver modelos e fichas, os indicadores aparecem aqui.</div>'; return; }
@@ -5195,7 +5214,7 @@ function situacaoHTML(d){
         box("ok","Corrigidas",d.corrigidas,"reprovações com reinspeção aprovada")+
         box("fi","Fichas afetadas",fichasAb,"fichas com ao menos um item em aberto")+
       '</div>'+
-      '<p class="note" style="margin:12px 0 0">'+(d.abertas.length?'Toque em “Aguardando reinspeção” para ver a lista no Painel da obra, da mais antiga para a mais nova.':'Nenhum item reprovado aguardando reinspeção nesta seleção.')+'</p>'+
+      '<p class="note" style="margin:12px 0 0">'+(d.abertas.length?'Toque em “Aguardando reinspeção” para ir à lista de reinspeções pendentes, no topo desta aba.':'Nenhum item reprovado aguardando reinspeção nesta seleção.')+'</p>'+
     '</div></div>'+
   '</div>';
 }
@@ -5359,7 +5378,7 @@ $("#indConteudo").addEventListener("click",async e=>{
   const lin=e.target.closest("[data-situ]");
   if(lin){ indSituAberta=indSituAberta===lin.dataset.situ?"":lin.dataset.situ; renderIndicadores({semAnimar:true}); return; }
   const bx=e.target.closest("[data-irancora]");
-  if(bx){ e.stopPropagation(); irPara("painel"); setTimeout(()=>{ const sec=$("#painelPend").closest(".panel"); if(sec) sec.scrollIntoView({behavior:"smooth",block:"start"}); },120); }
+  if(bx){ e.stopPropagation(); const sec=$("#painelPend").closest(".panel"); if(sec) sec.scrollIntoView({behavior:"smooth",block:"start"}); }
 });
 $("#indConteudo").addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-situ]")){ e.preventDefault(); e.target.click(); } });
 $("#painelParadasDias").addEventListener("change",()=>{ if(obra) renderParadas(resumoObra().fichas); });
@@ -5470,7 +5489,7 @@ if(temMouse){
 }
 
 
-$("#view-painel").addEventListener("click",async e=>{
+const cliquePainel=async e=>{
   const t=e.target.closest("[data-pnabrir],[data-pnancora],[data-pncasa]"); if(!t) return;
   if(t.dataset.pnabrir){
     const p=preenchimentos.find(x=>x.id===t.dataset.pnabrir); if(!p) return;
@@ -5481,7 +5500,9 @@ $("#view-painel").addEventListener("click",async e=>{
   }
   if(t.dataset.pnancora){ const sec=$("#painelPend").closest(".panel"); if(sec) sec.scrollIntoView({behavior:"smooth",block:"start"}); return; }
   if(t.dataset.pncasa){ abrirCasa(Number(t.dataset.pncasa),t.dataset.pnmodelo); return; }
-});
+};
+$("#view-painel").addEventListener("click",cliquePainel);
+$("#acompanhamento").addEventListener("click",cliquePainel);
 
 /* ---------------- PDF nativo do documento preenchido ----------------
    Gera um arquivo PDF de verdade (texto real, selecionável) com exatamente o mesmo
@@ -5770,7 +5791,7 @@ $("#hubGrid").addEventListener("click",e=>{
     irPara("meus"); renderMeus(); return;
   }
   if(e.target.closest("[data-irpend]")){
-    irPara("painel");
+    irPara("indicadores");
     setTimeout(()=>{ const s=$("#painelPend").closest(".panel"); if(s) s.scrollIntoView({behavior:"smooth",block:"start"}); },60);
     return;
   }
