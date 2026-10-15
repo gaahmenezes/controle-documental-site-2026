@@ -141,7 +141,7 @@ header.topbar{background:var(--chrome);border-bottom:3px solid var(--laranja);co
 .ind-graf .rot{fill:var(--ink2);font-size:11px;font-weight:600}
 .ind-leg{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);margin:0 0 8px}
 .ind-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
-#vzTip{position:fixed;z-index:70;pointer-events:none;background:var(--chrome);color:#DCE6EA;border-radius:6px;padding:8px 10px;font-size:12px;line-height:1.45;box-shadow:0 10px 24px -8px rgba(14,28,36,.5);opacity:0;transition:opacity .1s;max-width:240px}
+#vzTip{position:fixed;z-index:99;pointer-events:none;background:var(--chrome);color:#DCE6EA;border-radius:6px;padding:8px 10px;font-size:12px;line-height:1.45;box-shadow:0 10px 24px -8px rgba(14,28,36,.5);opacity:0;transition:opacity .1s;max-width:240px}
 #vzTip.show{opacity:1}
 #vzTip b{color:#fff}
 #vzTip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
@@ -339,6 +339,85 @@ body.alto-contraste .item-card.atual{box-shadow:0 0 0 4px #0A3B78}
 #dlgPergunta .dlg-corpo{padding:16px 18px;font-size:14.5px;line-height:1.5}
 #dlgPergunta .dlg-acoes{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;padding:12px 18px;border-top:1px solid var(--line)}
 #dlgPergunta .dlg-acoes .btn{width:auto}
+#apres{position:fixed;inset:0;z-index:95;background:var(--canvas);color:var(--ink);display:none;flex-direction:column}
+#apres.show{display:flex}
+#apPalco{flex:1;overflow:auto;padding:4vh 5vw 2vh;display:flex}
+.ap-slide{margin:auto;width:100%;max-width:1500px}
+#apPalco.ap-entra .ap-slide{animation:apEntra .5s ease}
+@keyframes apEntra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes apTempo{from{width:0}to{width:100%}}
+#apBarra{position:absolute;left:0;bottom:0;height:3px;background:var(--laranja);width:0}
+.ap-ctrl{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 20px;background:var(--chrome);color:#DCE6EA;font-size:13px}
+.ap-ctrl button{font:inherit;font-size:14px;background:transparent;color:inherit;border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:6px 12px;margin-left:6px;cursor:pointer}
+.ap-ctrl button:hover{border-color:#fff}
+.ap-slide h2{font-family:"IBM Plex Serif",serif;font-weight:500;font-size:clamp(26px,3.2vw,46px);margin:0 0 3vh}
+.ap-slide h2 small{display:block;font-family:inherit;font-size:clamp(13px,1.1vw,17px);color:var(--ink3);margin-top:6px}
+.ap-slide h3{font-size:clamp(15px,1.3vw,20px);margin:0 0 10px;color:var(--ink2)}
+.ap-capa{text-align:center}
+.ap-capa img{height:clamp(60px,10vh,120px);margin-bottom:2vh}
+.ap-capa h1{font-family:"IBM Plex Serif",serif;font-weight:500;font-size:clamp(34px,5vw,72px);margin:0}
+.ap-capa>p{color:var(--ink3);font-size:clamp(14px,1.4vw,20px);margin:1vh 0 5vh}
+.ap-nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2vw}
+.ap-num{background:var(--paper);border:1px solid var(--line2);border-radius:14px;padding:3vh 1.5vw;text-align:center}
+.ap-num b{display:block;font-size:clamp(40px,5.5vw,84px);line-height:1;font-variant-numeric:tabular-nums;color:var(--seal)}
+.ap-num span{display:block;font-size:clamp(14px,1.3vw,20px);margin-top:10px}
+.ap-num small{display:block;font-size:clamp(12px,1vw,15px);color:var(--ink3);margin-top:4px}
+.ap-situ{display:grid;grid-template-columns:minmax(220px,38vh) 1fr;gap:5vw;align-items:center}
+.ap-situ .rosca{width:100%;height:auto}
+.ap-situ ul{list-style:none;margin:0;padding:0;display:grid;gap:2vh}
+.ap-situ li{display:grid;grid-template-columns:22px 1fr auto 90px;gap:16px;align-items:center;font-size:clamp(16px,1.6vw,26px)}
+.ap-situ li .sw{width:20px;height:20px}
+.ap-situ li b{font-variant-numeric:tabular-nums}.ap-situ li em{font-style:normal;color:var(--ink3);text-align:right}
+.ap-graf2{display:grid;grid-template-columns:1fr 1fr;gap:3vw}
+.ap-graf2>div{background:var(--paper);border:1px solid var(--line2);border-radius:12px;padding:2vh 1.5vw}
+.ap-mapa .impl-dica,.ap-mapa .impl-cel{display:none!important}
+.ap-mapa .impl-scroll{display:block!important;overflow:visible}
+.ap-mapa .impl{min-width:0}
+.ap-mapa .mp.ap-casa{cursor:default;color:var(--ink);background:color-mix(in srgb,#1755A0 var(--nv),var(--paper));border-color:color-mix(in srgb,#1755A0 var(--nv),var(--line))}
+body.tema-escuro .ap-mapa .mp.ap-casa{background:color-mix(in srgb,#4C93E0 var(--nv),var(--paper));border-color:color-mix(in srgb,#4C93E0 var(--nv),var(--line))}
+.ap-escala{display:flex;align-items:center;gap:10px;justify-content:flex-end;margin-top:10px;font-size:13px;color:var(--ink3)}
+.ap-escala i{width:180px;height:10px;border-radius:5px;background:linear-gradient(90deg,var(--paper),#1755A0);border:1px solid var(--line)}
+.ap-pareto{font-size:clamp(14px,1.3vw,20px);gap:2vh}
+.ap-nota{color:var(--ink3);font-size:clamp(13px,1.1vw,17px)}
+.ap-comp{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:3vw}
+.ap-comp-col{display:grid;gap:2vh}
+.ap-comp-col h3{text-align:center;font-size:clamp(18px,1.8vw,28px)}
+@media (max-width:820px){.ap-situ,.ap-graf2{grid-template-columns:1fr}.ap-ctrl{flex-direction:column}}
+#dlgCasa{position:fixed;inset:0;z-index:84;background:rgba(14,28,36,.6);display:none;align-items:center;justify-content:center;padding:16px}
+#dlgCasa.show{display:flex}
+#dlgCasa .dlg-caixa{background:var(--paper);color:var(--ink);border-radius:10px;width:min(720px,100%);max-height:100%;display:flex;flex-direction:column;box-shadow:0 20px 50px -12px rgba(0,0,0,.5)}
+#dlgCasa .dlg-topo{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+#dlgCasa .dlg-topo b{font-size:17px}
+#dlgCasa .dlg-corpo{padding:16px 18px;overflow:auto}
+.casa-resumo{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.casa-resumo>div{background:var(--canvas);border-radius:8px;padding:10px 12px}
+.casa-resumo b{display:block;font-size:22px;font-variant-numeric:tabular-nums}.casa-resumo b small{font-size:13px;color:var(--ink3);font-weight:500}
+.casa-resumo span{font-size:12px;color:var(--ink3)}
+.casa-lista{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.casa-fvs{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;border:1px solid var(--line2);border-radius:8px;padding:10px 12px}
+.casa-fvs.destaque{border-color:var(--seal);box-shadow:inset 3px 0 0 var(--seal)}
+.cf-info{min-width:0;display:grid;gap:3px}
+.cf-info b{font-size:14px}
+.cf-info>span{font-size:12.5px;color:var(--ink3)}
+.cf-info .cf-abertos{color:var(--flag);font-weight:600}
+.cf-pares .ver-foto{margin:2px 6px 2px 0}
+.status-pill.st-sem{background:var(--line2);color:var(--ink3)}
+.btn-busca{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.35);background:transparent;color:inherit;border-radius:12px;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.btn-busca:hover{border-color:#fff}
+@media (max-width:820px){.btn-busca span{display:none}.btn-busca{padding:5px 8px}}
+#buscaRapida{position:fixed;inset:0;z-index:88;background:rgba(14,28,36,.55);display:none;align-items:flex-start;justify-content:center;padding:12vh 16px 16px}
+#buscaRapida.show{display:flex}
+.busca-caixa{width:min(560px,100%);background:var(--paper);color:var(--ink);border-radius:12px;box-shadow:0 24px 60px -16px rgba(0,0,0,.55);overflow:hidden}
+#buscaInput{width:100%;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:16px 18px;font-size:16px;background:var(--paper);color:var(--ink)}
+#buscaInput:focus{outline:none}
+#buscaLista{list-style:none;margin:0;padding:6px;max-height:55vh;overflow:auto}
+#buscaLista button{width:100%;display:flex;gap:12px;align-items:center;text-align:left;font:inherit;background:none;border:0;border-radius:8px;padding:10px;cursor:pointer;color:var(--ink)}
+#buscaLista button.sel,#buscaLista button:hover{background:var(--seal-soft)}
+#buscaLista button:disabled{cursor:default;opacity:.8}
+#buscaLista .bi{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:6px;background:var(--canvas);color:var(--seal);font-weight:700}
+#buscaLista b{display:block;font-size:14px}#buscaLista small{display:block;font-size:12px;color:var(--ink3)}
+.busca-dica{padding:12px;font-size:13px;color:var(--ink3)}
+@media (max-width:520px){.casa-resumo b{font-size:18px}.casa-fvs{flex-wrap:wrap}}
 #btnSalvar.pendente{border-color:var(--seal);background:var(--seal-soft);color:var(--seal);font-weight:600}
 #btnSalvar.pendente::after{content:" •"}
 .salvo.nao-salvo{color:var(--warn)!important}
@@ -708,6 +787,30 @@ ul.docs>li:first-child{border-top:none}
 .status-pill.st-reinsp{background:var(--flag-soft);color:var(--flag)}
 .status-pill.st-concluida-reinsp{background:var(--warn-soft);color:var(--warn)}
 .status-pill.st-concluida{background:var(--ok-soft);color:var(--ok)}
+.pend-ver{font:inherit;font-size:12.5px;font-weight:600;color:var(--seal);background:none;border:0;padding:0 2px;text-decoration:underline;cursor:pointer}
+.pend-lista{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom));width:min(560px,calc(100% - 24px));max-height:min(60vh,460px);overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:10px;box-shadow:0 18px 40px -12px rgba(14,28,36,.45);z-index:30;display:none}
+.pend-lista.show{display:block}
+.pend-topo{position:sticky;top:0;background:var(--paper);display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:12px 14px;border-bottom:1px solid var(--line2)}
+.pend-topo b{font-size:14px}.pend-topo span{grid-column:1;font-size:12.5px;color:var(--ink3)}.pend-topo .an-fechar{grid-row:1/3;grid-column:2}
+.pend-lista ul{list-style:none;margin:0;padding:6px}
+.pend-lista li button{width:100%;display:flex;align-items:center;gap:10px;font:inherit;font-size:13.5px;text-align:left;background:none;border:0;border-radius:6px;padding:9px 8px;cursor:pointer;color:var(--ink)}
+.pend-lista li button:hover,.pend-lista li button:focus-visible{background:var(--seal-soft)}
+.pend-lista .item-n{flex:none;width:28px;height:28px;font-size:12px}
+.pend-lista .seta{margin-left:auto;color:var(--ink3)}
+@media (max-width:820px){.pend-lista{bottom:calc(132px + env(safe-area-inset-bottom))}}
+.btn-desfazer{margin-top:12px;font:inherit;font-size:12.5px;color:var(--flag);background:none;border:1px dashed var(--flag);border-radius:6px;padding:7px 12px;cursor:pointer}
+.antes-depois-grade{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.antes-depois-grade figure{margin:0}
+.antes-depois-grade .ad-foto{aspect-ratio:4/3;background:var(--line2);border-radius:6px;overflow:hidden;display:grid;place-items:center}
+.antes-depois-grade img{width:100%;height:100%;object-fit:cover;display:block}
+.antes-depois-grade figcaption{font-size:12px;color:var(--ink3);margin-top:4px}
+.log-filtros{display:flex;flex-wrap:wrap;gap:8px;padding:12px 20px;border-bottom:1px solid var(--line2);align-items:center}
+.log-filtros input[type=search]{flex:1 1 220px;min-width:0}
+.log-filtros select{flex:0 1 220px;width:auto}
+.log-per{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink3)}
+.log-per input{width:auto}
+.log-chk{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2)}
+.log-chk input{width:auto}
 .status-pill.st-parada{background:var(--warn-soft);color:var(--warn)}
 .paradas-q{border-top:1px solid var(--line2)}
 .paradas-q>summary{cursor:pointer;padding:12px 18px;font-weight:600;font-size:14px;list-style:none;display:flex;gap:8px;align-items:center}
@@ -973,6 +1076,7 @@ table.editor textarea{min-height:60px;resize:vertical}
   <header class="topbar">
     <div class="brand-logo"><img data-logo="rev" alt="Viva Construções"><span class="sep-v"></span><span class="nome-app">Controle Documental</span></div>
     <div class="who">
+      <button type="button" class="btn-busca" id="btnBusca" title="Busca rápida (tecla /)" aria-label="Busca rápida"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><span>Buscar</span></button>
       <div class="obra-chip" id="obraChip"></div>
       <button class="linkbtn" id="btnTrocarObra">Trocar obra</button>
       <div class="avatar" id="avatar">—</div>
@@ -1050,6 +1154,7 @@ table.editor textarea{min-height:60px;resize:vertical}
           <option value="26">Últimos 6 meses</option>
           <option value="0">Desde o início</option>
         </select>
+        <button type="button" class="btn btn-apres" id="btnApres" style="width:auto">▶ Modo apresentação</button>
       </div>
       <div id="indConteudo"></div>
     </section>
@@ -1215,12 +1320,25 @@ table.editor textarea{min-height:60px;resize:vertical}
         </div>
       </div>
       <div class="panel">
+        <div class="panel-head"><h3>Lixeira</h3><span class="count" id="lixeiraCount"></span></div>
+        <div id="lixeiraLista"></div>
+      </div>
+      <div class="panel">
         <div class="panel-head"><h3>Registro de operações</h3><span class="count" id="logCount">0 eventos</span></div>
+        <div class="log-filtros">
+          <input type="search" id="logBusca" placeholder="Buscar: casa 45, FVS.113, excluído…" aria-label="Buscar no registro">
+          <select id="logPessoa" aria-label="Pessoa"></select>
+          <label class="log-per"><span>De</span><input type="date" id="logDe"></label>
+          <label class="log-per"><span>Até</span><input type="date" id="logAte"></label>
+          <label class="log-chk"><input type="checkbox" id="logObra"> Só esta obra</label>
+          <button type="button" class="icon-btn" id="logLimpar">Limpar filtros</button>
+        </div>
         <ul class="log" id="log"></ul>
       </div>
     </section>
   </main>
 
+  <div class="pend-lista" id="pendLista" role="dialog" aria-label="Pendências da ficha"></div>
   <div class="rodape" id="rodape">
     <span id="statusGerar"></span>
     <div class="acoes-r">
@@ -1274,9 +1392,29 @@ table.editor textarea{min-height:60px;resize:vertical}
 <div id="dlgPergunta" role="dialog" aria-modal="true" aria-labelledby="dlgPerguntaTit">
   <div class="dlg-caixa">
     <div class="dlg-topo"><b id="dlgPerguntaTit"></b><button type="button" class="an-fechar" data-dlgpfechar aria-label="Fechar">×</button></div>
-    <div class="dlg-corpo"><p id="dlgPerguntaTxt" style="margin:0"></p></div>
+    <div class="dlg-corpo"><p id="dlgPerguntaTxt" style="margin:0"></p><textarea id="dlgPerguntaCampo" rows="3" style="display:none;margin-top:12px;width:100%"></textarea></div>
     <div class="dlg-acoes" id="dlgPerguntaAcoes"></div>
   </div>
+</div>
+<div id="dlgCasa" role="dialog" aria-modal="true" aria-labelledby="dlgCasaTit">
+  <div class="dlg-caixa">
+    <div class="dlg-topo"><b id="dlgCasaTit"></b><button type="button" class="an-fechar" data-casafechar aria-label="Fechar">×</button></div>
+    <div class="dlg-corpo" id="dlgCasaCorpo"></div>
+  </div>
+</div>
+<div id="buscaRapida" role="dialog" aria-modal="true" aria-label="Busca rápida">
+  <div class="busca-caixa">
+    <input type="search" id="buscaInput" placeholder="Casa, FVS ou tela… (ex.: 45 FVS.113)" autocomplete="off" aria-label="Buscar">
+    <ul id="buscaLista"></ul>
+  </div>
+</div>
+<div id="apres" role="dialog" aria-modal="true" aria-label="Modo apresentação">
+  <div id="apPalco"></div>
+  <div class="ap-ctrl">
+    <span id="apCont"></span>
+    <div><button type="button" data-ap="ant" aria-label="Anterior">‹</button><button type="button" data-ap="pausa" id="apPausa">❚❚ Pausar</button><button type="button" data-ap="prox" aria-label="Próximo">›</button><button type="button" data-ap="sair">Sair (Esc)</button></div>
+  </div>
+  <i id="apBarra"></i>
 </div>
 <div id="cargaBarra" aria-hidden="true"></div>
 
@@ -1348,7 +1486,7 @@ const EXT_PLANILHA = ["xlsx","xls"];
    - Sem o Artifact (arquivo aberto direto, ou capabilities indisponíveis), cai para IndexedDB
      local e, na falta dela, memória da sessão — exatamente como antes.
 --------------------------------------------------------------------------------------------- */
-const LOJAS = ["obras","documentos","arquivos","modelos","preenchimentos","midias","auditoria","usuarios"];
+const LOJAS = ["obras","documentos","arquivos","modelos","preenchimentos","midias","auditoria","usuarios","lixeira"];
 const LOJAS_BLOB = ["arquivos","midias"];
 const TIPOS_ASSET_ACEITOS = ["image/png","image/jpeg","image/gif","image/webp","image/svg+xml","video/mp4","video/webm","application/pdf","font/woff2","font/woff","font/ttf","font/otf","text/csv","text/markdown","application/json","text/plain"];
 
@@ -1361,7 +1499,7 @@ const DB = (() => {
   function abrirLocalUmaVez(){
     return new Promise((res,rej)=>{
       try{
-        const r = indexedDB.open("controle_documental", 5);
+        const r = indexedDB.open("controle_documental", 6);
         r.onupgradeneeded = e => {
           const d = e.target.result;
           LOJAS.forEach(l=>{ if(!d.objectStoreNames.contains(l)) d.createObjectStore(l,{keyPath:"id"}); });
@@ -1512,7 +1650,7 @@ const DB = (() => {
   function abrirCache(){
     return new Promise(res=>{
       try{
-        const r=indexedDB.open("controle_documental_cache",1);
+        const r=indexedDB.open("controle_documental_cache",2);
         r.onupgradeneeded=e=>{ const d=e.target.result;
           LOJAS.forEach(l=>{ if(!d.objectStoreNames.contains(l)) d.createObjectStore(l,{keyPath:"id"}); });
           if(!d.objectStoreNames.contains("fila")) d.createObjectStore("fila",{keyPath:"chave"}); };
@@ -2461,7 +2599,7 @@ function aplicarView(v,scrollY,voltando){
   }
   if(v==="painel") renderPainel();
   if(v==="indicadores") renderIndicadores();
-  if(v==="db") carregarTodosQuestionarios();
+  if(v==="db"){ carregarTodosQuestionarios(); renderLog(); renderLixeira(); }
   if(typeof esconderTip==="function") esconderTip();
   // a barra Fechar/Salvar/Gerar só faz sentido em Preencher, com uma ficha aberta
   $("#rodape").classList.toggle("show",v==="fill"&&!!fichaAtiva);
@@ -2960,6 +3098,39 @@ function reinspecaoBlockHTML(n,r){
 function rJaSalvo(p,n){ const r=p.respostas&&p.respostas[n]; return !!(r&&r.resultado==="R"&&r.travadoEm); }
 // item que estava AR e foi reprovado de novo agora (antes de fechar): o AR desfaz o engano
 function vinhaDeAR(p,n,r){ const c=(r.ciclos||[])[(r.ciclos||[]).length-1]; return r.resultado==="R"&&!rJaSalvo(p,n)&&!!c&&/^Aprovado/.test(c.desfecho||""); }
+// conta de controle: tira do histórico um R salvo por engano (com motivo, que fica registrado)
+async function desfazerReprovacao(n){
+  if(!fichaAtiva||fichaAtiva.leitura||!ehControle) return;
+  const {p,m}=fichaAtiva, r0=p.respostas[n];
+  if(!r0||r0.resultado!=="R") return;
+  const resp=await perguntar("Desfazer reprovação do item "+n,"A reprovação deixa de contar no histórico e nos indicadores, e o item volta ao resultado anterior. A ficha será salva. Informe o motivo:",[{rot:"Cancelar",valor:null},{rot:"Desfazer e salvar",valor:"ok",primario:true,exigeTexto:true}],{campo:"Motivo (ex.: marcado por engano no item errado)"});
+  if(!resp||resp.valor!=="ok") return;
+  const motivo=resp.texto.trim();
+  const ev=(r0.eventos||[]).slice(); let i=-1; for(let k=ev.length-1;k>=0;k--) if(ev[k].para==="R"){ i=k; break; }
+  const anterior=i>=0?ev[i].de:null;
+  const r=Object.assign({},r0);
+  r.eventos=i>=0?ev.slice(0,i):ev;
+  [r0.fotoId,r0.reinspecao&&r0.reinspecao.fotoId].filter(Boolean).forEach(id=>(edicao.aRemover=edicao.aRemover||[]).push(id));
+  delete r.travadoEm; delete r.fotoId; delete r.tratativa; delete r.reinspecao;
+  const c=(r.ciclos||[])[(r.ciclos||[]).length-1];
+  if(anterior==="AR"&&c&&/^Aprovado/.test(c.desfecho||"")){
+    r.resultado="AR"; r.data=c.reprovadoEm||r.data;
+    if(c.fotoReprovacao) r.fotoId=c.fotoReprovacao;
+    r.tratativa=Object.assign({},c.tratativa||{}); r.reinspecao=Object.assign({},c.reinspecao||{});
+  } else if(anterior) r.resultado=anterior;
+  else { delete r.resultado; delete r.data; }
+  (r.reprovacoesDesfeitas=r.reprovacoesDesfeitas||[]).push({em:new Date().toISOString(),por:quemSou(),motivo,reprovadoEm:r0.data||null});
+  if(!r.eventos.length) delete r.eventos;
+  p.respostas[n]=r;
+  // não vira troca de resultado no histórico: a base passa a ser o resultado restaurado
+  if(r.resultado) edicao.resBase[n]=r.resultado; else delete edicao.resBase[n];
+  await salvarFicha();
+  if(!(await gravarFicha("manual"))) return;
+  await registrar("Reprovação desfeita pelo controle",(m.codigo||m.titulo)+" · casa "+p.unidade+" · item "+n+" · motivo: "+motivo);
+  const card=document.getElementById("card-"+n); if(card){ card.outerHTML=cardHTML(fichaAtiva.itemPorN[n],p); carregarPreviewFoto(n,p); carregarPreviewReinsp(n,p); }
+  atualizarProgresso(); atualizarStatusGeracao();
+  toast("Reprovação do item "+n+" desfeita.");
+}
 function opcoesDoItem(p,n,r){
   if(r.resultado==="AR") return ["R","AR"];
   if(r.resultado==="R"&&(rJaSalvo(p,n)||vinhaDeAR(p,n,r))) return ["R","AR"];
@@ -2968,6 +3139,7 @@ function opcoesDoItem(p,n,r){
 function cardHTML(it,p){
   const r=p.respostas[it.n]||{};
   const ops=opcoesDoItem(p,it.n,r), comReinsp=r.resultado==="AR"||(r.resultado==="R"&&rJaSalvo(p,it.n));
+  const podeDesfazer=ehControle&&r.resultado==="R"&&rJaSalvo(p,it.n)&&!(fichaAtiva&&fichaAtiva.leitura);
   let extra="";
   if(r.resultado==="R" || r.resultado==="AR"){
     extra += fotoBlockHTML(it.n,r) + tratativaBlockHTML(it.n,r.tratativa) + (comReinsp?reinspecaoBlockHTML(it.n,r):
@@ -2989,12 +3161,13 @@ function cardHTML(it,p){
         '<div><label>Data da inspeção</label><input type="date" value="'+esc(r.data||"")+'" data-data="'+esc(it.n)+'"></div>'+
       '</div>'+
       extra+
+      (podeDesfazer?'<button type="button" class="btn-desfazer" data-desfazerr="'+esc(it.n)+'">Desfazer esta reprovação (marcada por engano)…</button>':'')+
       historicoItemHTML(it.n,(edicao.id===p.id&&edicao.salvoResp)?(edicao.salvoResp[it.n]||{}):r)+
     '</div></div>';
 }
 function historicoItemHTML(n,r){
-  const ciclos=r.ciclos||[], ev=r.eventos||[];
-  if(!ciclos.length&&!ev.length) return "";
+  const ciclos=r.ciclos||[], ev=r.eventos||[], desf=r.reprovacoesDesfeitas||[];
+  if(!ciclos.length&&!ev.length&&!desf.length) return "";
   const rot={A:"A",R:"R",AR:"AR",NA:"NA"};
   const lis=ciclos.map(c=>{
     const t=c.tratativa||{}, re=c.reinspecao||{};
@@ -3003,11 +3176,24 @@ function historicoItemHTML(n,r){
       (t.acao?' · ação: '+esc(t.acao):'')+(t.responsavel?' · resp.: '+esc(t.responsavel):'')+
       (re.data?' · reinspecionado em '+esc(dataBR(re.data)):'')+
       (re.fotoId?'<button type="button" class="ver-foto" data-verfoto="'+esc(re.fotoId)+'">ver foto da reinspeção</button>':'')+
+      (c.fotoReprovacao&&re.fotoId?'<button type="button" class="ver-foto antes-depois" data-antesdepois="'+esc(c.fotoReprovacao)+'|'+esc(re.fotoId)+'|'+esc(c.reprovadoEm||"")+'|'+esc(re.data||"")+'">ver antes e depois</button>':'')+
       ' · <b>'+esc(c.desfecho)+'</b> ('+esc(c.encerradoPor||"—")+')<span class="foto-ciclo"></span></li>';
   }).join("");
   const evs=ev.slice(-8).reverse().map(e=>'<div>'+esc(dataHora(e.quando))+' · '+esc(e.quem||"—")+': '+(e.de?esc(rot[e.de]||e.de):"vazio")+' → '+(e.para?esc(rot[e.para]||e.para):"vazio")+'</div>').join("");
   return '<details class="ciclos"><summary>Histórico deste item'+(ciclos.length?' · '+ciclos.length+(ciclos.length===1?' reprovação':' reprovações'):'')+'</summary>'+
-    (lis?'<ol>'+lis+'</ol>':'')+(evs?'<div class="eventos"><div><b>Alterações do resultado</b></div>'+evs+'</div>':'')+'</details>';
+    (lis?'<ol>'+lis+'</ol>':'')+(evs?'<div class="eventos"><div><b>Alterações do resultado</b></div>'+evs+'</div>':'')+
+    (desf.length?'<div class="eventos"><div><b>Reprovações desfeitas pelo controle</b></div>'+desf.map(d=>'<div>'+esc(dataHora(d.em))+' · '+esc(d.por||"—")+': reprovação'+(d.reprovadoEm?' de '+esc(dataBR(d.reprovadoEm)):'')+' desfeita — '+esc(d.motivo||"")+'</div>').join("")+'</div>':'')+'</details>';
+}
+// antes e depois: as duas fotos lado a lado, carregadas na hora
+async function mostrarAntesDepois(alvo,ids){
+  const [a,b,da,db]=ids.split("|");
+  alvo.innerHTML='<div class="antes-depois-grade"><figure><div class="ad-foto"></div><figcaption>Antes · reprovação'+(da?' em '+esc(dataBR(da)):'')+'</figcaption></figure><figure><div class="ad-foto"></div><figcaption>Depois · reinspeção'+(db?' em '+esc(dataBR(db)):'')+'</figcaption></figure></div>';
+  const caixas=alvo.querySelectorAll(".ad-foto");
+  for(const [i,id] of [a,b].entries()){
+    const mid=await DB.obter("midias",id).catch(()=>null);
+    caixas[i].innerHTML=mid?'<img alt="'+(i?"Depois":"Antes")+'">':'<span class="note">Foto não encontrada.</span>';
+    if(mid) caixas[i].querySelector("img").src=URL.createObjectURL(mid.blob);
+  }
 }
 async function carregarPreviewFoto(n,p){
   const fotoId=p.respostas[n]&&p.respostas[n].fotoId; if(!fotoId) return;
@@ -3374,28 +3560,75 @@ async function gravarFicha(modo){
   return true;
 }
 // pergunta simples com botões (Promise com o valor do botão escolhido)
-function perguntar(titulo,texto,botoes){
+// opts.campo: mostra uma caixa de texto e devolve {valor, texto}
+function perguntar(titulo,texto,botoes,opts){
+  opts=opts||{};
   return new Promise(res=>{
     const d=$("#dlgPergunta");
     $("#dlgPerguntaTit").textContent=titulo; $("#dlgPerguntaTxt").textContent=texto;
+    const cx=$("#dlgPerguntaCampo"); cx.style.display=opts.campo?"":"none"; cx.value=""; cx.placeholder=opts.campo||"";
     const ac=$("#dlgPerguntaAcoes"); ac.innerHTML="";
-    const fim=v=>{ d.classList.remove("show"); document.removeEventListener("keydown",tecla); res(v); };
+    const fim=v=>{ d.classList.remove("show"); document.removeEventListener("keydown",tecla); res(opts.campo?(v==null?null:{valor:v,texto:cx.value}):v); };
     const tecla=e=>{ if(e.key==="Escape") fim(null); };
-    botoes.forEach(b=>{ const el=document.createElement("button"); el.type="button"; el.className="btn"+(b.primario?" btn-primary":""); el.textContent=b.rot; el.addEventListener("click",()=>fim(b.valor)); ac.appendChild(el); });
+    const exigem=[];
+    botoes.forEach(b=>{ const el=document.createElement("button"); el.type="button"; el.className="btn"+(b.primario?" btn-primary":""); el.textContent=b.rot; el.addEventListener("click",()=>fim(b.valor)); ac.appendChild(el); if(b.exigeTexto){ el.disabled=true; exigem.push(el); } });
+    cx.oninput=()=>exigem.forEach(el=>el.disabled=cx.value.trim().length<3);
     d.querySelector("[data-dlgpfechar]").onclick=()=>fim(null);
     document.addEventListener("keydown",tecla);
     d.classList.add("show");
-    const pri=ac.querySelector(".btn-primary"); if(pri) pri.focus();
+    if(opts.campo) cx.focus(); else { const pri=ac.querySelector(".btn-primary"); if(pri) pri.focus(); }
   });
 }
 window.addEventListener("beforeunload",e=>{ if(edicao.sujo&&fichaAtiva&&!fichaAtiva.leitura){ e.preventDefault(); e.returnValue=""; } });
+/* ---- Pendências: tudo o que falta para gerar o documento, com atalho para cada item ---- */
+function pendenciasFicha(p,m){
+  const l=[];
+  itensRespondiveis(m).forEach(it=>{ const r=p.respostas[it.n];
+    if(!r||!r.resultado){ l.push({n:it.n,tipo:"res",txt:"sem resultado"}); return; }
+    if(!r.data) l.push({n:it.n,tipo:"data",txt:"sem data da inspeção"});
+    if(r.resultado==="R"&&!r.fotoId) l.push({n:it.n,tipo:"foto",txt:"reprovado sem foto"});
+  });
+  return l;
+}
 function atualizarStatusGeracao(){
   if(!fichaAtiva) return;
   const v=validar(fichaAtiva.p,fichaAtiva.m);
   const el=$("#statusGerar");
-  el.textContent=v.msg; el.classList.toggle("ok",v.ok);
+  el.classList.toggle("ok",v.ok);
   $("#btnGerar").disabled=!v.ok;
+  if(v.ok){ el.textContent=v.msg; fecharPendencias(); return; }
+  const pend=pendenciasFicha(fichaAtiva.p,fichaAtiva.m);
+  el.innerHTML=esc(v.msg)+(pend.length?' <button type="button" class="pend-ver" id="btnPend" aria-expanded="'+(!!$("#pendLista").classList.contains("show"))+'">Ver '+(pend.length===1?'a pendência':'as '+pend.length+' pendências')+'</button>':'');
+  if($("#pendLista").classList.contains("show")) montarPendencias(pend);
 }
+function montarPendencias(pend){
+  const cont={res:0,data:0,foto:0}; pend.forEach(x=>cont[x.tipo]++);
+  const resumo=[cont.res?cont.res+" sem resultado":"",cont.data?cont.data+" sem data":"",cont.foto?cont.foto+" sem foto da reprovação":""].filter(Boolean).join(" · ");
+  $("#pendLista").innerHTML='<div class="pend-topo"><b>Falta para gerar o documento</b><span>'+esc(resumo)+'</span><button type="button" class="an-fechar" data-pendfechar aria-label="Fechar">×</button></div>'+
+    '<ul>'+pend.map(x=>'<li><button type="button" data-irpend="'+esc(x.n)+'"><span class="item-n">'+esc(x.n)+'</span><span>Item '+esc(x.n)+' — '+esc(x.txt)+'</span><span class="seta">›</span></button></li>').join("")+'</ul>';
+}
+function fecharPendencias(){ const l=$("#pendLista"); l.classList.remove("show"); const b=$("#btnPend"); if(b) b.setAttribute("aria-expanded","false"); }
+function rolarAteCard(card){
+  const barra=document.querySelector(".progresso"), top=document.querySelector(".topbar");
+  const folga=(barra?barra.offsetHeight:0)+(top&&getComputedStyle(top).position!=="static"?top.offsetHeight:0)+18;
+  const y=card.getBoundingClientRect().top+window.scrollY-folga;
+  window.scrollTo({top:Math.max(0,y),behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});
+}
+$("#rodape").addEventListener("click",e=>{
+  if(e.target.closest("#btnPend")){
+    const l=$("#pendLista");
+    if(l.classList.contains("show")) return fecharPendencias();
+    montarPendencias(pendenciasFicha(fichaAtiva.p,fichaAtiva.m)); l.classList.add("show"); e.target.closest("#btnPend").setAttribute("aria-expanded","true");
+  }
+});
+$("#pendLista").addEventListener("click",e=>{
+  if(e.target.closest("[data-pendfechar]")) return fecharPendencias();
+  const b=e.target.closest("[data-irpend]"); if(!b) return;
+  fecharPendencias();
+  const card=document.getElementById("card-"+b.dataset.irpend); if(!card) return;
+  document.querySelectorAll("#fichaArea .item-card.atual").forEach(c=>c.classList.remove("atual"));
+  card.classList.add("atual"); rolarAteCard(card);
+});
 // devolve false se a pessoa desistiu de fechar
 async function fecharFicha(forcar){
   if(fichaAtiva&&edicao.sujo&&!fichaAtiva.leitura&&forcar!==true){
@@ -3411,6 +3644,7 @@ async function fecharFicha(forcar){
   $("#fichaArea").innerHTML="";
   $("#setupPanel").style.display="";
   $("#rodape").classList.remove("show");
+  fecharPendencias();
   return true;
 }
 function historicoPanelHTML(p,prefixo){
@@ -4011,6 +4245,94 @@ $("#painelCobertura").addEventListener("click",e=>{
   if(!painelFiltroSt&&lim) lim.remove();
 });
 
+/* ---------------- Ficha da casa: todas as FVS de uma casa num lugar só ---------------- */
+let casaAberta=null;
+async function abrirCasa(n,destaqueModelo){
+  if(!obra||!n) return;
+  casaAberta={n,destaqueModelo};
+  const impl=IMPLANTACAO[String(obra.id)], q=impl?quadrasPorCasa(impl)[n]:null;
+  const mods=[...modelos].sort((a,b)=>numeroCodigo(a)-numeroCodigo(b));
+  const linhas=mods.map(m=>{
+    const fichas=preenchimentos.filter(p=>p.obraId===obra.id&&p.modeloId===m.id&&numeroDaCasa(p.unidade)===n);
+    const p=fichas.sort((a,b)=>String(b.atualizadoEm).localeCompare(String(a.atualizadoEm)))[0]||null;
+    if(!p) return {m,p:null,st:"sem"};
+    const st=statusCasaFicha(p,m), pr=progresso(p,m), u=ultimaAtividade(p);
+    const abertos=itensRespondiveis(m).filter(it=>p.respostas[it.n]&&p.respostas[it.n].resultado==="R");
+    const pares=[]; itensRespondiveis(m).forEach(it=>{ const r=p.respostas[it.n]; (r&&r.ciclos||[]).forEach(c=>{ if(c.fotoReprovacao&&c.reinspecao&&c.reinspecao.fotoId) pares.push({it,c}); }); });
+    return {m,p,st,pr,u,abertos,pares};
+  });
+  const conc=linhas.filter(l=>l.st==="concluida").length, ab=linhas.reduce((a,l)=>a+(l.abertos?l.abertos.length:0),0);
+  const pill={concluida:"st-concluida",reinsp:"st-reinsp",aberto:"st-andamento",sem:"st-sem"};
+  const corpo=linhas.map(l=>{
+    const dest=l.m.id===destaqueModelo?' destaque':'';
+    if(!l.p) return '<li class="casa-fvs'+dest+'"><div class="cf-info"><b>'+esc(l.m.codigo||l.m.titulo)+'<span class="status-pill '+pill.sem+'">Sem ficha</span></b><span>'+esc((l.m.titulo||"").replace(/\s+/g," ").slice(0,70))+'</span></div><button type="button" class="icon-btn" data-casainiciar="'+esc(l.m.id)+'">Iniciar</button></li>';
+    return '<li class="casa-fvs'+dest+'"><div class="cf-info"><b>'+esc(l.m.codigo||l.m.titulo)+'<span class="status-pill '+pill[l.st]+'">'+esc(ROT_STATUS[l.st])+'</span></b>'+
+      '<span>'+l.pr.feitos+' de '+l.pr.total+' itens · última inspeção em '+esc(dataBR(l.u.dia))+(l.u.quem?' por '+esc(l.u.quem):'')+'</span>'+
+      (l.abertos.length?'<span class="cf-abertos">Reprovado em aberto: '+l.abertos.map(it=>'item '+esc(it.n)).join(", ")+'</span>':'')+
+      (l.pares.length?'<span class="cf-pares">'+l.pares.map(({it,c})=>'<button type="button" class="ver-foto antes-depois" data-antesdepois="'+esc(c.fotoReprovacao)+'|'+esc(c.reinspecao.fotoId)+'|'+esc(c.reprovadoEm||"")+'|'+esc(c.reinspecao.data||"")+'">antes e depois · item '+esc(it.n)+'</button>').join("")+'<span class="foto-ciclo"></span></span>':'')+
+      '</div><button type="button" class="icon-btn" data-casaabrir="'+esc(l.p.id)+'">Abrir</button></li>';
+  }).join("");
+  $("#dlgCasaTit").textContent="Casa "+n+(q?" · Quadra "+q:"");
+  $("#dlgCasaCorpo").innerHTML=
+    '<div class="casa-resumo"><div><b>'+conc+'<small> de '+mods.length+'</small></b><span>FVS concluídas</span></div><div><b>'+ab+'</b><span>'+(ab===1?'item reprovado':'itens reprovados')+' em aberto</span></div><div><b>'+linhas.filter(l=>l.p).length+'</b><span>fichas iniciadas</span></div></div>'+
+    (mods.length?'<ul class="casa-lista">'+corpo+'</ul>':'<p class="note">Nenhum modelo de FVS cadastrado.</p>');
+  $("#dlgCasa").classList.add("show");
+  const d=$("#dlgCasaCorpo .destaque"); if(d) d.scrollIntoView({block:"nearest"});
+}
+function fecharCasa(){ $("#dlgCasa").classList.remove("show"); casaAberta=null; }
+$("#dlgCasa").addEventListener("click",async e=>{
+  if(e.target===$("#dlgCasa")||e.target.closest("[data-casafechar]")) return fecharCasa();
+  const ad=e.target.closest("[data-antesdepois]");
+  if(ad) return mostrarAntesDepois(ad.parentElement.querySelector(".foto-ciclo"),ad.dataset.antesdepois);
+  const ab=e.target.closest("[data-casaabrir]");
+  if(ab){ const p=preenchimentos.find(x=>x.id===ab.dataset.casaabrir), m=p&&modelos.find(x=>x.id===p.modeloId); if(!p||!m) return; fecharCasa(); irPara("fill"); await montarFicha(p,m,{retomar:true}); return; }
+  const ini=e.target.closest("[data-casainiciar]");
+  if(ini){ const n=casaAberta.n; fecharCasa(); irPara("fill"); $("#modeloSelect").value=ini.dataset.casainiciar; $("#unidadeInput").value=String(n); await abrirFicha(); }
+});
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&$("#dlgCasa").classList.contains("show")) fecharCasa(); });
+
+/* ---------------- Busca rápida (casa, FVS, ficha ou tela) ---------------- */
+function resultadosBusca(q){
+  const t=semAcento(q).trim(); if(!t||!obra) return [];
+  const res=[], num=(t.match(/\b(\d{1,4})\b/)||[])[1], n=num?Number(num):null;
+  const resto=t.replace(/\b(casa|unidade|un)\b/g," ").replace(/\b\d{1,4}\b/,"").trim();
+  const mods=[...modelos].sort((a,b)=>numeroCodigo(a)-numeroCodigo(b));
+  const casaOk=n&&n>=1&&n<=obra.casas&&!/fvs/.test(t.slice(0,t.indexOf(num)).slice(-5));
+  const modsTexto=resto?mods.filter(m=>semAcento((m.codigo||"")+" "+(m.titulo||"")).includes(resto)||semAcento(m.codigo||"").replace(/\s/g,"").includes(resto.replace(/\s/g,""))):[];
+  if(casaOk){
+    res.push({ico:"⌂",tit:"Casa "+n,sub:"Ver todas as FVS desta casa",acao:()=>abrirCasa(n)});
+    (modsTexto.length?modsTexto:[]).slice(0,4).forEach(m=>{ const p=preenchimentos.find(x=>x.obraId===obra.id&&x.modeloId===m.id&&numeroDaCasa(x.unidade)===n);
+      res.push({ico:"▤",tit:"Casa "+n+" · "+(m.codigo||m.titulo),sub:p?"Abrir a ficha":"Ainda sem ficha — iniciar",acao:async()=>{ irPara("fill"); if(p) await montarFicha(p,m,{retomar:true}); else { $("#modeloSelect").value=m.id; $("#unidadeInput").value=String(n); await abrirFicha(); } }}); });
+  }
+  const modsBusca=modsTexto.length?modsTexto:(!casaOk&&t?mods.filter(m=>semAcento((m.codigo||"")+" "+(m.titulo||"")).includes(t)):[]);
+  if(!casaOk) modsBusca.slice(0,5).forEach(m=>res.push({ico:"▦",tit:(m.codigo||"")+(m.codigo?" — ":"")+(m.titulo||"").replace(/\s+/g," ").slice(0,60),sub:"Ver a cobertura desta FVS no Painel",acao:()=>{ painelFvsEscolhida=m.id; irPara("painel"); }}));
+  Object.keys(NOMES_VIEW).filter(v=>v!=="inicio"&&(!VIEWS_CONTROLE.has(v)||ehControle)&&semAcento(NOMES_VIEW[v]).includes(t)).slice(0,3)
+    .forEach(v=>res.push({ico:"→",tit:NOMES_VIEW[v],sub:"Ir para a tela",acao:()=>irPara(v)}));
+  if(!res.length&&n&&!(n>=1&&n<=obra.casas)) res.push({ico:"!",tit:"A obra tem "+obra.casas+" casas",sub:"Não existe a casa "+n+" nesta obra",acao:null});
+  return res.slice(0,8);
+}
+let buscaRes=[], buscaSel=0;
+function abrirBusca(){ $("#buscaRapida").classList.add("show"); const i=$("#buscaInput"); i.value=""; mostrarBusca(); setTimeout(()=>i.focus(),20); }
+function fecharBusca(){ $("#buscaRapida").classList.remove("show"); }
+function mostrarBusca(){
+  const q=$("#buscaInput").value; buscaRes=resultadosBusca(q); buscaSel=0;
+  $("#buscaLista").innerHTML=buscaRes.length?buscaRes.map((r,i)=>'<li><button type="button" data-busca="'+i+'"'+(i===0?' class="sel"':'')+(r.acao?'':' disabled')+'><span class="bi">'+r.ico+'</span><span><b>'+esc(r.tit)+'</b><small>'+esc(r.sub)+'</small></span></button></li>').join("")
+    :'<li class="busca-dica">'+(q.trim()?'Nada encontrado. ':'')+'Digite o número da casa (ex.: <b>45</b>), uma FVS (ex.: <b>FVS.113</b>) ou os dois juntos (<b>45 FVS.113</b>).</li>';
+}
+async function executarBusca(i){ const r=buscaRes[i]; if(!r||!r.acao) return; fecharBusca(); await r.acao(); }
+$("#buscaInput").addEventListener("input",mostrarBusca);
+$("#buscaInput").addEventListener("keydown",e=>{
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){ e.preventDefault(); if(!buscaRes.length) return; buscaSel=(buscaSel+(e.key==="ArrowDown"?1:-1)+buscaRes.length)%buscaRes.length;
+    document.querySelectorAll("#buscaLista button").forEach((b,i)=>b.classList.toggle("sel",i===buscaSel)); }
+  if(e.key==="Enter"){ e.preventDefault(); executarBusca(buscaSel); }
+  if(e.key==="Escape") fecharBusca();
+});
+$("#buscaLista").addEventListener("click",e=>{ const b=e.target.closest("[data-busca]"); if(b) executarBusca(Number(b.dataset.busca)); });
+$("#buscaRapida").addEventListener("click",e=>{ if(e.target===$("#buscaRapida")) fecharBusca(); });
+document.addEventListener("keydown",e=>{
+  if(e.key==="/"&&$("#app").style.display==="flex"&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||"")&&!document.querySelector("#dlgPergunta.show,#dlgNome.show,#dlgCasa.show,#apres.show")){ e.preventDefault(); abrirBusca(); }
+});
+
 /* ---------------- Indicadores ----------------
    Aba para o controle e a diretoria acompanharem a obra ao longo do tempo:
    ritmo de conclusão, reprovações abertas x corrigidas por semana, itens mais
@@ -4314,6 +4636,93 @@ function situListaHTML(g){
     return '<li><span><b>Casa '+esc(p.unidade)+'</b> · '+esc(m.codigo||m.titulo)+' <small>'+pr.feitos+' de '+pr.total+' itens</small></span><button type="button" class="icon-btn" data-indabrir="'+esc(p.id)+'">Abrir</button></li>'; }).join("")+'</ul>'+
     (l.length>LIM?'<p class="note" style="margin:6px 0 0">Mostrando '+LIM+' de '+l.length+'. Use a aba Preenchimentos para filtrar todas.</p>':'');
 }
+/* ---- Modo apresentação: tela cheia, sem menus, passando sozinho pelos números da obra ---- */
+const APRES_SEG=15;
+let apres={i:0,slides:[],timer:null,pausa:false};
+function avancoPorCasa(o,lista,fvsId){
+  const base=resumoObra(o,lista), mods=fvsId?base.modelosOrd.filter(m=>m.id===fvsId):base.modelosOrd, conc={};
+  base.cobertura.filter(c=>mods.some(m=>m.id===c.m.id)).forEach(c=>Object.keys(c.porCasa).forEach(n=>{ if(c.porCasa[n].st==="concluida") conc[n]=(conc[n]||0)+1; }));
+  return {conc,total:mods.length};
+}
+async function montarApresentacao(){
+  const d=calcularIndicadores(indFvsEscolhida,12), tm=media(d.tempos);
+  const fvsNome=indFvsEscolhida?((modelos.find(m=>m.id===indFvsEscolhida)||{}).codigo||"FVS selecionada"):"Todas as FVS";
+  const lg=logoObra(obra.id), hoje=new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
+  const big=(v,r,sub)=>'<div class="ap-num"><b>'+v+'</b><span>'+r+'</span>'+(sub?'<small>'+sub+'</small>':'')+'</div>';
+  const slides=[];
+  slides.push({tit:"Resumo",html:'<div class="ap-capa">'+(lg?'<img src="'+lg+'" alt="">':'')+'<h1>'+esc(obra.nome)+'</h1><p>Obra '+esc(obra.id)+' · '+obra.casas+' casas · '+esc(fvsNome)+' · '+esc(hoje)+'</p>'+
+    '<div class="ap-nums">'+big(fmtPct(d.concluidas,d.previstas),"das fichas concluídas",fmtNum(d.concluidas)+" de "+fmtNum(d.previstas))+big(fmtPct(d.prim.ok,d.prim.total),"aprovado de primeira",fmtNum(d.prim.total)+" itens inspecionados")+
+    big(fmtNum(d.abertas.length),"reprovações em aberto","aguardando reinspeção")+big(tm==null?"—":(Math.round(tm*10)/10).toLocaleString("pt-BR"),"dias, em média, até corrigir",d.tempos.length+(d.tempos.length===1?" correção":" correções"))+'</div></div>'});
+  const grupos=situacaoGrupos(d), total=grupos.reduce((a,g)=>a+g.n,0);
+  slides.push({tit:"Situação das fichas",html:'<h2>Situação das fichas</h2><div class="ap-situ">'+roscaSVG(grupos,total)+'<ul>'+grupos.map(g=>'<li><i class="sw'+(g.hach?' hach':'')+'" style="--c:'+g.cor+'"></i><span>'+g.rot+'</span><b>'+fmtNum(g.n)+'</b><em>'+(total?(Math.round(g.n/total*1000)/10).toLocaleString("pt-BR")+'%':'—')+'</em></li>').join("")+'</ul></div>'});
+  slides.push({tit:"Evolução",html:'<h2>Evolução nas últimas 12 semanas</h2><div class="ap-graf2"><div><h3>Fichas concluídas por semana</h3><div class="ind-graf" id="apGrafConc"></div></div><div><h3>Reprovações registradas e corrigidas</h3><div class="ind-leg"><span><i style="background:'+VZ.b+'"></i>Registradas</span><span><i style="background:'+VZ.a+'"></i>Corrigidas</span></div><div class="ind-graf" id="apGrafRep"></div></div></div>',
+    depois:()=>{ const rot=d.sem.map(diaBR);
+      graficoColunas($("#apGrafConc"),{rotulos:rot,series:[{cor:VZ.a,valores:d.concSem}],rotuloUltimo:true,dica:i=>'<b>Semana de '+diaBR(d.sem[i])+'</b><br>'+d.concSem[i]+' concluídas'});
+      graficoColunas($("#apGrafRep"),{rotulos:rot,series:[{cor:VZ.b,valores:d.repSem},{cor:VZ.a,valores:d.corSem}],dica:i=>'<b>Semana de '+diaBR(d.sem[i])+'</b><br>'+d.repSem[i]+' registradas · '+d.corSem[i]+' corrigidas'}); }});
+  const impl=IMPLANTACAO[String(obra.id)];
+  if(impl){
+    const av=avancoPorCasa(obra,preenchimentos,indFvsEscolhida);
+    const botao=n=>{ const k=av.total?(av.conc[n]||0)/av.total:0; return '<span class="mp ap-casa" style="--nv:'+Math.round(k*100)+'%'+(k>=0.5?';color:#fff':'')+'" title="Casa '+n+': '+(av.conc[n]||0)+' de '+av.total+' FVS concluídas">'+n+'</span>'; };
+    slides.push({tit:"Avanço por casa",html:'<h2>Avanço por casa <small>'+(av.total>1?'quanto mais escuro, mais FVS concluídas na casa':'casas com a FVS concluída em azul')+'</small></h2>'+
+      '<div class="ap-mapa">'+mapaImplantacao(impl,botao,null)+'</div><div class="ap-escala"><span>nenhuma</span><i></i><span>'+(av.total===1?'FVS concluída':'todas as '+av.total+' FVS')+'</span></div>'});
+  }
+  const top=d.pareto.slice(0,6), totRep=d.pareto.reduce((a,x)=>a+x.n,0);
+  slides.push({tit:"Itens mais reprovados",html:'<h2>Itens mais reprovados</h2>'+(top.length?'<div class="pareto ap-pareto">'+top.map(x=>'<div class="p-lin"><div class="p-rot"><b>'+esc((x.m.codigo?x.m.codigo+" · ":"")+"Item "+x.it.n)+'</b><span>'+esc(x.it.item)+'</span></div><div class="p-bar"><i style="width:'+Math.round(x.n/top[0].n*100)+'%"></i></div><div class="p-val"><b>'+x.n+'×</b></div></div>').join("")+'</div><p class="ap-nota">'+fmtNum(totRep)+' reprovações registradas no total.</p>':'<p class="ap-nota">Nenhuma reprovação registrada.</p>')});
+  if(ehControle){
+    let obras=[]; try{ obras=await DB.listar("obras"); }catch(e){}
+    if(!obras.length) obras=OBRAS_PADRAO.map(o=>Object.assign({},o));
+    if(obras.length>1){
+      const cols=[]; for(const o of obras.sort((a,b)=>a.id.localeCompare(b.id))){ try{ cols.push({o,d:calcularIndicadores(indFvsEscolhida,4,o,await fichasDaObra(o))}); }catch(e){} }
+      slides.push({tit:"Comparativo entre obras",html:'<h2>Comparativo entre obras</h2><div class="ap-comp">'+cols.map(({o,d})=>'<div class="ap-comp-col"><h3>'+esc(o.nome)+'</h3>'+
+        big(fmtPct(d.concluidas,d.previstas),"das fichas concluídas",fmtNum(d.concluidas)+" de "+fmtNum(d.previstas))+big(fmtPct(d.prim.ok,d.prim.total),"aprovado de primeira","")+big(fmtNum(d.abertas.length),"reprovações em aberto","")+'</div>').join("")+'</div>'});
+    }
+  }
+  return slides;
+}
+async function abrirApresentacao(){
+  if(!obra) return;
+  const ap=$("#apres");
+  ap.classList.add("show"); $("#apPalco").innerHTML='<p class="ap-nota">Preparando…</p>';
+  try{ if(ap.requestFullscreen&&!document.fullscreenElement) await ap.requestFullscreen(); }catch(e){}
+  apres.slides=await montarApresentacao(); apres.i=0; apres.pausa=false;
+  mostrarSlide(0);
+}
+function fecharApresentacao(){
+  clearTimeout(apres.timer); $("#apres").classList.remove("show");
+  try{ if(document.fullscreenElement) document.exitFullscreen(); }catch(e){}
+}
+function mostrarSlide(i){
+  const n=apres.slides.length; if(!n) return;
+  apres.i=(i+n)%n; const sl=apres.slides[apres.i];
+  const palco=$("#apPalco");
+  palco.classList.remove("ap-entra"); void palco.offsetWidth;
+  palco.innerHTML='<div class="ap-slide">'+sl.html+'</div>';
+  if(!matchMedia("(prefers-reduced-motion:reduce)").matches) palco.classList.add("ap-entra");
+  if(sl.depois) setTimeout(sl.depois,30);
+  $("#apCont").textContent=(apres.i+1)+" / "+n+" · "+sl.tit;
+  $("#apPausa").textContent=apres.pausa?"▶ Continuar":"❚❚ Pausar";
+  $("#apBarra").style.animation="none"; void $("#apBarra").offsetWidth;
+  $("#apBarra").style.animation=apres.pausa?"none":"apTempo "+APRES_SEG+"s linear forwards";
+  clearTimeout(apres.timer);
+  if(!apres.pausa) apres.timer=setTimeout(()=>mostrarSlide(apres.i+1),APRES_SEG*1000);
+}
+$("#btnApres").addEventListener("click",abrirApresentacao);
+$("#apres").addEventListener("click",e=>{
+  const b=e.target.closest("[data-ap]"); if(!b) return;
+  if(b.dataset.ap==="sair") return fecharApresentacao();
+  if(b.dataset.ap==="ant") return mostrarSlide(apres.i-1);
+  if(b.dataset.ap==="prox") return mostrarSlide(apres.i+1);
+  if(b.dataset.ap==="pausa"){ apres.pausa=!apres.pausa; mostrarSlide(apres.i); }
+});
+document.addEventListener("keydown",e=>{
+  if(!$("#apres").classList.contains("show")) return;
+  if(e.key==="Escape") fecharApresentacao();
+  else if(e.key==="ArrowRight"||e.key==="PageDown") mostrarSlide(apres.i+1);
+  else if(e.key==="ArrowLeft"||e.key==="PageUp") mostrarSlide(apres.i-1);
+  else if(e.key===" "){ e.preventDefault(); apres.pausa=!apres.pausa; mostrarSlide(apres.i); }
+});
+document.addEventListener("fullscreenchange",()=>{ if(!document.fullscreenElement&&$("#apres").classList.contains("show")) {/* continua na janela */} });
+
 /* ---- Comparativo entre obras (só controle): os mesmos números de cada obra lado a lado ---- */
 const compCache={};
 async function fichasDaObra(o){
@@ -4502,17 +4911,7 @@ $("#view-painel").addEventListener("click",async e=>{
     return;
   }
   if(t.dataset.pnancora){ const sec=$("#painelPend").closest(".panel"); if(sec) sec.scrollIntoView({behavior:"smooth",block:"start"}); return; }
-  if(t.dataset.pncasa){
-    const m=modelos.find(x=>x.id===t.dataset.pnmodelo); if(!m) return;
-    if(t.dataset.pnficha){
-      const p=preenchimentos.find(x=>x.id===t.dataset.pnficha); if(!p) return;
-      irPara("fill"); await montarFicha(p,m,{retomar:true}); return;
-    }
-    if(!confirm("Iniciar a ficha "+(m.codigo||m.titulo)+" da casa "+t.dataset.pncasa+"?")) return;
-    irPara("fill");
-    $("#modeloSelect").value=m.id; $("#unidadeInput").value=t.dataset.pncasa;
-    await abrirFicha();
-  }
+  if(t.dataset.pncasa){ abrirCasa(Number(t.dataset.pncasa),t.dataset.pnmodelo); return; }
 });
 
 /* ---------------- PDF nativo do documento preenchido ----------------
@@ -4666,18 +5065,98 @@ function renderDB(){
   $("#stMotor").textContent=DB.motor;
   $("#notaLimiteFormato").style.display=DB.motor.startsWith("Nuvem compartilhada")?"":"none";
 }
+/* ---- Registro de operações com busca (pessoa, casa/FVS/texto, obra e período) ---- */
+let logEventos=[];
+const semAcento=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 async function renderLog(){
-  const ev=(await DB.listar("auditoria")).sort((a,b)=>b.quando.localeCompare(a.quando)).slice(0,60);
-  $("#logCount").textContent=ev.length===1?"1 evento":ev.length+" eventos";
+  if(!$("#view-db").classList.contains("active")&&logEventos.length) return;   // só busca de novo quando a tela está aberta
+  try{ logEventos=(await DB.listar("auditoria")).filter(e=>e&&e.quando).sort((a,b)=>b.quando.localeCompare(a.quando)); }catch(e){ logEventos=[]; }
+  const sel=$("#logPessoa"), atual=sel.value;
+  const pessoas=[...new Set(logEventos.map(e=>e.quem).filter(Boolean))].sort();
+  sel.innerHTML='<option value="">Todas as pessoas</option>'+pessoas.map(x=>'<option'+(x===atual?' selected':'')+'>'+esc(x)+'</option>').join("");
+  filtrarLog();
+}
+function filtrarLog(){
+  const quem=$("#logPessoa").value, txt=semAcento($("#logBusca").value).trim(), de=$("#logDe").value, ate=$("#logAte").value, soObra=$("#logObra").checked;
+  // "casa 45" encontra o número da casa no texto; demais palavras precisam aparecer todas
+  const termos=txt.replace(/\bcasa\s+/g,"casa:").split(/\s+/).filter(Boolean);
+  const lista=logEventos.filter(e=>{
+    if(quem&&e.quem!==quem) return false;
+    if(soObra&&obra&&e.obra&&String(e.obra)!==String(obra.id)) return false;
+    const dia=isoDia(new Date(e.quando));
+    if(de&&dia<de) return false; if(ate&&dia>ate) return false;
+    if(!termos.length) return true;
+    const alvo=semAcento(e.acao+" "+(e.alvo||"")+" "+(e.quem||""));
+    return termos.every(t=>{
+      if(t.startsWith("casa:")){ const n=t.slice(5); return new RegExp("(casa|unidade|·)\\s*0*"+n.replace(/\D/g,"")+"(\\b|$)").test(alvo); }
+      return alvo.includes(t);
+    });
+  });
+  const LIM=300;
+  $("#logCount").textContent=(lista.length===1?"1 evento":fmtNum(lista.length)+" eventos")+(lista.length!==logEventos.length?" de "+fmtNum(logEventos.length):"")+(lista.length>LIM?" · mostrando "+LIM:"");
   const ul=$("#log"); ul.innerHTML="";
-  if(!ev.length){ ul.innerHTML='<li style="color:var(--ink3)">Nenhuma operação registrada.</li>'; return; }
-  ev.forEach(e=>{
+  if(!lista.length){ ul.innerHTML='<li style="color:var(--ink3)">'+(logEventos.length?'Nenhuma operação encontrada com esses filtros.':'Nenhuma operação registrada.')+'</li>'; return; }
+  lista.slice(0,LIM).forEach(e=>{
     const li=document.createElement("li");
     const t=document.createElement("time"); t.textContent=dataHora(e.quando);
-    const s=document.createElement("span"); s.textContent=e.acao+(e.alvo?" — "+e.alvo:"")+(e.quem?"  ·  "+e.quem:"");
+    const s=document.createElement("span"); s.textContent=e.acao+(e.alvo?" — "+e.alvo:"")+(e.quem?"  ·  "+e.quem:"")+(e.obra&&(!obra||String(e.obra)!==String(obra.id))?"  ·  obra "+e.obra:"");
     li.append(t,s); ul.appendChild(li);
   });
 }
+["#logPessoa","#logDe","#logAte","#logObra"].forEach(sel=>$(sel).addEventListener("change",filtrarLog));
+{ let tB=null; $("#logBusca").addEventListener("input",()=>{ clearTimeout(tB); tB=setTimeout(filtrarLog,180); }); }
+$("#logLimpar").addEventListener("click",()=>{ $("#logPessoa").value=""; $("#logBusca").value=""; $("#logDe").value=""; $("#logAte").value=""; $("#logObra").checked=false; filtrarLog(); });
+
+/* ---- Lixeira: fichas, documentos e modelos excluídos ficam 30 dias recuperáveis ---- */
+const LIXEIRA_DIAS=30;
+const ROT_LIXO={preenchimentos:"Ficha",documentos:"Documento",modelos:"Questionário (modelo)"};
+function nomeFichaLixeira(p){ const m=modelos.find(x=>x.id===p.modeloId); return (m?(m.codigo||m.titulo):p.modeloId)+" · casa "+p.unidade+(p.obraId?" · obra "+p.obraId:""); }
+async function moverParaLixeira(colecao,reg,extra){
+  extra=extra||{};
+  const item={id:(colecao+"__"+reg.id).replace(/[^A-Za-z0-9_-]/g,"-"),colecao,registro:JSON.parse(JSON.stringify(reg)),
+    arquivos:extra.arquivos||[],titulo:extra.titulo||reg.id,obraId:reg.obraId||"",excluidoEm:new Date().toISOString(),excluidoPor:quemSou()};
+  await DB.gravar("lixeira",item);
+  await DB.remover(colecao,reg.id);
+}
+const diasNaLixeira=x=>Math.floor((Date.now()-new Date(x.excluidoEm).getTime())/86400000);
+async function renderLixeira(){
+  const el=$("#lixeiraLista"); if(!el||!ehControle) return;
+  let itens=[]; try{ itens=await DB.listar("lixeira"); }catch(e){}
+  // apaga de vez o que passou de 30 dias (e os arquivos guardados junto)
+  for(const x of itens.filter(x=>diasNaLixeira(x)>=LIXEIRA_DIAS)){
+    try{ for(const a of (x.arquivos||[])) await DB.remover("arquivos",a); await DB.remover("lixeira",x.id); }catch(e){}
+  }
+  itens=itens.filter(x=>diasNaLixeira(x)<LIXEIRA_DIAS).sort((a,b)=>b.excluidoEm.localeCompare(a.excluidoEm));
+  $("#lixeiraCount").textContent=itens.length?(itens.length===1?"1 item":itens.length+" itens"):"";
+  if(!itens.length){ el.innerHTML='<div class="empty"><b>Lixeira vazia</b>Fichas, documentos e questionários excluídos ficam aqui por '+LIXEIRA_DIAS+' dias.</div>'; return; }
+  el.innerHTML='<ul class="docs">'+itens.map(x=>{ const resta=LIXEIRA_DIAS-diasNaLixeira(x);
+    return '<li><div class="doc-row"><div class="doc-meta"><b>'+esc(x.titulo)+'<span class="status-pill st-andamento">'+esc(ROT_LIXO[x.colecao]||x.colecao)+'</span></b>'+
+      '<span>Excluído por '+esc(x.excluidoPor||"—")+' em '+esc(dataHora(x.excluidoEm))+' · apagado de vez em '+resta+(resta===1?' dia':' dias')+'</span></div>'+
+      '<div class="row-actions"><button class="icon-btn" data-restaurar="'+esc(x.id)+'">Restaurar</button><button class="icon-btn danger" data-apagarlixo="'+esc(x.id)+'">Excluir de vez</button></div></div></li>'; }).join("")+'</ul>';
+}
+$("#lixeiraLista").addEventListener("click",async e=>{
+  const r=e.target.closest("[data-restaurar]"), a=e.target.closest("[data-apagarlixo]");
+  if(!r&&!a) return;
+  if(!ehControle) return toast("Somente a conta de controle pode mexer na lixeira.");
+  const id=(r||a).dataset.restaurar||(r||a).dataset.apagarlixo;
+  const x=(await DB.listar("lixeira")).find(i=>i.id===id); if(!x) return renderLixeira();
+  if(a){
+    if(!confirm('Excluir de vez "'+x.titulo+'"? Não será mais possível recuperar.')) return;
+    for(const arq of (x.arquivos||[])) await DB.remover("arquivos",arq).catch(()=>{});
+    await DB.remover("lixeira",x.id);
+    await registrar("Excluído de vez da lixeira",x.titulo);
+    toast("Excluído de vez."); return renderLixeira();
+  }
+  const res=await DB.criar(x.colecao,x.registro);
+  if(!res.criado){
+    const sub=await perguntar("Já existe um registro igual","Depois da exclusão, foi criado de novo um registro com a mesma identificação ("+x.titulo+"). Substituir pelo que está na lixeira?",[{rot:"Cancelar",valor:false},{rot:"Substituir",valor:true,primario:true}]);
+    if(!sub) return;
+    await DB.gravar(x.colecao,x.registro);
+  }
+  await DB.remover("lixeira",x.id);
+  await registrar("Restaurado da lixeira",x.titulo);
+  toast("Restaurado: "+x.titulo); await render(); renderLixeira();
+});
 async function exportarBase(){
   toast("Preparando o backup…");
   const pac={formato:"controle-documental/backup",versao:4,geradoEm:new Date().toISOString(),geradoPor:user.email,
@@ -4775,10 +5254,10 @@ $("#list").addEventListener("click",async e=>{
   if(t.dataset.rm){
     if(!ehControle) return toast("Somente a conta de controle pode remover documentos.");
     const d=docs.find(x=>x.id===t.dataset.rm);
-    if(!confirm('Remover "'+d.nome+'" e todas as suas versões?')) return;
-    for(const v of d.versoes) await DB.remover("arquivos",v.arquivoId);
-    await DB.remover("documentos",d.id);
-    await registrar("Documento removido",d.nome); await render(); toast("Documento removido.");
+    if(!confirm('Mover "'+d.nome+'" e todas as suas versões para a lixeira? Pode ser recuperado por 30 dias em Base de dados.')) return;
+    // os arquivos ficam guardados enquanto o documento estiver na lixeira
+    await moverParaLixeira("documentos",d,{titulo:d.nome,arquivos:d.versoes.map(v=>v.arquivoId)});
+    await registrar("Documento movido para a lixeira",d.nome); await render(); toast("Documento movido para a lixeira.");
   }
 });
 
@@ -4790,8 +5269,9 @@ $("#listaModelos").addEventListener("click",async e=>{
   if(t.dataset.delmod){
     if(!ehControle) return toast("Somente a conta de controle pode excluir modelos.");
     const m=modelos.find(x=>x.id===t.dataset.delmod);
-    if(!confirm('Excluir o questionário "'+m.titulo+'"?')) return;
-    await DB.remover("modelos",m.id); await registrar("Questionário excluído",m.titulo); await render();
+    if(!confirm('Mover o questionário "'+m.titulo+'" para a lixeira? Pode ser recuperado por 30 dias em Base de dados.')) return;
+    await moverParaLixeira("modelos",m,{titulo:(m.codigo?m.codigo+" — ":"")+m.titulo});
+    await registrar("Questionário movido para a lixeira",m.titulo); await render(); toast("Questionário movido para a lixeira.");
   }
 });
 $("#btnNovoModelo").addEventListener("click",()=>{
@@ -4802,6 +5282,7 @@ $("#btnNovoModelo").addEventListener("click",()=>{
 /* ---------------- Eventos: setup do preenchimento ---------------- */
 $("#btnAbrirFicha").addEventListener("click",abrirFicha);
 $("#btnFechar").addEventListener("click",fecharFicha);
+$("#btnBusca").addEventListener("click",abrirBusca);
 $("#btnSalvar").addEventListener("click",async()=>{ if(!fichaAtiva) return; if(fichaAtiva.leitura) return toast("Esta ficha está aberta por outra pessoa — só consulta."); if(await gravarFicha("manual")) toast("Ficha salva."); });
 $("#btnGerar").addEventListener("click",async()=>{
   if(!fichaAtiva) return;
@@ -4954,6 +5435,8 @@ $("#fichaArea").addEventListener("click", async e=>{
     if(marcada&&marcada!==mid.blob) await trocarFotoItem(n,marcada,tipo);
     return;
   }
+  if(t.dataset&&t.dataset.antesdepois){ await mostrarAntesDepois(t.parentElement.querySelector(".foto-ciclo"),t.dataset.antesdepois); return; }
+  if(t.dataset&&t.dataset.desfazerr){ await desfazerReprovacao(t.dataset.desfazerr); return; }
   if(t.dataset&&t.dataset.verfoto){
     const alvo=t.parentElement.querySelector(".foto-ciclo");
     const mid=await DB.obter("midias",t.dataset.verfoto);
@@ -4982,13 +5465,13 @@ $("#wrapPre").addEventListener("click",async e=>{
   if(t.dataset.delpre){
     if(!ehControle) return toast("Somente a conta de controle pode excluir preenchimentos.");
     const p=preenchimentos.find(x=>x.id===t.dataset.delpre);
-    if(!confirm('Excluir definitivamente o preenchimento da casa '+(p?p.unidade:"")+'? Esta ação não pode ser desfeita.')) return;
+    if(!confirm('Mover para a lixeira o preenchimento da casa '+(p?p.unidade:"")+'? Ele pode ser recuperado por 30 dias em Base de dados.')) return;
     try{
-      await DB.remover("preenchimentos",t.dataset.delpre);
+      await moverParaLixeira("preenchimentos",p||{id:t.dataset.delpre},{titulo:p?nomeFichaLixeira(p):t.dataset.delpre});
       if(fichaAtiva && fichaAtiva.p.id===t.dataset.delpre) await fecharFicha(true);
-      await registrar("Preenchimento excluído", p?(p.unidade+" · "+p.modeloId):"");
+      await registrar("Preenchimento movido para a lixeira", p?nomeFichaLixeira(p):"");
       await render();
-      toast("Preenchimento excluído.");
+      toast("Preenchimento movido para a lixeira.");
     }catch(err){
       toast("Não foi possível excluir: "+(err&&err.message?err.message:"erro desconhecido"));
     }
@@ -5006,13 +5489,13 @@ $("#listaTodos").addEventListener("click",async e=>{
   if(t.dataset.delpre2){
     if(!ehControle) return toast("Somente a conta de controle pode excluir preenchimentos.");
     const p=fonteTodos.find(x=>x.id===t.dataset.delpre2);
-    if(!confirm('Excluir definitivamente o preenchimento da obra '+(p?p.obraId:"")+' — casa '+(p?p.unidade:"")+'? Esta ação não pode ser desfeita.')) return;
+    if(!confirm('Mover para a lixeira o preenchimento da obra '+(p?p.obraId:"")+' — casa '+(p?p.unidade:"")+'? Ele pode ser recuperado por 30 dias.')) return;
     try{
-      await DB.remover("preenchimentos",t.dataset.delpre2);
+      await moverParaLixeira("preenchimentos",p||{id:t.dataset.delpre2},{titulo:p?nomeFichaLixeira(p):t.dataset.delpre2});
       if(fichaAtiva && fichaAtiva.p.id===t.dataset.delpre2) await fecharFicha(true);
-      await registrar("Preenchimento excluído", p?(p.obraId+" · "+p.unidade+" · "+p.modeloId):"");
-      await render();
-      toast("Preenchimento excluído.");
+      await registrar("Preenchimento movido para a lixeira", p?nomeFichaLixeira(p):"");
+      await render(); renderLixeira();
+      toast("Preenchimento movido para a lixeira.");
     }catch(err){
       toast("Não foi possível excluir: "+(err&&err.message?err.message:"erro desconhecido"));
     }

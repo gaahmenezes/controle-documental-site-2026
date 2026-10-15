@@ -22,6 +22,9 @@
 - Etapas do resultado (só na tela): item sem resposta/A/NA mostra A, R, NA; R ainda não travado pode ser desfeito sem virar ciclo; R travado = `travadoEm` (só o botão Salvar trava; o automático não) → só R e AR, aparece a reinspeção, não volta a A/NA. AR exige data + foto da reinspeção. AR→R por engano desfaz pelo AR (`vinhaDeAR`). Fichas antigas (`!p.salvoManual`): R gravados contam como travados.
 - Retomar (`resumoRetomada`, `.retomar`, `#parouAqui`) e "Respondido por" (`respondidoHTML`) vêm de `eventos`; só na tela, nunca no PDF.
 - Painel: fichas paradas (`fichasParadas`, `renderParadas`) por quadra. Indicadores: por equipe de execução (`porEquipe`, `chaveEquipe` junta grafias) e comparativo entre obras (`renderComparativo`, só controle). Topo dos Indicadores: situação das fichas em rosca (`situacaoHTML`, `roscaSVG`; hachura = concluída após reinspeção) e quadros de reinspeções (aguardando / corrigidas / fichas afetadas) — sem prazos, por decisão do usuário. `resumoObra(o,lista)` e `calcularIndicadores(fvs,semanas,o,lista)` aceitam outra obra.
+- Ficha: pendências para gerar o documento (`pendenciasFicha`, `#pendLista`); controle desfaz R travado com motivo (`desfazerReprovacao`, guarda `reprovacoesDesfeitas`, sem evento de troca). Antes e depois (`mostrarAntesDepois`) no histórico e na ficha da casa.
+- Ficha da casa (`abrirCasa`, `#dlgCasa`): tocar numa casa do mapa abre todas as FVS dela. Busca rápida (`#buscaRapida`, tecla /). Modo apresentação (`abrirApresentacao`, `#apres`) na aba Indicadores.
+- Lixeira (coleção `lixeira`, `moverParaLixeira`, `renderLixeira`): fichas, documentos e modelos excluídos ficam 30 dias; arquivos dos documentos só são apagados ao vencer. Registro de operações com filtros (`filtrarLog`).
 - Melhorias visuais de computador ficam em `@media (min-width:821px)` / `(hover:hover) and (pointer:fine)`; respeitar `prefers-reduced-motion`.
 
 ## Backend
