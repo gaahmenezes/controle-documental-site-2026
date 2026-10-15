@@ -156,6 +156,18 @@ header.topbar{background:var(--chrome);border-bottom:3px solid var(--laranja);co
 .ind-barra .trilho{flex:1;height:10px;background:var(--line2);border-radius:0 4px 4px 0}
 .ind-barra .trilho i{display:block;height:100%;background:#1755A0;border-radius:0 4px 4px 0}
 .ind-barra em{font-style:normal;font-size:12.5px;color:var(--ink2);min-width:38px;text-align:right}
+.ind-barra.rep .trilho i{background:#C0461E}
+.comp-tab td small{display:block;font-size:11.5px;color:var(--ink3);margin-top:2px}
+.comp-tab td.num .ind-barra{justify-content:flex-end;min-width:130px}
+.comp-tab td:first-child{color:var(--ink2)}
+.comp-tab th.num{white-space:normal}
+@media (max-width:820px){
+  .comp-tab th,.comp-tab td{white-space:normal}
+  .comp-tab td:first-child{width:38%}
+  .comp-tab td.num .ind-barra .trilho{display:none}
+  .comp-tab td.num .ind-barra{min-width:0}
+}
+.comp-sub{margin:18px 0 6px;font-size:13px;font-weight:600;color:var(--ink2)}
 .pareto{display:grid;gap:10px;font-size:13px}
 .pareto .p-lin{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;grid-template-areas:"rot bar val";gap:4px 12px;align-items:center}
 .pareto .p-rot{grid-area:rot}.pareto .p-bar{grid-area:bar}.pareto .p-val{grid-area:val}
@@ -232,6 +244,8 @@ body.tema-escuro .impl-qd .qd-nome{color:var(--ink3);border-color:var(--line2)}
 body.tema-escuro .impl-faixa .qd-nome{color:var(--ink3)}
 body.tema-escuro .mp:not(.concluida):not(.reinsp):not(.aberto){background:#22323A;border-color:#2F434D;color:#8EA1A9}
 body.tema-escuro .ind-barra .trilho i{background:#4C93E0}
+body.tema-escuro .ind-barra.rep .trilho i{background:#D9693F}
+body.tema-escuro .btn-retomar,body.tema-escuro .trava-aviso .trava-ico{color:#0E1C24}
 body.tema-escuro .pareto .p-bar i{background:#D9693F}
 body.tema-escuro .ind-graf .faixa:hover,body.tema-escuro .ind-graf .faixa.on{fill:rgba(76,147,224,.10)}
 body.tema-escuro .esq::after,body.tema-escuro #app.aguardando .hub-num::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent)}
@@ -611,11 +625,38 @@ ul.docs>li:first-child{border-top:none}
 .reinsp-box input[type=file]{background:var(--paper);margin-top:2px}
 .reinsp-box.done{border-color:var(--ok);background:var(--ok-soft)}
 .reinsp-box.done h4{color:var(--ok)}
+/* trava de edição, retomar e quem respondeu */
+.trava-aviso{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 16px;padding:14px 16px;border:1px solid var(--warn);background:var(--warn-soft);border-radius:var(--radius);color:var(--ink)}
+.trava-aviso .trava-ico{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--warn);color:#fff}
+.trava-aviso .trava-ico svg{width:18px;height:18px}
+.trava-aviso>div{flex:1 1 240px;min-width:0}
+.trava-aviso b{display:block;font-weight:600;font-size:14.5px}
+.trava-aviso span{display:block;font-size:13px;color:var(--ink2);margin-top:2px}
+.btn-assumir,.btn-retomar{font:inherit;font-size:13.5px;font-weight:600;border-radius:6px;padding:9px 14px;cursor:pointer;min-height:40px}
+.btn-assumir{border:1px solid var(--warn);background:var(--paper);color:var(--warn)}
+#fichaArea.leitura .item-card,#fichaArea.leitura .panel{opacity:.92}
+#fichaArea.leitura input:disabled,#fichaArea.leitura textarea:disabled,#fichaArea.leitura .opt{cursor:not-allowed}
+.retomar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0;padding:12px 16px;border:1px solid var(--seal);background:var(--seal-soft);border-radius:var(--radius)}
+.retomar>div{flex:1 1 240px;min-width:0}
+.retomar b{display:block;font-size:14.5px;font-weight:600;color:var(--seal)}
+.retomar span{display:block;font-size:13px;color:var(--ink2);margin-top:2px}
+.btn-retomar{border:0;background:var(--seal);color:#fff}
+.parou-aqui{display:flex;align-items:center;gap:10px;margin:18px 0 8px;color:var(--seal);font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.parou-aqui::before,.parou-aqui::after{content:"";flex:1;height:1px;background:var(--seal);opacity:.45}
+.item-quem{padding:6px 18px;font-size:12.5px;color:var(--ink3);border-bottom:1px solid var(--line2)}
+.item-quem b{color:var(--ink2);font-weight:600}
 .status-pill{display:inline-block;margin-left:8px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;vertical-align:1px;white-space:nowrap}
 .status-pill.st-andamento{background:var(--line2);color:var(--ink2)}
 .status-pill.st-reinsp{background:var(--flag-soft);color:var(--flag)}
 .status-pill.st-concluida-reinsp{background:var(--warn-soft);color:var(--warn)}
 .status-pill.st-concluida{background:var(--ok-soft);color:var(--ok)}
+.status-pill.st-parada{background:var(--warn-soft);color:var(--warn)}
+.paradas-q{border-top:1px solid var(--line2)}
+.paradas-q>summary{cursor:pointer;padding:12px 18px;font-weight:600;font-size:14px;list-style:none;display:flex;gap:8px;align-items:center}
+.paradas-q>summary::-webkit-details-marker{display:none}
+.paradas-q>summary::before{content:"›";display:inline-block;transition:transform .15s;color:var(--ink3)}
+.paradas-q[open]>summary::before{transform:rotate(90deg)}
+.paradas-q>summary small{font-weight:400;color:var(--ink3)}
 
 .eq-row{display:grid;grid-template-columns:1fr 1fr 40px;gap:10px;margin-bottom:10px}
 .eq-row:last-child{margin-bottom:0}
@@ -633,7 +674,7 @@ table.editor textarea{min-height:60px;resize:vertical}
 .progresso .barra{height:8px;border-radius:4px}
 .progresso #prTxt{font-weight:600;color:var(--ink)}
 .salvo{display:inline-flex;align-items:center;gap:5px;font-size:12px!important;color:var(--ok)!important;font-weight:500}
-.salvo.local{color:var(--warn)!important}
+.salvo.local,.salvo.leitura{color:var(--warn)!important}
 .salvo.salvando{color:var(--ink3)!important}
 @media (max-width:640px){.progresso{flex-wrap:wrap;gap:6px 12px;padding:10px 12px}.progresso .barra{flex:1 1 100%;order:3}}
 .rodape{position:fixed;left:0;right:0;bottom:0;background:var(--paper);border-top:1px solid var(--line);padding:12px 20px;display:none;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;z-index:25;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
@@ -919,6 +960,15 @@ table.editor textarea{min-height:60px;resize:vertical}
         <div class="panel-head"><h3>Reinspeções pendentes</h3><span class="count" id="painelPendCount"></span></div>
         <ul class="docs" id="painelPend"></ul>
         <div class="empty" id="painelPendVazio" style="display:none"><b>Nenhuma reinspeção pendente</b>Todos os itens reprovados desta obra já foram reinspecionados.</div>
+      </div>
+      <div class="panel" style="margin-top:16px">
+        <div class="panel-head"><div><h3>Fichas paradas</h3><span class="count" id="painelParadasCount"></span></div>
+          <select id="painelParadasDias" aria-label="Sem nova inspeção há" style="width:auto;flex:none">
+            <option value="7" selected>Sem inspeção há 7 dias ou mais</option>
+            <option value="15">Há 15 dias ou mais</option>
+            <option value="30">Há 30 dias ou mais</option>
+          </select></div>
+        <div id="painelParadas"></div>
       </div>
       <div class="view-head" style="margin:30px 0 14px">
         <h2 style="font-size:20px">Cobertura da obra</h2>
@@ -1694,6 +1744,27 @@ const DB = (() => {
     pendentes: ()=>modo==="remoto"?contarPendentes():Promise.resolve(0),
     sincronizar: ()=>sincronizar(),
     aoMudar(f){ ouvintes.push(f); avisar(); },
+    // Trava de edição: quem está com cada ficha aberta agora. Só existe com o servidor
+    // e com sinal — sem conexão não há como saber (undefined = não deu para conferir).
+    // lista as presenças da obra (sempre responde 200, sem "erro 404" no console quando ninguém está com a ficha)
+    async presencaObter(id,obraId){
+      if(modo!=="remoto"||!online) return undefined;
+      try{
+        const r=await apiFetch("/api/colecoes/presencas?obraId="+encodeURIComponent(obraId||""),{timeout:8000});
+        if(!r.ok) return undefined;
+        const lista=await r.json();
+        return (Array.isArray(lista)?lista:[]).find(x=>x&&x.id===id)||null;
+      }catch(e){ return undefined; }
+    },
+    async presencaGravar(reg){
+      if(modo!=="remoto"||!online) return false;
+      try{ const r=await apiFetch("/api/colecoes/presencas/"+encodeURIComponent(reg.id),{method:"PUT",body:JSON.stringify(reg),timeout:8000}); return r.ok; }
+      catch(e){ return false; }
+    },
+    presencaRemover(id){
+      if(modo!=="remoto") return;
+      apiFetch("/api/colecoes/presencas/"+encodeURIComponent(id),{method:"DELETE",keepalive:true,timeout:8000}).catch(()=>{});
+    },
     async criar(l,r){
       if(modo==="remoto") return rCriar(l,r);
       const ex=await this.obter(l,r.id);
@@ -2227,6 +2298,7 @@ async function entrar(u,restaurando){
 }
 async function sair(){
   try{ await registrar("Saída do sistema",""); }catch(e){} // sem conexão ou sessão vencida: sai mesmo assim
+  liberarPresenca();
   user=null;obra=null;fichaAtiva=null;pendingEmail=null;
   apagarSessaoSalva();
   $("#app").style.display="none";$("#obras").style.display="none";$("#verificacao").style.display="none";$("#login").style.display="grid";
@@ -2327,6 +2399,7 @@ function aplicarView(v,scrollY,voltando){
   if(typeof esconderTip==="function") esconderTip();
   // a barra Fechar/Salvar/Gerar só faz sentido em Preencher, com uma ficha aberta
   $("#rodape").classList.toggle("show",v==="fill"&&!!fichaAtiva);
+  if(v==="fill"&&fichaAtiva) pulsoPresenca();   // voltou para a ficha: confere se ainda está com ela
   window.scrollTo(0,scrollY||0);
 }
 window.addEventListener("popstate",e=>{
@@ -2746,7 +2819,7 @@ async function abrirFicha(){
     guardarLocal(p);
   }
   if(!p.cabecalho) p.cabecalho={equipamentos:Array.from({length:m.equipamentosCount||3},()=>({label:"",patrimonio:""})),equipe:[],observacao:""};
-  await montarFicha(p,m);
+  await montarFicha(p,m,{retomar:true});
 }
 /* ---------------- Ficha: montagem e blocos ---------------- */
 function equipamentosHTML(p){
@@ -2816,6 +2889,7 @@ function cardHTML(it,p){
   }
   return '<div class="item-card'+(r.resultado?" done":"")+'" id="card-'+esc(it.n)+'">'+
     '<div class="item-head"><div class="item-n">'+esc(it.n)+'</div><b>Item de inspeção '+esc(it.n)+'</b><span class="badge '+(r.resultado||"")+'" id="bdg-'+esc(it.n)+'">'+(r.resultado?esc(r.resultado):"pendente")+'</span></div>'+
+    respondidoHTML(r)+
     '<div class="item-body">'+
       '<div class="protegido">'+
         '<div class="lbl">Item de inspeção</div><p>'+esc(it.item)+'</p>'+
@@ -2880,12 +2954,15 @@ async function concluirReinspecaoSeCompleta(n,p){
   }
 }
 
-async function montarFicha(p,m){
+async function montarFicha(p,m,opts){
+  opts=opts||{};
   // busca só esta ficha no servidor, para não editar uma cópia desatualizada
   if(DB.compartilhado){
     try{ const fresco=await DB.obter("preenchimentos",p.id); if(fresco){ Object.keys(p).forEach(k=>{ if(!(k in fresco)) delete p[k]; }); Object.assign(p,fresco); } }catch(e){}
   }
-  if(user){
+  // trava: se outra pessoa está com esta ficha aberta agora, abre só para consulta
+  const dono=await ocuparFicha(p.id);
+  if(!dono&&user){
     const nomeAtual=user.nome||user.email;
     if(p.por!==nomeAtual){
       p.por=nomeAtual;
@@ -2893,8 +2970,9 @@ async function montarFicha(p,m){
       await registrar("Ficha reaberta por outro responsável",m.titulo+" · unidade "+p.unidade);
     }
   }
-  fichaAtiva={p,m,itemPorN:{}};
+  fichaAtiva={p,m,itemPorN:{},leitura:!!dono,dono};
   m.itens.forEach(it=>{ if(!it.secao) fichaAtiva.itemPorN[it.n]=it; });
+  const ret=resumoRetomada(p,m);
   $("#setupPanel").style.display="none";
   const area=$("#fichaArea");
   const pr=progresso(p,m);
@@ -2906,18 +2984,151 @@ async function montarFicha(p,m){
   '<div class="panel-body"><div class="q-setup"><div class="field" style="margin:0"><label for="unEdit">Unidade (casa) — inspeções durante a execução</label><input type="text" id="unEdit" value="'+esc(p.unidade)+'" disabled></div>'+
   '<div class="field" style="margin:0"><label>Responsável</label><input type="text" value="'+esc(p.por)+'" disabled></div></div></div></div>';
 
+  html = (dono?travaAvisoHTML(dono):'') + html;
+  if(ret) html += retomarHTML(ret);
   html += equipamentosHTML(p) + equipeHTML(p);
 
   m.itens.forEach(it=>{
     if(it.secao){ html+='<div class="secao-div">'+esc(it.secao)+'</div>'; return; }
+    if(ret&&ret.proximo&&String(ret.proximo.n)===String(it.n)) html+='<div class="parou-aqui" id="parouAqui"><span>Continue daqui</span></div>';
     html += cardHTML(it,p);
   });
   area.innerHTML=html;
+  area.classList.toggle("leitura",!!dono);
+  if(dono) area.querySelectorAll("input,textarea,select,button").forEach(el=>{ if(!el.closest(".trava-aviso")&&!el.classList.contains("ver-foto")&&!el.dataset.retomar) el.disabled=true; });
+  $("#btnSalvar").style.display=dono?"none":"";
   $("#rodape").classList.add("show");
   carregarTodasPreviewsFoto(p,m);
   ultimoSalvo=null; atualizarSalvo();
-  marcarItemAtual(null,false);
+  marcarItemAtual(null,!!(opts.retomar&&ret&&ret.proximo&&!dono));
   atualizarStatusGeracao();
+  iniciarPulsoPresenca();
+}
+
+/* ---- Trava de edição simultânea ----
+   Quem abre a ficha "ocupa" ela no servidor e renova a cada 30 s enquanto a tela
+   está à vista. Uma segunda pessoa que abrir a mesma ficha nesse tempo vê tudo, mas
+   só para consulta; a tela libera sozinha quando a primeira fecha ou some por mais
+   de 2 min (celular bloqueado, saiu da tela). O controle pode assumir. Sem conexão
+   não há como saber quem está com a ficha: vale a última alteração enviada. */
+const PRES_VALIDADE=2*60*1000, PRES_PULSO=30*1000, SESSAO_ABA=uid();
+let presenca={id:null,minha:false,desde:null}, timerPresenca=null;
+function presencaReg(id){
+  return {id, obraId:obra?String(obra.id):"", email:user?user.email:"", nome:quemSou(), controle:!!ehControle, sessao:SESSAO_ABA, desde:presenca.desde||new Date().toISOString(), visto:new Date().toISOString()};
+}
+function presencaDeOutro(reg){
+  if(!reg||!reg.visto||reg.sessao===SESSAO_ABA) return false;
+  if(user&&reg.email&&String(reg.email).toLowerCase()===String(user.email).toLowerCase()) return false;   // a mesma pessoa em outro aparelho
+  return Date.now()-new Date(reg.visto).getTime() < PRES_VALIDADE;
+}
+// devolve o registro de quem está com a ficha (outra pessoa) ou null quando a ficha ficou com este aparelho
+async function ocuparFicha(id){
+  if(!user) return null;
+  if(presenca.id&&presenca.id!==id) liberarPresenca();
+  if(presenca.id===id&&presenca.minha) return null;   // reabertura da mesma ficha (ex.: adicionou equipamento)
+  const reg=await DB.presencaObter(id,obra&&obra.id);
+  if(presencaDeOutro(reg)){ presenca={id,minha:false,desde:null}; return reg; }
+  presenca={id,minha:true,desde:new Date().toISOString()};
+  await DB.presencaGravar(presencaReg(id));
+  return null;
+}
+function liberarPresenca(){
+  const id=presenca.id, minha=presenca.minha;
+  presenca={id:null,minha:false,desde:null};
+  clearTimeout(timerPresenca); timerPresenca=null;
+  if(!id||!minha) return;
+  // só apaga se ainda for deste aparelho (o controle pode ter assumido)
+  DB.presencaObter(id,obra&&obra.id).then(reg=>{ if(reg&&reg.sessao===SESSAO_ABA) DB.presencaRemover(id); });
+}
+function iniciarPulsoPresenca(){
+  clearTimeout(timerPresenca);
+  // o primeiro pulso vem rápido: se duas pessoas abriram no mesmo instante, fica com quem gravou por último
+  timerPresenca=setTimeout(pulsoPresenca, presenca.minha?2500:PRES_PULSO);
+}
+async function remontarFicha(){
+  if(!fichaAtiva) return;
+  const y=window.scrollY;
+  await montarFicha(fichaAtiva.p,fichaAtiva.m);
+  window.scrollTo(0,y);
+}
+async function pulsoPresenca(){
+  clearTimeout(timerPresenca); timerPresenca=null;
+  if(!fichaAtiva) return;
+  const id=fichaAtiva.p.id;
+  const visivel=document.visibilityState==="visible"&&viewAtual==="fill";
+  try{
+    const reg=await DB.presencaObter(id,obra&&obra.id);
+    if(!fichaAtiva||fichaAtiva.p.id!==id||presenca.id!==id) return;   // a ficha mudou enquanto conferia
+    if(reg!==undefined){
+      if(presencaDeOutro(reg)){
+        if(!fichaAtiva.leitura){
+          presenca={id,minha:false,desde:null};
+          toast(reg.nome+(reg.controle?" (controle)":"")+" está com esta ficha agora. Ela ficou só para consulta.");
+          return await remontarFicha();
+        }
+        if((reg.sessao!==(fichaAtiva.dono||{}).sessao)){ fichaAtiva.dono=reg; const av=document.querySelector("#fichaArea .trava-aviso"); if(av) av.outerHTML=travaAvisoHTML(reg); atualizarSalvo(); }
+      } else if(fichaAtiva.leitura){
+        if(visivel){ presenca={id:null,minha:false,desde:null}; toast("A ficha foi liberada — agora você pode editar."); return await remontarFicha(); }
+      } else if(visivel){
+        presenca.minha=true;
+        await DB.presencaGravar(presencaReg(id));
+      }
+    }
+  } finally {
+    if(fichaAtiva&&fichaAtiva.p.id===id&&!timerPresenca) timerPresenca=setTimeout(pulsoPresenca,PRES_PULSO);
+  }
+}
+function horaCurta(iso){ const d=new Date(iso); return isNaN(d)?"":d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
+function travaAvisoHTML(reg){
+  const d=new Date(reg.desde||reg.visto), hoje=new Date();
+  const quando=(d.toDateString()===hoje.toDateString()?"desde ":"desde "+d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})+" às ")+horaCurta(reg.desde||reg.visto);
+  return '<div class="trava-aviso" role="status"><span class="trava-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>'+
+    '<div><b>'+esc(reg.nome||reg.email||"Outra pessoa")+(reg.controle?' (controle)':'')+' está com esta ficha aberta '+esc(quando)+'</b>'+
+    '<span>Você pode consultar, mas não editar ao mesmo tempo. Quando a ficha for fechada, esta tela libera sozinha.</span></div>'+
+    (ehControle?'<button type="button" class="btn-assumir" data-assumir="1">Assumir a ficha</button>':'')+'</div>';
+}
+async function assumirFicha(){
+  if(!fichaAtiva||!ehControle) return;
+  const nomeAnt=(fichaAtiva.dono&&fichaAtiva.dono.nome)||"";
+  if(!confirm("Assumir esta ficha? "+(nomeAnt||"A outra pessoa")+" passa a ver a ficha só para consulta.")) return;
+  const id=fichaAtiva.p.id;
+  presenca={id,minha:true,desde:new Date().toISOString()};
+  await DB.presencaGravar(presencaReg(id));
+  await registrar("Ficha assumida pelo controle",(fichaAtiva.m.codigo||fichaAtiva.m.titulo)+" · unidade "+fichaAtiva.p.unidade+(nomeAnt?" · estava com "+nomeAnt:""));
+  await remontarFicha();
+}
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&fichaAtiva) pulsoPresenca(); });
+window.addEventListener("pagehide",()=>{ if(presenca.minha&&presenca.id) DB.presencaRemover(presenca.id); });
+
+/* ---- Retomar de onde parou: a última etapa respondida e o próximo item pendente ---- */
+const ROT_RES={A:"Aprovado",R:"Reprovado",AR:"Aprovado após reinspeção",NA:"Não se aplica"};
+function diaMesHora(iso){ const d=new Date(iso); if(isNaN(d)) return ""; return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})+" às "+horaCurta(iso); }
+function resumoRetomada(p,m){
+  const itens=itensRespondiveis(m), evs=[];
+  itens.forEach((it,i)=>{ const r=p.respostas[it.n]; ((r&&r.eventos)||[]).forEach(e=>{ if(e.para&&e.quando) evs.push({i,n:it.n,quando:e.quando,quem:e.quem||"—"}); }); });
+  const proximo=itens.find(it=>!(p.respostas[it.n]&&p.respostas[it.n].resultado))||null;
+  if(!evs.length) return null;
+  evs.sort((a,b)=>a.quando.localeCompare(b.quando));
+  const ult=evs[evs.length-1], dia=new Date(ult.quando).toDateString();
+  const idx=[...new Set(evs.filter(e=>e.quem===ult.quem&&new Date(e.quando).toDateString()===dia).map(e=>e.i))].sort((a,b)=>a-b);
+  // junta itens seguidos em faixas: 3 a 7, 9
+  const faixas=[]; idx.forEach(i=>{ const f=faixas[faixas.length-1]; if(f&&i===f[1]+1) f[1]=i; else faixas.push([i,i]); });
+  const txt=faixas.map(([a,b])=>a===b?String(itens[a].n):itens[a].n+" a "+itens[b].n);
+  const lista=txt.length>1?txt.slice(0,-1).join(", ")+" e "+txt[txt.length-1]:txt[0];
+  return {quem:ult.quem, quando:ult.quando, rotulo:(idx.length===1?"item ":"itens ")+lista, proximo};
+}
+function retomarHTML(ret){
+  const d=new Date(ret.quando).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});
+  return '<div class="retomar"><div><b>'+(ret.proximo?'Continuar de onde parou':'Todos os itens já têm resultado')+'</b>'+
+    '<span>Última etapa: '+esc(ret.rotulo)+', por '+esc(ret.quem)+', em '+esc(d)+'.</span></div>'+
+    (ret.proximo?'<button type="button" class="btn-retomar" data-retomar="'+esc(ret.proximo.n)+'">Ir para o item '+esc(ret.proximo.n)+' ›</button>':'')+'</div>';
+}
+/* ---- Quem respondeu cada item (vem do histórico de trocas do resultado; não vai para o PDF) ---- */
+function respondidoHTML(r){
+  if(!r||!r.resultado) return "";
+  const ev=(r.eventos||[]).filter(e=>e.para).slice(-1)[0];
+  if(!ev||ev.para!==r.resultado) return r.data?'<div class="item-quem">Inspecionado em '+esc(dataBR(r.data))+'</div>':"";
+  return '<div class="item-quem">'+esc(ROT_RES[ev.para]||ev.para)+' por <b>'+esc(ev.quem||"—")+'</b> em '+esc(diaMesHora(ev.quando))+'</div>';
 }
 
 function registrarEdicao(p){
@@ -2932,6 +3143,7 @@ function registrarEdicao(p){
 let ultimoSalvo=null, timerSalvo=null;
 async function atualizarSalvo(salvando){
   const el=document.getElementById("salvoStatus"); if(!el) return;
+  if(fichaAtiva&&fichaAtiva.leitura){ el.className="salvo leitura"; el.textContent="🔒 Só consulta · com "+((fichaAtiva.dono&&fichaAtiva.dono.nome)||"outra pessoa"); return; }
   if(salvando){ el.className="salvo salvando"; el.textContent="Salvando…"; return; }
   if(!ultimoSalvo){ el.textContent=""; return; }
   const seg=Math.round((Date.now()-ultimoSalvo)/1000);
@@ -2965,6 +3177,7 @@ function marcarItemAtual(nRespondido,rolar){
 }
 async function salvarFicha(){
   if(!fichaAtiva) return;
+  if(fichaAtiva.leitura){ toast("Esta ficha está aberta por outra pessoa — só consulta."); return; }
   const {p,m}=fichaAtiva;
   registrarEdicao(p);
   p.atualizadoEm=new Date().toISOString();
@@ -2986,7 +3199,9 @@ function atualizarStatusGeracao(){
   $("#btnGerar").disabled=!v.ok;
 }
 function fecharFicha(){
+  liberarPresenca();
   fichaAtiva=null;
+  $("#fichaArea").classList.remove("leitura");
   $("#fichaArea").innerHTML="";
   $("#setupPanel").style.display="";
   $("#rodape").classList.remove("show");
@@ -3394,8 +3609,9 @@ const ROT_STATUS={concluida:"Concluída",aberto:"Em aberto",reinsp:"Aguardando r
 function numeroDaCasa(u){ const s=String(u==null?"":u).trim(); return /^\d+$/.test(s)?parseInt(s,10):null; }
 function statusCasaFicha(p,m){ const s=saudeFicha(p,m); return s.aberto?(s.classe==="reinsp"?"reinsp":"aberto"):"concluida"; }
 
-function resumoObra(){
-  const fichas=preenchimentos.filter(p=>p.obraId===obra.id)
+function resumoObra(o,lista){
+  o=o||obra; lista=lista||preenchimentos;
+  const fichas=lista.filter(p=>p.obraId===o.id)
     .map(p=>({p,m:modelos.find(x=>x.id===p.modeloId)})).filter(x=>x.m);
 
   // ---- cobertura por FVS ----
@@ -3405,16 +3621,16 @@ function resumoObra(){
     const porCasa={}; let fora=0;
     fichas.filter(x=>x.m.id===m.id).forEach(({p})=>{
       const n=numeroDaCasa(p.unidade);
-      if(n==null||n<1||n>obra.casas){ fora++; return; }
+      if(n==null||n<1||n>o.casas){ fora++; return; }
       const st=statusCasaFicha(p,m), at=porCasa[n];
       if(!at||PRIO_STATUS[st]>PRIO_STATUS[at.st]) porCasa[n]={st,p};
     });
     let c=0,a=0,r=0;
     Object.values(porCasa).forEach(x=>{ if(x.st==="concluida") c++; else if(x.st==="reinsp") r++; else a++; });
     totConc+=c;
-    return {m,porCasa,fora,c,a,r,sem:obra.casas-(c+a+r)};
+    return {m,porCasa,fora,c,a,r,sem:o.casas-(c+a+r)};
   });
-  const totalPrevisto=obra.casas*modelosOrd.length;
+  const totalPrevisto=o.casas*modelosOrd.length;
 
   // ---- reinspeções pendentes: itens ainda em "R", os mais antigos primeiro ----
   const pend=[];
@@ -3449,6 +3665,48 @@ function renderHub(){
   set("hubNumDb",esc(DB.motor));
 }
 
+/* ---- Fichas paradas: começadas, não concluídas e sem nova inspeção há X dias (por quadra) ---- */
+function ultimaAtividade(p){
+  // o dia da última inspeção (data do item, reinspeção ou troca de resultado) e quem fez
+  let dia="", quem="";
+  const ver=(d,q)=>{ if(!d) return; if(d>dia){ dia=d; quem=q||""; } else if(d===dia&&q&&!quem) quem=q; };
+  Object.values(p.respostas||{}).forEach(r=>{ if(!r) return;
+    (r.eventos||[]).forEach(e=>{ if(e.quando){ const d=new Date(e.quando); if(!isNaN(d)) ver(isoDia(d),e.quem); } });
+    ver(r.data); ver(r.reinspecao&&r.reinspecao.data);
+  });
+  if(!dia){ const d=new Date(p.iniciadoEm||p.atualizadoEm||""); if(!isNaN(d)) dia=isoDia(d); }
+  return {dia, quem};
+}
+function fichasParadas(fichas,limite){
+  const lista=[];
+  fichas.forEach(({p,m})=>{
+    if(!saudeFicha(p,m).aberto) return;
+    const u=ultimaAtividade(p); if(!u.dia) return;
+    const dias=diasDesde(u.dia);
+    if(dias==null||dias<limite) return;
+    lista.push({p,m,dias,u,pr:progresso(p,m)});
+  });
+  return lista.sort((a,b)=>b.dias-a.dias);
+}
+function renderParadas(fichas){
+  const el=$("#painelParadas"); if(!el) return;
+  const limite=Number($("#painelParadasDias").value)||7;
+  const lista=fichasParadas(fichas,limite);
+  $("#painelParadasCount").textContent=lista.length?lista.length+(lista.length===1?" ficha":" fichas"):"";
+  if(!lista.length){ el.innerHTML='<div class="empty"><b>Nenhuma ficha parada</b>Todas as fichas em andamento tiveram inspeção nos últimos '+limite+' dias.</div>'; return; }
+  const impl=IMPLANTACAO[String(obra.id)], quadraDe=impl?quadrasPorCasa(impl):null;
+  const linha=({p,m,dias,u,pr})=>'<li><div class="doc-row">'+casaBadgeHTML(p.unidade,"","parada")+
+    '<div class="doc-meta"><b>'+esc(m.codigo||m.titulo)+
+      '<span class="status-pill st-parada">parada há '+dias+(dias===1?' dia':' dias')+'</span></b>'+
+      '<span>'+pr.feitos+' de '+pr.total+' itens · '+(pr.feitos?'última inspeção em ':'iniciada em ')+esc(dataBR(u.dia))+(u.quem?' por '+esc(u.quem):'')+(pr.feitos?'':' · nenhum item respondido ainda')+'</span></div>'+
+    '<div class="row-actions"><button class="icon-btn" data-pnabrir="'+esc(p.id)+'">Abrir</button></div></div></li>';
+  if(!quadraDe){ el.innerHTML='<ul class="docs">'+lista.map(linha).join("")+'</ul>'; return; }
+  const grupos={};
+  lista.forEach(x=>{ const q=quadraDe[numeroDaCasa(x.p.unidade)]||"—"; (grupos[q]=grupos[q]||[]).push(x); });
+  const abrir=lista.length<=8;
+  el.innerHTML=Object.keys(grupos).sort((a,b)=>a.localeCompare(b)).map(q=>{ const g=grupos[q];
+    return '<details class="paradas-q"'+(abrir?' open':'')+'><summary>'+(q==="—"?'Sem quadra':'Quadra '+esc(q))+' <small>· '+g.length+(g.length===1?' ficha':' fichas')+' · a mais antiga há '+g[0].dias+' dias</small></summary><ul class="docs">'+g.map(linha).join("")+'</ul></details>'; }).join("");
+}
 function renderPainel(){
   const elStats=$("#painelStats"); if(!elStats) return;
   if(!obra){ elStats.innerHTML=""; $("#painelCobertura").innerHTML=""; return; }
@@ -3495,6 +3753,8 @@ function renderPainel(){
       '<span>'+esc(it.item)+'</span></div>'+
     '<div class="row-actions"><button class="icon-btn" data-pnabrir="'+p.id+'" data-pnitem="'+esc(it.n)+'">Abrir item</button></div></div></li>'
   ).join("");
+
+  renderParadas(fichas);
 
   // ---- cobertura: a FVS escolhida na lista suspensa, com barra de proporção e mapa das casas ----
   const cont=$("#painelCobertura"), sel=$("#painelFvsSel");
@@ -3579,29 +3839,39 @@ function indPrimeira(fichas){
     if(!r||!r.resultado||r.resultado==="NA") return; total++; if(!numReprovacoes(r)) ok++; }));
   return {ok,total};
 }
-function calcularIndicadores(fvsId,semanas){
-  const base=resumoObra();
+function calcularIndicadores(fvsId,semanas,o,lista){
+  o=o||obra;
+  const base=resumoObra(o,lista);
   const mods=fvsId?base.modelosOrd.filter(m=>m.id===fvsId):base.modelosOrd;
   const fichas=base.fichas.filter(x=>mods.some(m=>m.id===x.m.id));
-  const impl=IMPLANTACAO[String(obra.id)], quadraDe=impl?quadrasPorCasa(impl):null;
+  const impl=IMPLANTACAO[String(o.id)], quadraDe=impl?quadrasPorCasa(impl):null;
   const hoje=hojeLocalISO(), semAtual=inicioSemana(hoje);
-  const conc=[], reps=[], pareto={}, porQuadra={}, porFvs={};
+  const conc=[], reps=[], pareto={}, porQuadra={}, porFvs={}, porEquipe={};
+  let semEquipe=0;
   mods.forEach(m=>porFvs[m.id]={m,fichas:0,conc:0,ok:0,resp:0,abertas:0,tempos:[]});
   if(quadraDe) Object.values(quadraDe).forEach(q=>{ if(!porQuadra[q]) porQuadra[q]={q,casas:0,conc:0,abertas:0,resp:0,reprov:0}; });
   if(quadraDe) Object.keys(quadraDe).forEach(n=>porQuadra[quadraDe[n]].casas++);
   fichas.forEach(({p,m})=>{
     const f=porFvs[m.id]; f.fichas++;
     const fechada=!saudeFicha(p,m).aberto, q=quadraDe?quadraDe[numeroDaCasa(p.unidade)]:null;
+    // equipe de execução (terceirizada) informada na ficha: cada nome recebe os números desta ficha
+    const nomesEq=[...new Set(((p.cabecalho&&p.cabecalho.equipe)||[]).map(e=>String(e.nome||"").replace(/\s+/g," ").trim()).filter(Boolean))];
+    const eqs=nomesEq.map(nm=>{ const k=chaveEquipe(nm); if(!k) return null;
+      const e=porEquipe[k]=porEquipe[k]||{grafias:{},fichas:0,conc:0,resp:0,reprov:0,abertas:0,tempos:[]};
+      e.grafias[nm]=(e.grafias[nm]||0)+1; e.fichas++; if(fechada) e.conc++; return e; }).filter(Boolean);
+    const eqUnicas=[...new Set(eqs)];
+    if(!eqUnicas.length) semEquipe++;
     if(fechada){ f.conc++; const d=dataConclusao(p); if(d) conc.push(d); if(q) porQuadra[q].conc++; }
     itensRespondiveis(m).forEach(it=>{
       const r=p.respostas[it.n]; if(!r||!r.resultado||r.resultado==="NA") return;
       f.resp++; const k=numReprovacoes(r); if(!k) f.ok++;
       if(q){ porQuadra[q].resp++; if(k) porQuadra[q].reprov++; }
+      eqUnicas.forEach(e=>{ e.resp++; if(k) e.reprov++; });
       if(k){ const ch=m.id+"|"+it.n; (pareto[ch]=pareto[ch]||{m,it,n:0}).n+=k; }
       reprovacoesDoItem(r).forEach(x=>{
         reps.push(x);
-        if(x.aberta){ f.abertas++; if(q) porQuadra[q].abertas++; }
-        if(x.em&&x.corrigidoEm) f.tempos.push(Math.max(0,difDias(x.em,x.corrigidoEm)));
+        if(x.aberta){ f.abertas++; if(q) porQuadra[q].abertas++; eqUnicas.forEach(e=>e.abertas++); }
+        if(x.em&&x.corrigidoEm){ const dt=Math.max(0,difDias(x.em,x.corrigidoEm)); f.tempos.push(dt); eqUnicas.forEach(e=>e.tempos.push(dt)); }
       });
     });
   });
@@ -3618,13 +3888,20 @@ function calcularIndicadores(fvsId,semanas){
   const antesIni=conc.filter(d=>d<ini).length;
   const acum=[]; concSem.reduce((s,v,i)=>(acum[i]=s+v),antesIni);
   // indicadores do topo
-  const previstas=obra.casas*mods.length, concluidas=conc.length;
+  const previstas=o.casas*mods.length, concluidas=conc.length;
   const prim=indPrimeira(fichas);
   const abertas=base.pend.filter(x=>mods.some(m=>m.id===x.m.id));
   const tempos=[].concat(...Object.values(porFvs).map(f=>f.tempos));
   const ult4=concSem.slice(-4), ritmo=ult4.length?ult4.reduce((a,b)=>a+b,0)/ult4.length:0;
   return {mods,fichas,sem,concSem,repSem,corSem,acum,previstas,concluidas,prim,abertas,tempos,ritmo,
-    pareto:Object.values(pareto).sort((a,b)=>b.n-a.n), porQuadra:Object.values(porQuadra).sort((a,b)=>a.q.localeCompare(b.q)), porFvs:Object.values(porFvs), impl};
+    pareto:Object.values(pareto).sort((a,b)=>b.n-a.n), porQuadra:Object.values(porQuadra).sort((a,b)=>a.q.localeCompare(b.q)), porFvs:Object.values(porFvs), impl,
+    porEquipe:Object.values(porEquipe).map(e=>Object.assign(e,{nome:Object.entries(e.grafias).sort((a,b)=>b[1]-a[1]||(a[0]===a[0].toUpperCase())-(b[0]===b[0].toUpperCase())||a[0].localeCompare(b[0]))[0][0]})).sort((a,b)=>b.fichas-a.fichas||a.nome.localeCompare(b.nome,"pt-BR")),
+    semEquipe};
+}
+// mesmo nome escrito de jeitos diferentes ("Construtora Silva Ltda", "CONSTRUTORA SILVA") conta como uma equipe só
+function chaveEquipe(nome){
+  return String(nome||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()
+    .replace(/[^a-z0-9]+/g," ").replace(/\b(ltda|me|epp|eireli|s a|sa|mei)\b/g," ").replace(/\s+/g," ").trim();
 }
 const fmtNum=n=>Number(n).toLocaleString("pt-BR");
 const fmtPct=(a,b)=>b?Math.round(a/b*100)+"%":"—";
@@ -3735,7 +4012,17 @@ function renderIndicadores(opts){
         return '<tr><td><b>'+esc(f.m.codigo||"—")+'</b> <span style="color:var(--ink3)">'+esc((f.m.titulo||"").replace(/\s+/g," ").slice(0,48))+'</span></td><td class="num">'+f.fichas+'</td><td><div class="ind-barra"><span class="trilho"><i style="width:'+pc+'%"></i></span><em>'+pc+'%</em></div></td><td class="num">'+fmtPct(f.ok,f.resp)+'</td><td class="num">'+f.abertas+'</td><td class="num">'+(t==null?"—":(Math.round(t*10)/10).toLocaleString("pt-BR")+" d")+'</td></tr>'; }).join("")+
     '</tbody></table></div></div>';
   }
+  // Por equipe de execução (terceirizada)
+  h+='<div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3>Por equipe de execução</h3><span class="count">'+(d.porEquipe.length?d.porEquipe.length+(d.porEquipe.length===1?' equipe':' equipes'):'nenhuma equipe informada')+'</span></div>'+
+    (d.porEquipe.length?'<div class="panel-body ind-rolagem"><table class="ind-tab"><thead><tr><th>Equipe / empresa</th><th class="num">Fichas</th><th class="num">Itens inspecionados</th><th>Taxa de reprovação</th><th class="num">Reprov. em aberto</th><th class="num">Tempo médio de correção</th></tr></thead><tbody>'+
+      d.porEquipe.map(e=>{ const tx=e.resp?Math.round(e.reprov/e.resp*100):0, t=media(e.tempos);
+        return '<tr><td><b>'+esc(e.nome)+'</b></td><td class="num">'+e.fichas+'</td><td class="num">'+fmtNum(e.resp)+'</td><td><div class="ind-barra rep"><span class="trilho"><i style="width:'+tx+'%"></i></span><em>'+(e.resp?tx+'%':'—')+'</em></div></td><td class="num">'+e.abertas+'</td><td class="num">'+(t==null?"—":(Math.round(t*10)/10).toLocaleString("pt-BR")+" d")+'</td></tr>'; }).join("")+
+      '</tbody></table><p class="note" style="margin:12px 0 0">Vem do campo “Equipe de execução” de cada ficha. Taxa de reprovação = itens que tiveram ao menos uma reprovação ÷ itens inspecionados. Uma ficha com mais de uma equipe conta para todas elas.'+(d.semEquipe?' '+d.semEquipe+(d.semEquipe===1?' ficha não tem equipe informada e não entra aqui.':' fichas não têm equipe informada e não entram aqui.'):'')+'</p></div>'
+    :'<div class="panel-body"><p class="note" style="margin:0">Nenhuma ficha desta seleção tem a equipe de execução preenchida. Quando a equipe (ou empresa terceirizada) for informada na ficha, os números dela aparecem aqui.</p></div>')+
+  '</div>';
+  if(ehControle) h+='<div class="panel" style="margin-bottom:16px" id="indComparativo"><div class="panel-head"><h3>Comparativo entre obras</h3><span class="count">'+(indFvsEscolhida?"FVS selecionada":"todas as FVS")+'</span></div><div class="panel-body"><p class="note" style="margin:0">Carregando as outras obras…</p></div></div>';
   cont.innerHTML=h;
+  if(ehControle) renderComparativo();
   if(!(opts&&opts.semAnimar)) contarNumeros(cont);
   const rot=d.sem.map(diaBR);
   graficoColunas($("#indGrafConc"),{rotulos:rot,series:[{cor:VZ.a,valores:d.concSem}],rotuloUltimo:true,
@@ -3743,6 +4030,54 @@ function renderIndicadores(opts){
   graficoColunas($("#indGrafRep"),{rotulos:rot,series:[{cor:VZ.b,valores:d.repSem},{cor:VZ.a,valores:d.corSem}],
     dica:i=>'<b>Semana de '+nomeSem(i)+'</b><br><i style="background:'+VZ.b+'"></i>'+d.repSem[i]+' registradas<br><i style="background:'+VZ.a+'"></i>'+d.corSem[i]+' corrigidas'});
 }
+/* ---- Comparativo entre obras (só controle): os mesmos números de cada obra lado a lado ---- */
+const compCache={};
+async function fichasDaObra(o){
+  if(obra&&o.id===obra.id) return preenchimentos;
+  const c=compCache[o.id];
+  if(c&&Date.now()-c.em<120000) return c.lista;
+  const lista=await DB.listar("preenchimentos",{obraId:o.id});
+  compCache[o.id]={lista,em:Date.now()};
+  return lista;
+}
+let compSeq=0;
+async function renderComparativo(){
+  const seq=++compSeq, fvs=indFvsEscolhida;
+  const corpo=()=>{ const el=document.querySelector("#indComparativo .panel-body"); return seq===compSeq?el:null; };
+  let obras=[];
+  try{ obras=await DB.listar("obras"); }catch(e){}
+  if(!obras.length) obras=OBRAS_PADRAO.map(o=>Object.assign({},o));
+  obras.sort((a,b)=>a.id.localeCompare(b.id));
+  const dados=[];
+  for(const o of obras){
+    try{ dados.push({o,d:calcularIndicadores(fvs,4,o,await fichasDaObra(o))}); }
+    catch(e){ dados.push({o,d:null}); }
+  }
+  const el=corpo(); if(!el) return;
+  if(dados.length<2){ el.innerHTML='<p class="note" style="margin:0">Só há uma obra cadastrada.</p>'; return; }
+  const col=f=>dados.map(x=>'<td class="num">'+(x.d?f(x.d,x.o):'<span style="color:var(--ink3)">sem conexão</span>')+'</td>').join("");
+  const barra=(a,b)=>{ const pc=b?Math.round(a/b*100):0; return '<div class="ind-barra"><span class="trilho"><i style="width:'+pc+'%"></i></span><em>'+(b?pc+'%':'—')+'</em></div>'; };
+  const dias=t=>t==null?"—":(Math.round(t*10)/10).toLocaleString("pt-BR")+" dias";
+  const cab='<thead><tr><th></th>'+dados.map(x=>'<th class="num">'+esc(x.o.id)+' — '+esc(x.o.nome)+'</th>').join("")+'</tr></thead>';
+  let h='<div class="ind-rolagem"><table class="ind-tab comp-tab">'+cab+'<tbody>'+
+    '<tr><td>Casas</td>'+col((d,o)=>fmtNum(o.casas))+'</tr>'+
+    '<tr><td>Fichas concluídas</td>'+col(d=>barra(d.concluidas,d.previstas)+'<small>'+fmtNum(d.concluidas)+' de '+fmtNum(d.previstas)+'</small>')+'</tr>'+
+    '<tr><td>Aprovado de primeira</td>'+col(d=>fmtPct(d.prim.ok,d.prim.total)+'<small>'+fmtNum(d.prim.total)+' itens</small>')+'</tr>'+
+    '<tr><td>Reprovações em aberto</td>'+col(d=>fmtNum(d.abertas.length))+'</tr>'+
+    '<tr><td>Tempo médio até corrigir</td>'+col(d=>dias(media(d.tempos)))+'</tr>'+
+    '<tr><td>Ritmo (fichas por semana)</td>'+col(d=>(Math.round(d.ritmo*10)/10).toLocaleString("pt-BR")+'<small>média das últimas 4 semanas</small>')+'</tr>'+
+  '</tbody></table></div>';
+  if(!fvs){
+    const mods=[...modelos].sort((a,b)=>numeroCodigo(a)-numeroCodigo(b));
+    if(mods.length>1) h+='<h4 class="comp-sub">Casas concluídas por FVS</h4><div class="ind-rolagem"><table class="ind-tab comp-tab">'+cab+'<tbody>'+
+      mods.map(m=>'<tr><td><b>'+esc(m.codigo||"—")+'</b> <span style="color:var(--ink3)">'+esc((m.titulo||"").replace(/\s+/g," ").slice(0,40))+'</span></td>'+
+        col((d,o)=>{ const f=d.porFvs.find(x=>x.m.id===m.id); return f?barra(f.conc,o.casas):"—"; })+'</tr>').join("")+
+    '</tbody></table></div>';
+  }
+  h+='<p class="note" style="margin:12px 0 0">Mesmos cálculos da aba, feitos para cada obra. As porcentagens consideram que cada FVS se aplica a todas as casas da obra.</p>';
+  el.innerHTML=h;
+}
+$("#painelParadasDias").addEventListener("change",()=>{ if(obra) renderParadas(resumoObra().fichas); });
 $("#indFvs").addEventListener("change",e=>{ indFvsEscolhida=e.target.value; renderIndicadores(); });
 $("#indPeriodo").addEventListener("change",renderIndicadores);
 { let tRes=null; window.addEventListener("resize",()=>{ clearTimeout(tRes); tRes=setTimeout(()=>{ if(viewAtual==="indicadores") renderIndicadores({semAnimar:true}); },200); }); }
@@ -3855,7 +4190,7 @@ $("#view-painel").addEventListener("click",async e=>{
   if(t.dataset.pnabrir){
     const p=preenchimentos.find(x=>x.id===t.dataset.pnabrir); if(!p) return;
     const m=modelos.find(x=>x.id===p.modeloId); if(!m) return;
-    irPara("fill"); await montarFicha(p,m);
+    irPara("fill"); await montarFicha(p,m,{retomar:!t.dataset.pnitem});
     if(t.dataset.pnitem){ setTimeout(()=>{ const c=document.getElementById("card-"+t.dataset.pnitem); if(c) c.scrollIntoView({behavior:"smooth",block:"start"}); },80); }
     return;
   }
@@ -3864,7 +4199,7 @@ $("#view-painel").addEventListener("click",async e=>{
     const m=modelos.find(x=>x.id===t.dataset.pnmodelo); if(!m) return;
     if(t.dataset.pnficha){
       const p=preenchimentos.find(x=>x.id===t.dataset.pnficha); if(!p) return;
-      irPara("fill"); await montarFicha(p,m); return;
+      irPara("fill"); await montarFicha(p,m,{retomar:true}); return;
     }
     if(!confirm("Iniciar a ficha "+(m.codigo||m.titulo)+" da casa "+t.dataset.pncasa+"?")) return;
     irPara("fill");
@@ -4191,11 +4526,12 @@ async function trocarFotoItem(n,arq,tipo){
   carregarPreviewFoto(n,p); carregarPreviewReinsp(n,p);
 }
 $("#fichaArea").addEventListener("change", async e=>{
-  if(!fichaAtiva) return;
+  if(!fichaAtiva||fichaAtiva.leitura) return;
   const {p,m,itemPorN}=fichaAtiva, t=e.target;
 
   if(t.dataset.item){
     const n=t.dataset.item;
+    const pa=document.getElementById("parouAqui"); if(pa) pa.remove();
     const r=p.respostas[n]=Object.assign({},p.respostas[n]);
     const de=r.resultado||null, para=t.value;
     if(de!==para){
@@ -4287,6 +4623,9 @@ $("#fichaArea").addEventListener("click", async e=>{
     alvo.innerHTML='<img alt="Foto do histórico">'; alvo.querySelector("img").src=URL.createObjectURL(mid.blob);
     return;
   }
+  if(t.dataset&&t.dataset.assumir){ await assumirFicha(); return; }
+  if(t.closest&&t.closest("[data-retomar]")){ marcarItemAtual(null,true); return; }
+  if(fichaAtiva.leitura) return;
   if(t.id==="btnAddEq"){ p.cabecalho.equipamentos.push({label:"",patrimonio:""}); await salvarFicha(); await montarFicha(p,m); }
   if(t.dataset.eqdel!=null){ p.cabecalho.equipamentos.splice(Number(t.dataset.eqdel),1); await salvarFicha(); await montarFicha(p,m); }
   if(t.id==="btnAddEqp"){ p.cabecalho.equipe.push({nome:"",funcao:"",dataInicio:"",dataTermino:""}); await salvarFicha(); await montarFicha(p,m); }
@@ -4295,7 +4634,7 @@ $("#fichaArea").addEventListener("click", async e=>{
 
 $("#wrapPre").addEventListener("click",async e=>{
   const t=e.target;
-  if(t.dataset.abrir){ const p=preenchimentos.find(x=>x.id===t.dataset.abrir), m=modelos.find(x=>x.id===p.modeloId); irPara("fill"); await montarFicha(p,m); }
+  if(t.dataset.abrir){ const p=preenchimentos.find(x=>x.id===t.dataset.abrir), m=modelos.find(x=>x.id===p.modeloId); irPara("fill"); await montarFicha(p,m,{retomar:true}); }
   if(t.dataset.gerar){
     const p=preenchimentos.find(x=>x.id===t.dataset.gerar), m=modelos.find(x=>x.id===p.modeloId);
     const v=validar(p,m); if(!v.ok){ toast(v.msg); return; }

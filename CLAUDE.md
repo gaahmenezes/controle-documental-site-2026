@@ -17,6 +17,9 @@
 - Fotos de reprovação/reinspeção passam por `anotarFoto` (marcação) e `trocarFotoItem`.
 - Ficha: botões de resultado coloridos, item da vez (`marcarItemAtual`) e aviso de salvo (`atualizarSalvo`). Aparência: Claro, Escuro (`tema-escuro`) ou Sol (`alto-contraste`) no body (`iniciarTema`; sem escolha segue o aparelho). Cores escuras de superfícies fixas usam `--chrome`; `.folha` é sempre clara. Espera do servidor: `#app.aguardando` + `#esqueletoTela` (`atualizarCarga`). Sem conexão e sem cópia local, `prepararBase` não cria modelos (evita duplicar no servidor).
 - Nome oficial: `abrirRenomear` (Modelos e Repositório, só controle); `formatarNomeOficial` sugere o nome; guarda `tituloOriginal`/`nomeOriginal` e registra na auditoria. O título da FVS aparece no PDF por decisão do controle.
+- Trava de edição simultânea: coleção `presencas` no backend (`DB.presencaObter/Gravar/Remover`, só online). `ocuparFicha` ao montar; `pulsoPresenca` a cada 30 s com a tela à vista; vence em 2 min; segunda pessoa vê `fichaAtiva.leitura` (somente consulta, `.trava-aviso`); controle pode `assumirFicha`. A mesma pessoa em dois aparelhos não se trava; sem conexão não trava.
+- Retomar (`resumoRetomada`, `.retomar`, `#parouAqui`) e "Respondido por" (`respondidoHTML`) vêm de `eventos`; só na tela, nunca no PDF.
+- Painel: fichas paradas (`fichasParadas`, `renderParadas`) por quadra. Indicadores: por equipe de execução (`porEquipe`, `chaveEquipe` junta grafias) e comparativo entre obras (`renderComparativo`, só controle). `resumoObra(o,lista)` e `calcularIndicadores(fvs,semanas,o,lista)` aceitam outra obra.
 - Melhorias visuais de computador ficam em `@media (min-width:821px)` / `(hover:hover) and (pointer:fine)`; respeitar `prefers-reduced-motion`.
 
 ## Backend
