@@ -61,3 +61,18 @@ As tabelas e índices são criados sozinhos quando o servidor sobe (`src/db.js` 
   não substitui login: a autenticação real por e-mail @vivaconstrucoes.com.br
   ainda está pendente.
 - Se uma senha vazar, troque no Neon/Render e atualize a variável.
+
+## Ativar o login Microsoft 365
+
+Preparado nas branches `login-365` dos dois repositórios (ainda não publicado).
+
+1. **TI** devolve o *client ID* e o *tenant ID* do aplicativo no Entra ID.
+2. **Site** (`index.html`, bloco `CONFIG`): preencher `msalClientId` e `msalTenantId`.
+   Com o client ID preenchido, a entrada por e-mail some e o login passa a ser só pelo 365.
+3. **API** (painel do Render, Environment): `AZURE_TENANT_ID`, `AZURE_CLIENT_ID` e `AUTH_MODO=ambos`.
+4. Juntar as branches `login-365` na `main` (site) e na `master` (API). O Render publica sozinho.
+5. Testar com a conta de controle e com uma pessoa de campo, no computador e no celular.
+6. **Fase final:** `AUTH_MODO=login` no Render e apagar `apiKey` do `CONFIG` do site.
+   A partir daí, a API só responde a quem entrou com conta @vivaconstrucoes.com.br.
+
+Voltar atrás: `AUTH_MODO=chave` no Render (e o `apiKey` de volta no site, se já tiver sido apagado).
