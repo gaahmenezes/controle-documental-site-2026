@@ -166,6 +166,58 @@ header.topbar{background:var(--ink);border-bottom:3px solid var(--laranja);color
 .pareto .p-val{font-variant-numeric:tabular-nums;color:var(--ink2);font-size:12.5px;text-align:right;white-space:nowrap}
 .pareto .p-val b{color:var(--ink);font-weight:600}
 @media (max-width:640px){.pareto .p-lin{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"rot val" "bar bar"}}
+/* ---- Carregando: barra fina no topo e esqueletos enquanto o servidor acorda ---- */
+#cargaBarra{position:fixed;left:0;right:0;top:0;height:3px;z-index:90;overflow:hidden;opacity:0;transition:opacity .2s;pointer-events:none}
+#cargaBarra.on{opacity:1}
+#cargaBarra::before{content:"";position:absolute;top:0;bottom:0;width:35%;background:var(--laranja);border-radius:2px;animation:cargaCorre 1.1s ease-in-out infinite}
+@keyframes cargaCorre{from{left:-35%}to{left:100%}}
+.esq{position:relative;overflow:hidden;background:var(--line2);border-radius:6px}
+.esq::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);animation:esqBrilho 1.3s infinite}
+@keyframes esqBrilho{to{transform:translateX(100%)}}
+#esqueletoTela{display:none;margin-bottom:18px}
+#esqueletoTela .esq-msg{display:flex;align-items:center;gap:10px;background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--laranja);border-radius:var(--radius);padding:12px 16px;font-size:13.5px;color:var(--ink2);box-shadow:var(--shadow)}
+#esqueletoTela .esq-msg b{color:var(--ink)}
+#esqueletoTela .esq-gira{width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--laranja);border-radius:50%;animation:gira .8s linear infinite;flex:0 0 auto}
+@keyframes gira{to{transform:rotate(360deg)}}
+#esqueletoTela .esq-blocos{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:14px}
+#esqueletoTela .esq-blocos .esq{height:96px}
+#esqueletoTela .esq-blocos .esq.larga{grid-column:1/-1;height:220px}
+#app.aguardando #esqueletoTela{display:block}
+#app.aguardando[data-view="inicio"] #esqueletoTela .esq-blocos,#app.aguardando[data-view="fill"] #esqueletoTela .esq-blocos{display:none}
+#app.aguardando #view-painel>:not(:first-child):not(#esqueletoTela),#app.aguardando #view-indicadores>:not(:first-child):not(#esqueletoTela),#app.aguardando #view-meus>:not(:first-child):not(#esqueletoTela),#app.aguardando #view-relatorio>:not(:first-child):not(#esqueletoTela){display:none!important}
+#app.aguardando .hub-num{color:transparent!important;position:relative;overflow:hidden;background:var(--line2);border-radius:6px;min-height:22px;min-width:60%}
+#app.aguardando .hub-num *{visibility:hidden}
+#app.aguardando .hub-num::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);animation:esqBrilho 1.3s infinite}
+
+/* ---- Alto contraste (sol forte no canteiro) ---- */
+.btn-contraste{font:inherit;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.35);background:transparent;color:inherit;border-radius:12px;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.btn-contraste[aria-pressed="true"]{background:#fff;color:#000;border-color:#fff}
+body.alto-contraste{--ink:#000;--ink2:#111;--ink3:#2E3A40;--canvas:#FFFFFF;--line:#4A5A62;--line2:#AEBBC1;--seal:#0A3B78;--seal-soft:#D9E5F5;--ok:#17502A;--flag:#7E2208;--warn:#5E4700;--shadow:none;--shadow-1:none;--shadow-2:none}
+body.alto-contraste .panel,body.alto-contraste .item-card,body.alto-contraste .hub-card,body.alto-contraste .pn-card,body.alto-contraste .ind-kpi,body.alto-contraste .progresso{border-width:2px;border-color:#4A5A62}
+body.alto-contraste .opt span{border-width:2px;border-color:#4A5A62;color:#000}
+body.alto-contraste .opt span small,body.alto-contraste .note,body.alto-contraste .count,body.alto-contraste small{color:#111!important}
+body.alto-contraste input,body.alto-contraste select,body.alto-contraste textarea{border:2px solid #4A5A62;color:#000}
+body.alto-contraste .protegido p,body.alto-contraste .lbl{color:#000}
+body.alto-contraste .badge{border:1.5px solid currentColor}
+body.alto-contraste .item-card.atual{box-shadow:0 0 0 4px #0A3B78}
+
+/* ---- Legenda do mapa que filtra ---- */
+.cob-leg button{font:inherit;font-size:12.5px;color:var(--ink2);background:none;border:1px solid transparent;border-radius:14px;padding:3px 9px 3px 7px;cursor:pointer}
+.cob-leg button:hover{border-color:var(--line)}
+.cob-leg button[aria-pressed="true"]{border-color:var(--ink2);background:var(--paper);color:var(--ink);font-weight:600}
+.cob-leg button::before{content:"";display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px;border:1px solid transparent}
+.cob-leg button.c::before{background:var(--ok);border-color:var(--ok)}
+.cob-leg button.r::before{background:var(--flag);border-color:var(--flag)}
+.cob-leg button.a::before{background:#F1DFA6;border-color:#B08A1E}
+.cob-leg button.s::before{background:var(--line2);border-color:var(--line)}
+.cob-leg .limpar{color:var(--seal);border:0}
+.cob-leg .limpar::before{display:none}
+#painelCobertura .mp{transition:opacity .18s}
+#painelCobertura[data-filtro="concluida"] .mp:not(.concluida),
+#painelCobertura[data-filtro="reinsp"] .mp:not(.reinsp),
+#painelCobertura[data-filtro="aberto"] .mp:not(.aberto),
+#painelCobertura[data-filtro="sem"] .mp.concluida,#painelCobertura[data-filtro="sem"] .mp.reinsp,#painelCobertura[data-filtro="sem"] .mp.aberto{opacity:.14}
+#painelCobertura[data-filtro] .qd-card{transition:opacity .18s}
 .sync-pill{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:12px;border:0;cursor:pointer;background:#F1DFA6;color:#5C4508;white-space:nowrap}
 .sync-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.75}
 .sync-pill.enviando{background:#D7E7EE;color:#1E5368}
@@ -451,9 +503,27 @@ ul.docs>li:first-child{border-top:none}
 .opt span small{display:block;font-weight:400;font-size:10.5px;color:var(--ink3);margin-top:3px}
 .opt input:checked + span{border-color:var(--seal);background:var(--seal-soft);color:var(--seal)}
 .opt input:checked + span small{color:var(--seal)}
+/* botões de resultado grandes, com cor e símbolo de cada resposta */
+.opt span{min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-width:1.5px;font-size:15px;transition:background .12s,border-color .12s,transform .08s}
+.opt span::before{font-size:17px;line-height:1;margin-bottom:3px;font-weight:700;color:var(--ink3)}
+.opt input[value="A"]+span::before{content:"✓"}
+.opt input[value="R"]+span::before{content:"✕"}
+.opt input[value="AR"]+span::before{content:"↻"}
+.opt input[value="NA"]+span::before{content:"–"}
+.opt input:active+span{transform:scale(.97)}
+.opt input[value="A"]:checked+span{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt input[value="R"]:checked+span{background:var(--flag);border-color:var(--flag);color:#fff}
+.opt input[value="AR"]:checked+span{background:var(--warn);border-color:var(--warn);color:#fff}
+.opt input[value="NA"]:checked+span{background:var(--ink2);border-color:var(--ink2);color:#fff}
+.opt input:checked+span::before,.opt input:checked+span small{color:#fff}
+@media (hover:hover){.opt input:not(:checked):hover+span{border-color:var(--ink3);background:#F6F9F9}}
+/* item da vez e itens já respondidos */
+.item-card{transition:box-shadow .2s,border-color .2s}
+.item-card.atual{border-color:var(--seal);box-shadow:0 0 0 3px rgba(23,85,160,.18),var(--shadow)}
+.item-card.atual .item-head{background:var(--seal-soft)}
+.item-card.done .item-n{background:var(--ok)}
+.item-card.done .item-n::after{content:"✓";font-size:10px;margin-left:1px}
 .opt input:focus-visible + span{outline:2px solid var(--seal);outline-offset:2px}
-.opts .opt:nth-child(2) input:checked + span{border-color:var(--flag);background:var(--flag-soft);color:var(--flag)}
-.opts .opt:nth-child(2) input:checked + span small{color:var(--flag)}
 
 .foto-wrap{margin-top:16px;border:1px solid var(--flag);background:var(--flag-soft);border-radius:var(--radius);padding:14px}
 .foto-wrap label{color:var(--flag);font-weight:600;margin-bottom:8px}
@@ -490,6 +560,12 @@ table.editor textarea{min-height:60px;resize:vertical}
 .barra{flex:1;height:6px;background:var(--line2);border-radius:3px;overflow:hidden}
 .barra i{display:block;height:100%;background:var(--seal);width:0;transition:width .25s}
 .progresso span{font-size:13px;color:var(--ink2);white-space:nowrap}
+.progresso .barra{height:8px;border-radius:4px}
+.progresso #prTxt{font-weight:600;color:var(--ink)}
+.salvo{display:inline-flex;align-items:center;gap:5px;font-size:12px!important;color:var(--ok)!important;font-weight:500}
+.salvo.local{color:var(--warn)!important}
+.salvo.salvando{color:var(--ink3)!important}
+@media (max-width:640px){.progresso{flex-wrap:wrap;gap:6px 12px;padding:10px 12px}.progresso .barra{flex:1 1 100%;order:3}}
 .rodape{position:fixed;left:0;right:0;bottom:0;background:var(--paper);border-top:1px solid var(--line);padding:12px 20px;display:none;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;z-index:25;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 .rodape.show{display:flex}
 .rodape .btn{width:auto;padding:11px 18px}
@@ -735,6 +811,10 @@ table.editor textarea{min-height:60px;resize:vertical}
   </nav>
 
   <main>
+    <div id="esqueletoTela" role="status" aria-live="polite">
+      <div class="esq-msg"><span class="esq-gira"></span><span><b>Conectando ao servidor…</b> Na primeira vez do dia ele pode levar até 1 minuto para acordar. Você já pode preencher fichas: tudo fica guardado neste aparelho.</span></div>
+      <div class="esq-blocos"><div class="esq"></div><div class="esq"></div><div class="esq"></div><div class="esq larga"></div></div>
+    </div>
     <!-- INÍCIO (dashboard) -->
     <section class="view active" id="view-inicio">
       <div class="hub-head"><div class="hub-obra-logo" id="hubObraLogo" style="display:none"></div><div class="hub-head-txt"><h2 id="hubSaudacao">Início</h2><p id="hubObra"></p></div></div>
@@ -988,6 +1068,7 @@ table.editor textarea{min-height:60px;resize:vertical}
   </div>
 </div>
 <div id="vzTip" role="tooltip"></div>
+<div id="cargaBarra" aria-hidden="true"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.38.3/lib/msal-browser.min.js"></script>
@@ -1215,7 +1296,7 @@ const DB = (() => {
      depois para o servidor; se não houver conexão, entram numa fila que é
      enviada sozinha quando a internet volta — inclusive depois de fechar e
      reabrir o site. */
-  let cdb=null, cmem={}, online=false, sincronizando=false, timerSync=null, timerPing=null;
+  let cdb=null, cmem={}, online=false, sincronizando=false, timerSync=null, timerPing=null, houveQueda=false;
   const ouvintes=[];
   LOJAS.concat(["fila"]).forEach(l=>cmem[l]=new Map());
   function abrirCache(){
@@ -1261,6 +1342,7 @@ const DB = (() => {
   function marcarOnline(v){
     const antes=online; online=v;
     if(v&&!antes){ clearInterval(timerPing); timerPing=null; agendarSync(0); }
+    if(!v) houveQueda=true;
     if(!v&&!timerPing) timerPing=setInterval(async()=>{ if(await tentarRemoto(8000)) marcarOnline(true); },15000);
     if(antes!==v) avisar();
   }
@@ -1314,7 +1396,7 @@ const DB = (() => {
       if(typeof toast==="function"){
         if(recusados) toast(recusados+(recusados===1?" alteração não pôde ser enviada":" alterações não puderam ser enviadas")+" ao servidor. Confira os dados.");
         else if(conflitos) toast("Algumas fichas também tinham sido criadas em outro aparelho — ficou a versão alterada por último.");
-        else if(enviados&&!resto) toast("Tudo enviado — as alterações feitas sem internet já estão no servidor.");
+        else if(enviados&&!resto&&houveQueda){ houveQueda=false; toast("Tudo enviado — as alterações feitas sem internet já estão no servidor."); }
       }
     }
   }
@@ -1343,6 +1425,7 @@ const DB = (() => {
     }
     try{
       const lista=await remotoListarJson(l,filtro); marcarOnline(true);
+      try{ localStorage.setItem("cd_ult_sync",String(Date.now())); }catch(e){}
       const doServidor=new Map(lista.map(x=>[x.id,x]));
       const pend=new Map((await filaTodas()).filter(x=>x.loja===l).map(x=>[x.id,x]));
       for(const x of lista) if(!pend.has(x.id)) await cPut(l,x);
@@ -1512,6 +1595,7 @@ const DB = (() => {
     },
     get online(){return modo!=="remoto"||online},
     get cacheOk(){return !!cdb},
+    get jaSincronizou(){ if(modo!=="remoto") return true; try{ return !!localStorage.getItem("cd_ult_sync"); }catch(e){ return false; } },
     pendentes: ()=>modo==="remoto"?contarPendentes():Promise.resolve(0),
     sincronizar: ()=>sincronizar(),
     aoMudar(f){ ouvintes.push(f); avisar(); },
@@ -1714,6 +1798,17 @@ function anotarFoto(arq){
 }
 
 /* ---------------- Situação da conexão (pílula no topo) ---------------- */
+function iniciarContraste(){
+  let ligado=false; try{ ligado=localStorage.getItem("cd_contraste")==="1"; }catch(e){}
+  const aplicar=v=>{ document.body.classList.toggle("alto-contraste",v); document.querySelectorAll(".btn-contraste").forEach(b=>b.setAttribute("aria-pressed",String(v))); };
+  document.querySelectorAll(".who").forEach(w=>{
+    const b=document.createElement("button"); b.type="button"; b.className="btn-contraste"; b.textContent="☀ Contraste";
+    b.title="Alto contraste: melhora a leitura sob sol forte"; b.setAttribute("aria-pressed","false");
+    b.addEventListener("click",()=>{ ligado=!ligado; aplicar(ligado); try{ localStorage.setItem("cd_contraste",ligado?"1":"0"); }catch(e){} });
+    w.prepend(b);
+  });
+  aplicar(ligado);
+}
 function iniciarIndicadorSync(){
   const pills=[...document.querySelectorAll(".who")].map(w=>{
     const b=document.createElement("button"); b.type="button"; b.className="sync-pill"; b.hidden=true;
@@ -1728,7 +1823,9 @@ function iniciarIndicadorSync(){
     else if(pendentes) txt=pendentes+" para enviar";
     pills.forEach(b=>{ b.hidden=!txt; b.textContent=txt; b.className="sync-pill"+(cls?" "+cls:""); });
     // voltou a conexão com a tela aberta: atualiza com o que mudou no servidor
-    if(online&&!estavaOnline&&!sincronizando&&user&&typeof render==="function"){ const ap=document.getElementById("app"); if(ap&&ap.style.display==="flex") render(); }
+    if(online&&!estavaOnline&&!sincronizando&&user&&typeof render==="function"){ const ap=document.getElementById("app"); if(ap&&ap.style.display==="flex") prepararBase().then(()=>render()); }
+    if(typeof atualizarCarga==="function") atualizarCarga();
+    if(typeof ultimoSalvo!=="undefined"&&ultimoSalvo) atualizarSalvo();
     estavaOnline=online;
   });
 }
@@ -2030,7 +2127,8 @@ function animarTela(el,volta){
   el.addEventListener("animationend",function fim(e){ if(e.target!==el) return; el.classList.remove("tela-entra","tela-volta"); el.removeEventListener("animationend",fim); });
 }
 async function telaObras(){
-  const lista=await DB.listar("obras");
+  let lista=await DB.listar("obras");
+  if(!lista.length) lista=OBRAS_PADRAO.map(o=>Object.assign({},o));
   const el=$("#obraLista"); el.innerHTML="";
   lista.sort((a,b)=>a.id.localeCompare(b.id)).forEach(o=>{
     const b=document.createElement("button");
@@ -2093,6 +2191,8 @@ function irPara(v,opt){
 }
 function aplicarView(v,scrollY,voltando){
   viewAtual=v;
+  $("#app").dataset.view=v;
+  setTimeout(()=>{ if(typeof atualizarCarga==="function") atualizarCarga(); },0);
   // "volta" muda a direção da animação de entrada (desce em vez de subir)
   document.querySelectorAll(".view").forEach(s=>{ const at=s.id==="view-"+v; s.classList.toggle("active",at); s.classList.toggle("volta",at&&!!voltando); });
   const bar=$("#secaoBar");
@@ -2194,7 +2294,23 @@ async function baixarVersao(docId,v){
 }
 
 /* ---------------- Render geral ---------------- */
+// barra fina no topo enquanto carrega; esqueletos quando o servidor ainda não respondeu e o aparelho não tem cópia
+let rendersAtivos=0;
+function atualizarCarga(){
+  const ap=$("#app"); if(!ap) return;
+  const esperando=!!(CONFIG.apiBaseUrl&&!DB.online&&!DB.jaSincronizou);
+  ap.classList.toggle("aguardando",esperando);
+  // os esqueletos ficam logo abaixo do título da tela atual
+  const esq=$("#esqueletoTela"), v=document.querySelector(".view.active");
+  if(esperando&&esq&&v){ const head=v.querySelector(":scope>.view-head, :scope>.hub-head"); if(head) head.after(esq); else v.prepend(esq); }
+  $("#cargaBarra").classList.toggle("on",rendersAtivos>0||ap.classList.contains("aguardando"));
+}
 async function render(){
+  rendersAtivos++; const tBarra=setTimeout(atualizarCarga,250);
+  try{ await renderDados(); }
+  finally{ rendersAtivos--; clearTimeout(tBarra); atualizarCarga(); }
+}
+async function renderDados(){
   docs=(await DB.listar("documentos")).sort((a,b)=>b.atualizadoEm.localeCompare(a.atualizadoEm));
   modelos=(await DB.listar("modelos")).sort((a,b)=>(a.titulo||"").localeCompare(b.titulo||"","pt-BR"));
   preenchimentos=(await DB.listar("preenchimentos",obra?{obraId:obra.id}:null)).sort((a,b)=>b.atualizadoEm.localeCompare(a.atualizadoEm));
@@ -2583,7 +2699,7 @@ async function montarFicha(p,m){
   const pr=progresso(p,m);
 
   let html=
-  '<div class="progresso"><div class="barra"><i id="barraI" style="width:'+pr.pct+'%"></i></div><span id="prTxt">'+pr.feitos+' de '+pr.total+' itens</span></div>'+
+  '<div class="progresso"><span id="prTxt">'+pr.feitos+' de '+pr.total+' itens</span><div class="barra"><i id="barraI" style="width:'+pr.pct+'%"></i></div><span class="salvo" id="salvoStatus"></span></div>'+
   '<div class="panel"><div class="panel-head"><div><h3>'+esc(m.titulo)+'</h3><span class="count">'+esc(m.codigo||"")+(m.revisao?" · rev. "+esc(m.revisao):"")+'</span></div>'+
   '<div class="count">Obra '+esc(obra.id)+' — '+esc(obra.nome)+'</div></div>'+
   '<div class="panel-body"><div class="q-setup"><div class="field" style="margin:0"><label for="unEdit">Unidade (casa) — inspeções durante a execução</label><input type="text" id="unEdit" value="'+esc(p.unidade)+'" disabled></div>'+
@@ -2598,6 +2714,8 @@ async function montarFicha(p,m){
   area.innerHTML=html;
   $("#rodape").classList.add("show");
   carregarTodasPreviewsFoto(p,m);
+  ultimoSalvo=null; atualizarSalvo();
+  marcarItemAtual(null,false);
   atualizarStatusGeracao();
 }
 
@@ -2609,12 +2727,49 @@ function registrarEdicao(p){
   if(ultimo && ultimo.quem===nomeAtual){ ultimo.quando=new Date().toISOString(); }
   else { p.historico.push({quem:nomeAtual,quando:new Date().toISOString()}); if(p.historico.length>40) p.historico.shift(); }
 }
+/* ---- "Salvo ✓" ao lado da barra de progresso ---- */
+let ultimoSalvo=null, timerSalvo=null;
+async function atualizarSalvo(salvando){
+  const el=document.getElementById("salvoStatus"); if(!el) return;
+  if(salvando){ el.className="salvo salvando"; el.textContent="Salvando…"; return; }
+  if(!ultimoSalvo){ el.textContent=""; return; }
+  const seg=Math.round((Date.now()-ultimoSalvo)/1000);
+  const quando=seg<45?"agora":(seg<3600?"há "+Math.round(seg/60)+" min":"às "+new Date(ultimoSalvo).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}));
+  const pend=await DB.pendentes().catch(()=>0);
+  if(!DB.online){ el.className="salvo local"; el.textContent="✓ Salvo no aparelho "+quando+" · envia quando houver sinal"; }
+  else if(pend){ el.className="salvo salvando"; el.textContent="Enviando…"; clearTimeout(timerSalvo); timerSalvo=setTimeout(()=>atualizarSalvo(),1500); return; }
+  else { el.className="salvo"; el.textContent="✓ Salvo "+quando; }
+  clearTimeout(timerSalvo); timerSalvo=setTimeout(()=>atualizarSalvo(),20000);
+}
+/* ---- item da vez: destaca o primeiro sem resposta e rola até ele ---- */
+function marcarItemAtual(nRespondido,rolar){
+  if(!fichaAtiva) return;
+  const {p,m}=fichaAtiva, itens=itensRespondiveis(m);
+  let alvo=null;
+  if(nRespondido!=null){
+    const i=itens.findIndex(it=>String(it.n)===String(nRespondido));
+    alvo=itens.slice(i+1).concat(itens.slice(0,i)).find(it=>!(p.respostas[it.n]&&p.respostas[it.n].resultado));
+  } else alvo=itens.find(it=>!(p.respostas[it.n]&&p.respostas[it.n].resultado));
+  document.querySelectorAll("#fichaArea .item-card.atual").forEach(c=>c.classList.remove("atual"));
+  if(!alvo) return;
+  const card=document.getElementById("card-"+alvo.n); if(!card) return;
+  card.classList.add("atual");
+  if(rolar){
+    const barra=document.querySelector(".progresso"), top=document.querySelector(".topbar");
+    const folga=(barra?barra.offsetHeight:0)+(top&&getComputedStyle(top).position!=="static"?top.offsetHeight:0)+18;
+    const y=card.getBoundingClientRect().top+window.scrollY-folga;
+    const reduz=matchMedia("(prefers-reduced-motion:reduce)").matches;
+    setTimeout(()=>window.scrollTo({top:Math.max(0,y),behavior:reduz?"auto":"smooth"}),180);
+  }
+}
 async function salvarFicha(){
   if(!fichaAtiva) return;
   const {p,m}=fichaAtiva;
   registrarEdicao(p);
   p.atualizadoEm=new Date().toISOString();
+  atualizarSalvo(true);
   await DB.gravar("preenchimentos",p);
+  ultimoSalvo=Date.now(); atualizarSalvo();
   const pr=progresso(p,m);
   const bi=$("#barraI"), pt=$("#prTxt");
   if(bi){ bi.style.width=pr.pct+"%"; pt.textContent=pr.feitos+" de "+pr.total+" itens"; }
@@ -3032,7 +3187,7 @@ function diasDesde(iso){
    Responde "como está a obra e o que preciso resolver agora?": indicadores,
    reinspeções pendentes (itens, não fichas) e cobertura por FVS com mapa das casas.
    A lista de fichas e os filtros ficam na aba Preenchimentos. */
-let painelFvsEscolhida=null;
+let painelFvsEscolhida=null, painelFiltroSt="";
 const PRIO_STATUS={concluida:1,aberto:2,reinsp:3};
 const ROT_STATUS={concluida:"Concluída",aberto:"Em aberto",reinsp:"Aguardando reinspeção",sem:"Sem ficha"};
 function numeroDaCasa(u){ const s=String(u==null?"":u).trim(); return /^\d+$/.test(s)?parseInt(s,10):null; }
@@ -3167,12 +3322,26 @@ function renderPainel(){
   cont.innerHTML='<div class="panel"><div class="panel-head"><h3>'+esc(m.titulo)+'</h3><span class="count">'+esc(m.codigo||"")+' · '+c+' de '+obra.casas+' casas concluídas</span></div>'+
     '<div class="panel-body">'+
       '<div class="cob-barra"><i class="c" style="width:'+pct(c)+'%"></i><i class="r" style="width:'+pct(r)+'%"></i><i class="a" style="width:'+pct(a)+'%"></i></div>'+
-      '<div class="cob-leg"><span class="c">'+c+' concluídas</span><span class="r">'+r+' aguardando reinspeção</span><span class="a">'+a+' em aberto</span><span class="s">'+sem+' sem ficha</span></div>'+
+      '<div class="cob-leg" role="group" aria-label="Filtrar o mapa por situação">'+
+        [["concluida","c",c+" concluídas"],["reinsp","r",r+" aguardando reinspeção"],["aberto","a",a+" em aberto"],["sem","s",sem+" sem ficha"]]
+          .map(([st,cl,tx])=>'<button type="button" class="'+cl+'" data-pnfiltro="'+st+'" aria-pressed="'+(painelFiltroSt===st)+'" title="Mostrar só estas casas no mapa">'+tx+'</button>').join("")+
+        (painelFiltroSt?'<button type="button" class="limpar" data-pnfiltro="">Mostrar todas</button>':'')+
+      '</div>'+
       (fora?'<p class="note" style="margin:10px 0 0">'+fora+(fora===1?' ficha com unidade':' fichas com unidade')+' que não é um número de 1 a '+obra.casas+' — não aparece no mapa.</p>':'')+
       (impl?mapaImplantacao(impl,botaoCasa,n=>porCasa[n]&&porCasa[n].st==="concluida"):'<div class="mapa">'+casas+'</div>')+
     '</div></div>';
 }
 $("#painelFvsSel").addEventListener("change",e=>{ painelFvsEscolhida=e.target.value; renderPainel(); });
+$("#painelCobertura").addEventListener("click",e=>{
+  const b=e.target.closest("[data-pnfiltro]"); if(!b) return;
+  const st=b.dataset.pnfiltro; painelFiltroSt=(st&&st!==painelFiltroSt)?st:"";
+  const c=$("#painelCobertura");
+  if(painelFiltroSt) c.dataset.filtro=painelFiltroSt; else delete c.dataset.filtro;
+  c.querySelectorAll("[data-pnfiltro]").forEach(x=>x.setAttribute("aria-pressed",String(!!painelFiltroSt&&x.dataset.pnfiltro===painelFiltroSt)));
+  const leg=c.querySelector(".cob-leg"), lim=leg&&leg.querySelector(".limpar");
+  if(painelFiltroSt&&!lim) leg.insertAdjacentHTML("beforeend",'<button type="button" class="limpar" data-pnfiltro="">Mostrar todas</button>');
+  if(!painelFiltroSt&&lim) lim.remove();
+});
 
 /* ---------------- Indicadores ----------------
    Aba para o controle e a diretoria acompanharem a obra ao longo do tempo:
@@ -3293,7 +3462,21 @@ function popularIndFvs(){
   if(!ord.some(m=>m.id===indFvsEscolhida)) indFvsEscolhida="";
   sel.value=indFvsEscolhida;
 }
-function renderIndicadores(){
+// números do topo "contam" de 0 até o valor ao abrir a aba ou trocar o filtro
+function contarNumeros(raiz){
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+  raiz.querySelectorAll(".ind-kpi b").forEach(el=>{
+    const m=el.textContent.match(/^([\d.]+(?:,\d+)?)(.*)$/); if(!m) return;
+    const alvo=parseFloat(m[1].replace(/\./g,"").replace(",",".")), dec=(m[1].split(",")[1]||"").length, suf=m[2];
+    if(!isFinite(alvo)||alvo===0) return;
+    const t0=performance.now(), dur=650;
+    const passo=t=>{ const k=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-k,3);
+      el.textContent=(alvo*e).toLocaleString("pt-BR",{minimumFractionDigits:dec,maximumFractionDigits:dec})+suf;
+      if(k<1) requestAnimationFrame(passo); };
+    requestAnimationFrame(passo);
+  });
+}
+function renderIndicadores(opts){
   const cont=$("#indConteudo"); if(!cont) return;
   if(!obra||!$("#view-indicadores").classList.contains("active")) return;
   $("#indObra").textContent="Obra "+obra.id+" — "+obra.nome+" · "+obra.casas+" casas · semanas de segunda a domingo";
@@ -3351,6 +3534,7 @@ function renderIndicadores(){
     '</tbody></table></div></div>';
   }
   cont.innerHTML=h;
+  if(!(opts&&opts.semAnimar)) contarNumeros(cont);
   const rot=d.sem.map(diaBR);
   graficoColunas($("#indGrafConc"),{rotulos:rot,series:[{cor:VZ.a,valores:d.concSem}],rotuloUltimo:true,
     dica:i=>'<b>Semana de '+nomeSem(i)+'</b><br>'+d.concSem[i]+(d.concSem[i]===1?' ficha concluída':' fichas concluídas')+'<br>Acumulado: '+d.acum[i]});
@@ -3359,7 +3543,7 @@ function renderIndicadores(){
 }
 $("#indFvs").addEventListener("change",e=>{ indFvsEscolhida=e.target.value; renderIndicadores(); });
 $("#indPeriodo").addEventListener("change",renderIndicadores);
-{ let tRes=null; window.addEventListener("resize",()=>{ clearTimeout(tRes); tRes=setTimeout(()=>{ if(viewAtual==="indicadores") renderIndicadores(); },200); }); }
+{ let tRes=null; window.addEventListener("resize",()=>{ clearTimeout(tRes); tRes=setTimeout(()=>{ if(viewAtual==="indicadores") renderIndicadores({semAnimar:true}); },200); }); }
 window.addEventListener("scroll",()=>{ const t=$("#vzTip"); if(t) t.classList.remove("show"); },{passive:true});
 /* ---------------- Implantação: mapa das casas no formato da planta ----------------
    Viva Mais Barra (obra 58) segue a planta VMB-ARQ-PE-03/21 IMP R02:
@@ -3823,6 +4007,9 @@ $("#fichaArea").addEventListener("change", async e=>{
     document.getElementById("card-"+n).outerHTML=cardHTML(itemPorN[n],p);
     if(p.respostas[n].fotoId) carregarPreviewFoto(n,p);
     if(p.respostas[n].reinspecao&&p.respostas[n].reinspecao.fotoId) carregarPreviewReinsp(n,p);
+    // aprovado / não se aplica: segue para o próximo item; reprovado: fica para anexar foto e tratativa
+    if(para==="R"){ document.querySelectorAll("#fichaArea .item-card.atual").forEach(c=>c.classList.remove("atual")); document.getElementById("card-"+n).classList.add("atual"); }
+    else marcarItemAtual(n,true);
     return;
   }
   if(t.dataset.data){
@@ -3872,6 +4059,10 @@ $("#fichaArea").addEventListener("change", async e=>{
     return;
   }
   if(t.id==="obsGeral"){ p.cabecalho.observacao=t.value; await salvarFicha(); return; }
+});
+$("#fichaArea").addEventListener("pointerdown",e=>{
+  const c=e.target.closest(".item-card"); if(!c||c.classList.contains("atual")) return;
+  document.querySelectorAll("#fichaArea .item-card.atual").forEach(x=>x.classList.remove("atual")); c.classList.add("atual");
 });
 $("#fichaArea").addEventListener("click", async e=>{
   if(!fichaAtiva) return;
@@ -3985,6 +4176,9 @@ async function semear(){
 let basePreparada=false;
 async function prepararBase(){
   if(basePreparada) return;
+  // sem conexão e sem nada guardado no aparelho: não cria modelos "de fábrica" aqui,
+  // senão eles subiriam depois duplicando os do servidor; tenta de novo quando conectar
+  if(CONFIG.apiBaseUrl&&!DB.online&&!DB.jaSincronizou) return;
   try{
     await semear();
     docs=await DB.listar("documentos");
@@ -4002,7 +4196,7 @@ async function prepararBase(){
   const login=await Auth365.iniciar();
 
   await DB.init();
-  iniciarIndicadorSync();
+  iniciarIndicadorSync(); iniciarContraste();
   // Sem login 365 configurado (ou já logado), a base é preparada agora; senão, depois do login.
   if(!msalPronto() || (login&&login.conta)) await prepararBase();
 
