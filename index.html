@@ -622,6 +622,11 @@ ul.docs>li:first-child{border-top:none}
 .item-body{padding:16px 18px}
 .resp-grid{display:grid;grid-template-columns:1fr 190px;gap:16px;margin-top:16px;align-items:start}
 .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.opts[data-n]{grid-template-columns:repeat(var(--n),minmax(0,1fr))!important}
+.reinsp-depois{margin:14px 0 0;padding:10px 12px;border:1px dashed var(--line);border-radius:var(--radius);font-size:13px}
+.reinsp-box.pede{animation:pedeAtencao .5s ease 3}
+@keyframes pedeAtencao{50%{box-shadow:0 0 0 4px var(--seal-soft)}}
+@media (prefers-reduced-motion:reduce){.reinsp-box.pede{animation:none;outline:3px solid var(--seal)}}
 .opt{position:relative}
 .opt input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
 .opt span{display:block;text-align:center;border:1px solid var(--line);border-radius:var(--radius);padding:12px 4px;cursor:pointer;font-size:13px;font-weight:600;background:var(--paper);line-height:1.25}
@@ -2922,11 +2927,28 @@ function reinspecaoBlockHTML(n,r){
     '<p class="note" style="margin-top:8px;margin-bottom:0">Ao preencher a data e anexar a foto, este item passa automaticamente para "Aprovado após re-inspeção".</p>'+
   '</div>';
 }
+/* ---- Etapas do item (só na tela; o PDF não muda) ----
+   Sem resposta / A / NA: botões A, R e NA.
+   R marcado agora (ficha ainda não fechada): A, R e NA — dá para desfazer um toque errado; pede foto e tratativa.
+   R já salvo (a ficha foi fechada e aberta de novo): só R e AR; aparece a reinspeção. Não volta para A nem NA.
+   AR: R e AR (R = reprovou de novo). O AR só vale com data e foto da reinspeção. */
+let rSalvos={id:null,itens:new Set()};
+function marcarRSalvos(p){ rSalvos={id:p.id,itens:new Set(Object.keys(p.respostas||{}).filter(n=>p.respostas[n]&&p.respostas[n].resultado==="R"))}; }
+function rJaSalvo(p,n){ return rSalvos.id===p.id&&rSalvos.itens.has(String(n)); }
+// item que estava AR e foi reprovado de novo agora (antes de fechar): o AR desfaz o engano
+function vinhaDeAR(p,n,r){ const c=(r.ciclos||[])[(r.ciclos||[]).length-1]; return r.resultado==="R"&&!rJaSalvo(p,n)&&!!c&&/^Aprovado/.test(c.desfecho||""); }
+function opcoesDoItem(p,n,r){
+  if(r.resultado==="AR") return ["R","AR"];
+  if(r.resultado==="R"&&(rJaSalvo(p,n)||vinhaDeAR(p,n,r))) return ["R","AR"];
+  return ["A","R","NA"];
+}
 function cardHTML(it,p){
   const r=p.respostas[it.n]||{};
+  const ops=opcoesDoItem(p,it.n,r), comReinsp=r.resultado==="AR"||(r.resultado==="R"&&rJaSalvo(p,it.n));
   let extra="";
   if(r.resultado==="R" || r.resultado==="AR"){
-    extra += fotoBlockHTML(it.n,r) + tratativaBlockHTML(it.n,r.tratativa) + reinspecaoBlockHTML(it.n,r);
+    extra += fotoBlockHTML(it.n,r) + tratativaBlockHTML(it.n,r.tratativa) + (comReinsp?reinspecaoBlockHTML(it.n,r):
+      '<p class="note reinsp-depois">A reinspeção fica disponível depois que a ficha for fechada e aberta de novo, quando a correção já tiver sido feita. Até fechar a ficha, dá para trocar o resultado se o R foi marcado por engano.</p>');
   }
   return '<div class="item-card'+(r.resultado?" done":"")+'" id="card-'+esc(it.n)+'">'+
     '<div class="item-head"><div class="item-n">'+esc(it.n)+'</div><b>Item de inspeção '+esc(it.n)+'</b><span class="badge '+(r.resultado||"")+'" id="bdg-'+esc(it.n)+'">'+(r.resultado?esc(r.resultado):"pendente")+'</span></div>'+
@@ -2938,8 +2960,8 @@ function cardHTML(it,p){
         '<div class="lbl">Tolerância</div><p>'+esc(it.tolerancia)+'</p>'+
       '</div>'+
       '<div class="resp-grid">'+
-        '<div><label>Resultado</label><div class="opts">'+
-          RESULTADOS.map(o=>'<label class="opt"><input type="radio" name="r-'+esc(it.n)+'" value="'+o.cod+'"'+(r.resultado===o.cod?" checked":"")+' data-item="'+esc(it.n)+'"><span>'+o.cod+'<small>'+o.rot+'</small></span></label>').join("")+
+        '<div><label>Resultado</label><div class="opts" data-n="'+ops.length+'" style="--n:'+ops.length+'">'+
+          RESULTADOS.filter(o=>ops.includes(o.cod)).map(o=>'<label class="opt"><input type="radio" name="r-'+esc(it.n)+'" value="'+o.cod+'"'+(r.resultado===o.cod?" checked":"")+' data-item="'+esc(it.n)+'"><span>'+o.cod+'<small>'+o.rot+'</small></span></label>').join("")+
         '</div></div>'+
         '<div><label>Data da inspeção</label><input type="date" value="'+esc(r.data||"")+'" data-data="'+esc(it.n)+'"></div>'+
       '</div>'+
@@ -2991,12 +3013,14 @@ async function concluirReinspecaoSeCompleta(n,p){
     registrarEventoItem(r,"R","AR");
     arquivarCiclo(r,"Aprovado após reinspeção");
     r.resultado="AR";
+    rSalvos.itens.delete(String(n));   // uma nova reprovação deste item começa do zero
     await registrar("Item reinspecionado e aprovado (AR)","Item "+n);
   }
 }
 
 async function montarFicha(p,m,opts){
   opts=opts||{};
+  const novaAbertura=!opts.remontar||rSalvos.id!==p.id;
   // busca só esta ficha no servidor, para não editar uma cópia desatualizada
   if(DB.compartilhado){
     try{ const fresco=await DB.obter("preenchimentos",p.id); if(fresco){ Object.keys(p).forEach(k=>{ if(!(k in fresco)) delete p[k]; }); Object.assign(p,fresco); } }catch(e){}
@@ -3011,6 +3035,7 @@ async function montarFicha(p,m,opts){
       await registrar("Ficha reaberta por outro responsável",m.titulo+" · unidade "+p.unidade);
     }
   }
+  if(novaAbertura) marcarRSalvos(p);   // o que já estava reprovado ao abrir conta como salvo
   fichaAtiva={p,m,itemPorN:{},leitura:!!dono,dono};
   m.itens.forEach(it=>{ if(!it.secao) fichaAtiva.itemPorN[it.n]=it; });
   const ret=resumoRetomada(p,m);
@@ -3089,7 +3114,7 @@ function iniciarPulsoPresenca(){
 async function remontarFicha(){
   if(!fichaAtiva) return;
   const y=window.scrollY;
-  await montarFicha(fichaAtiva.p,fichaAtiva.m);
+  await montarFicha(fichaAtiva.p,fichaAtiva.m,{remontar:true});
   window.scrollTo(0,y);
 }
 async function pulsoPresenca(){
@@ -3241,6 +3266,7 @@ function atualizarStatusGeracao(){
 }
 function fecharFicha(){
   liberarPresenca();
+  rSalvos={id:null,itens:new Set()};
   fichaAtiva=null;
   $("#fichaArea").classList.remove("leitura");
   $("#fichaArea").innerHTML="";
@@ -4673,16 +4699,42 @@ $("#fichaArea").addEventListener("change", async e=>{
   if(t.dataset.item){
     const n=t.dataset.item;
     const pa=document.getElementById("parouAqui"); if(pa) pa.remove();
-    const r=p.respostas[n]=Object.assign({},p.respostas[n]);
-    const de=r.resultado||null, para=t.value;
+    const r0=p.respostas[n]||{}, de=r0.resultado||null, para=t.value;
+    const recolocar=()=>{ document.getElementById("card-"+n).outerHTML=cardHTML(itemPorN[n],p); if(r0.fotoId) carregarPreviewFoto(n,p); if(r0.reinspecao&&r0.reinspecao.fotoId) carregarPreviewReinsp(n,p); };
+    // reprovação já salva: só sai do R pela reinspeção
+    if(de==="R"&&rJaSalvo(p,n)&&para!=="R"&&para!=="AR"){ toast("Este item já foi salvo como reprovado: ele só muda pela reinspeção."); recolocar(); return; }
+    if(para==="AR"&&vinhaDeAR(p,n,r0)){
+      // desfaz a nova reprovação: volta ao AR anterior com a foto, a tratativa e a reinspeção dele
+      const c=r0.ciclos[r0.ciclos.length-1], r=p.respostas[n]=Object.assign({},r0);
+      r.resultado="AR"; r.data=c.reprovadoEm||r.data;
+      if(c.fotoReprovacao) r.fotoId=c.fotoReprovacao; else delete r.fotoId;
+      r.tratativa=Object.assign({},c.tratativa||{}); r.reinspecao=Object.assign({},c.reinspecao||{});
+      registrarEventoItem(r,"R","AR");
+      await salvarFicha(); recolocar(); carregarPreviewFoto(n,p); carregarPreviewReinsp(n,p); marcarItemAtual(n,true);
+      return;
+    }
+    if(para==="AR"&&de!=="AR"){
+      const re=r0.reinspecao||{};
+      if(de!=="R"||!re.data||!re.fotoId){
+        toast(de==="R"?"Para aprovar após reinspeção, preencha a data e anexe a foto da reinspeção.":"O AR só é possível em um item reprovado.");
+        recolocar();
+        const box=document.querySelector("#card-"+CSS.escape(n)+" .reinsp-box"); if(box){ box.scrollIntoView({behavior:"smooth",block:"center"}); box.classList.add("pede"); setTimeout(()=>box.classList.remove("pede"),1600); }
+        return;
+      }
+    }
+    // R marcado agora e desfeito antes de fechar a ficha: foi engano, não vira reprovação no histórico
+    const desfazendo=de==="R"&&!rJaSalvo(p,n)&&para!=="R";
+    const r=p.respostas[n]=Object.assign({},r0);
+    if(desfazendo){ delete r.fotoId; delete r.tratativa; delete r.reinspecao; }
     if(de!==para){
       registrarEventoItem(r,de,para);
       // saiu de "R" sem passar pela reinspeção automática: guarda o ciclo com o desfecho escolhido
-      if(de==="R") arquivarCiclo(r,para==="AR"?"Aprovado após reinspeção (marcado manualmente)":"Resultado alterado para "+para);
+      if(de==="R"&&!desfazendo) arquivarCiclo(r,"Aprovado após reinspeção");
       // nova reprovação depois de um ciclo já guardado: começa um ciclo novo, com campos limpos
       if(para==="R"&&(r.ciclos||[]).length){ delete r.fotoId; delete r.tratativa; delete r.reinspecao; r.data=hojeLocalISO(); }
     }
     r.resultado=para;
+    if(para!=="R") rSalvos.itens.delete(String(n));
     if(!r.data){ r.data=hojeLocalISO(); }
     await salvarFicha();
     document.getElementById("card-"+n).outerHTML=cardHTML(itemPorN[n],p);
@@ -4767,10 +4819,10 @@ $("#fichaArea").addEventListener("click", async e=>{
   if(t.dataset&&t.dataset.assumir){ await assumirFicha(); return; }
   if(t.closest&&t.closest("[data-retomar]")){ marcarItemAtual(null,true); return; }
   if(fichaAtiva.leitura) return;
-  if(t.id==="btnAddEq"){ p.cabecalho.equipamentos.push({label:"",patrimonio:""}); await salvarFicha(); await montarFicha(p,m); }
-  if(t.dataset.eqdel!=null){ p.cabecalho.equipamentos.splice(Number(t.dataset.eqdel),1); await salvarFicha(); await montarFicha(p,m); }
-  if(t.id==="btnAddEqp"){ p.cabecalho.equipe.push({nome:"",funcao:"",dataInicio:"",dataTermino:""}); await salvarFicha(); await montarFicha(p,m); }
-  if(t.dataset.eqpdel!=null){ p.cabecalho.equipe.splice(Number(t.dataset.eqpdel),1); await salvarFicha(); await montarFicha(p,m); }
+  if(t.id==="btnAddEq"){ p.cabecalho.equipamentos.push({label:"",patrimonio:""}); await salvarFicha(); await montarFicha(p,m,{remontar:true}); }
+  if(t.dataset.eqdel!=null){ p.cabecalho.equipamentos.splice(Number(t.dataset.eqdel),1); await salvarFicha(); await montarFicha(p,m,{remontar:true}); }
+  if(t.id==="btnAddEqp"){ p.cabecalho.equipe.push({nome:"",funcao:"",dataInicio:"",dataTermino:""}); await salvarFicha(); await montarFicha(p,m,{remontar:true}); }
+  if(t.dataset.eqpdel!=null){ p.cabecalho.equipe.splice(Number(t.dataset.eqpdel),1); await salvarFicha(); await montarFicha(p,m,{remontar:true}); }
 });
 
 $("#wrapPre").addEventListener("click",async e=>{
