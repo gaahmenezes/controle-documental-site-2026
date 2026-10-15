@@ -19,7 +19,7 @@
 - Nome oficial: `abrirRenomear` (Modelos e Repositório, só controle); `formatarNomeOficial` sugere o nome; guarda `tituloOriginal`/`nomeOriginal` e registra na auditoria. O título da FVS aparece no PDF por decisão do controle.
 - Trava de edição simultânea: coleção `presencas` no backend (`DB.presencaObter/Gravar/Remover`, só online). `ocuparFicha` ao montar; `pulsoPresenca` a cada 30 s com a tela à vista; vence em 2 min; segunda pessoa vê `fichaAtiva.leitura` (somente consulta, `.trava-aviso`); controle pode `assumirFicha`. A mesma pessoa em dois aparelhos não se trava; sem conexão não trava.
 - Retomar (`resumoRetomada`, `.retomar`, `#parouAqui`) e "Respondido por" (`respondidoHTML`) vêm de `eventos`; só na tela, nunca no PDF.
-- Painel: fichas paradas (`fichasParadas`, `renderParadas`) por quadra. Indicadores: por equipe de execução (`porEquipe`, `chaveEquipe` junta grafias) e comparativo entre obras (`renderComparativo`, só controle). `resumoObra(o,lista)` e `calcularIndicadores(fvs,semanas,o,lista)` aceitam outra obra.
+- Painel: fichas paradas (`fichasParadas`, `renderParadas`) por quadra. Indicadores: por equipe de execução (`porEquipe`, `chaveEquipe` junta grafias) e comparativo entre obras (`renderComparativo`, só controle). Topo dos Indicadores: situação das fichas em rosca (`situacaoHTML`, `roscaSVG`; hachura = concluída após reinspeção) e quadros de reinspeções (aguardando / corrigidas / fichas afetadas) — sem prazos, por decisão do usuário. `resumoObra(o,lista)` e `calcularIndicadores(fvs,semanas,o,lista)` aceitam outra obra.
 - Melhorias visuais de computador ficam em `@media (min-width:821px)` / `(hover:hover) and (pointer:fine)`; respeitar `prefers-reduced-motion`.
 
 ## Backend

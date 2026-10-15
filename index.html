@@ -167,6 +167,47 @@ header.topbar{background:var(--chrome);border-bottom:3px solid var(--laranja);co
   .comp-tab td.num .ind-barra .trilho{display:none}
   .comp-tab td.num .ind-barra{min-width:0}
 }
+.situ-corpo{display:grid;grid-template-columns:170px minmax(0,1fr);gap:18px;align-items:center}
+.rosca{width:170px;height:170px;display:block}
+.rosca-seg{transition:opacity .15s;cursor:pointer}
+.rosca-seg.apaga{opacity:.25}
+.rosca-num{font-size:24px;font-weight:600;fill:var(--ink);font-variant-numeric:tabular-nums}
+.rosca-rot{font-size:11.5px;fill:var(--ink3)}
+.situ-tab .ind-tab td{white-space:normal;vertical-align:middle}
+.situ-rot{display:flex;align-items:center;gap:10px}
+.situ-rot b{display:block;font-weight:600;font-size:13px}
+.situ-rot small{display:block;font-size:11.5px;color:var(--ink3)}
+.sw{flex:none;width:12px;height:12px;border-radius:3px;background:var(--c)}
+.sw.hach{background:repeating-linear-gradient(45deg,var(--c) 0 3px,color-mix(in srgb,var(--c) 45%,var(--paper)) 3px 5px)}
+.situ-lin{cursor:pointer}
+.situ-tab tr.on td,.situ-lin:hover td{background:var(--seal-soft)}
+.situ-lin td.seta{color:var(--ink3);width:18px;text-align:center}
+.situ-lin td.seta span{display:inline-block;transition:transform .15s}
+.situ-lin[aria-expanded="true"] td.seta span{transform:rotate(90deg)}
+.situ-grade{grid-template-columns:minmax(0,3fr) minmax(0,2fr)}
+@media (max-width:900px){.situ-grade{grid-template-columns:1fr}}
+.situ-det td{background:var(--canvas);padding:8px}
+.situ-lista{list-style:none;margin:0;padding:0;display:grid;gap:4px;max-height:280px;overflow:auto}
+.situ-lista li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 8px;background:var(--paper);border-radius:4px;font-size:13px}
+.situ-lista small{color:var(--ink3)}
+.reinsp-boxes{display:grid;gap:10px}
+.reinsp-box2{font:inherit;text-align:left;border:1px solid var(--line);border-radius:6px;background:var(--paper);padding:0;overflow:hidden;display:grid;grid-template-columns:40% 64px minmax(0,1fr);align-items:center;gap:0 10px;color:var(--ink);width:100%}
+button.reinsp-box2{cursor:pointer}
+button.reinsp-box2:hover{box-shadow:var(--shadow-1)}
+.reinsp-box2 .rb-tit{align-self:stretch;display:flex;align-items:center;padding:12px;font-size:13px;font-weight:600;color:#fff;background:var(--c)}
+.reinsp-box2.ab{--c:#C0461E;border-color:#C0461E}
+.reinsp-box2.ok{--c:#1755A0;border-color:#1755A0}
+.reinsp-box2.fi{--c:#56656D;border-color:#56656D}
+body.tema-escuro .reinsp-box2.ab{--c:#B5502A}
+body.tema-escuro .reinsp-box2.ok{--c:#2B67B0}
+.reinsp-box2 b{font-size:26px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
+.reinsp-box2 small{font-size:12px;color:var(--ink3);padding:8px 10px 8px 0}
+@media (max-width:520px){
+  .situ-corpo{grid-template-columns:1fr;justify-items:center}
+  .situ-tab{width:100%}
+  .reinsp-box2{grid-template-columns:42% 48px minmax(0,1fr)}
+  .reinsp-box2 b{font-size:22px}
+}
 .comp-sub{margin:18px 0 6px;font-size:13px;font-weight:600;color:var(--ink2)}
 .pareto{display:grid;gap:10px;font-size:13px}
 .pareto .p-lin{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;grid-template-areas:"rot bar val";gap:4px 12px;align-items:center}
@@ -3893,7 +3934,18 @@ function calcularIndicadores(fvsId,semanas,o,lista){
   const abertas=base.pend.filter(x=>mods.some(m=>m.id===x.m.id));
   const tempos=[].concat(...Object.values(porFvs).map(f=>f.tempos));
   const ult4=concSem.slice(-4), ritmo=ult4.length?ult4.reduce((a,b)=>a+b,0)/ult4.length:0;
-  return {mods,fichas,sem,concSem,repSem,corSem,acum,previstas,concluidas,prim,abertas,tempos,ritmo,
+  // situação de cada ficha prevista (FVS × casa) e reprovações já corrigidas
+  const situ={primeira:[],aposReinsp:[],reprovAberta:[],andamento:[],naoIniciada:0};
+  base.cobertura.filter(c=>mods.some(m=>m.id===c.m.id)).forEach(c=>{
+    situ.naoIniciada+=c.sem;
+    Object.values(c.porCasa).forEach(({st,p})=>{
+      const x={p,m:c.m};
+      if(st==="concluida") (itensRespondiveis(c.m).some(it=>numReprovacoes(p.respostas[it.n]))?situ.aposReinsp:situ.primeira).push(x);
+      else if(st==="reinsp") situ.reprovAberta.push(x); else situ.andamento.push(x);
+    });
+  });
+  const corrigidas=reps.filter(x=>x.corrigidoEm).length;
+  return {situ,corrigidas,mods,fichas,sem,concSem,repSem,corSem,acum,previstas,concluidas,prim,abertas,tempos,ritmo,
     pareto:Object.values(pareto).sort((a,b)=>b.n-a.n), porQuadra:Object.values(porQuadra).sort((a,b)=>a.q.localeCompare(b.q)), porFvs:Object.values(porFvs), impl,
     porEquipe:Object.values(porEquipe).map(e=>Object.assign(e,{nome:Object.entries(e.grafias).sort((a,b)=>b[1]-a[1]||(a[0]===a[0].toUpperCase())-(b[0]===b[0].toUpperCase())||a[0].localeCompare(b[0]))[0][0]})).sort((a,b)=>b.fichas-a.fichas||a.nome.localeCompare(b.nome,"pt-BR")),
     semEquipe};
@@ -3974,6 +4026,7 @@ function renderIndicadores(opts){
     kpi("Tempo médio até corrigir",tm==null?"—":(Math.round(tm*10)/10).toLocaleString("pt-BR")+" dias",tm==null?"sem correções registradas":"da reprovação à reinspeção ("+d.tempos.length+")")+
     kpi("Ritmo (fichas por semana)",(Math.round(d.ritmo*10)/10).toLocaleString("pt-BR"),proj?"no ritmo atual, ~"+proj+(proj===1?" semana":" semanas")+" para concluir":(restante>0?"sem conclusões nas últimas 4 semanas":"todas as fichas previstas concluídas"))+
   '</div>';
+  h+=situacaoHTML(d);
   const tabSem=(cab,linhas)=>'<details class="ind-tabela"><summary>Ver em tabela</summary><div class="ind-rolagem"><table><thead><tr>'+cab.map(c=>'<th>'+c+'</th>').join("")+'</tr></thead><tbody>'+linhas.join("")+'</tbody></table></div></details>';
   const nomeSem=i=>diaBR(d.sem[i])+" a "+diaBR(somaDias(d.sem[i],6));
   h+='<div class="ind-grade">'+
@@ -4022,6 +4075,7 @@ function renderIndicadores(opts){
   '</div>';
   if(ehControle) h+='<div class="panel" style="margin-bottom:16px" id="indComparativo"><div class="panel-head"><h3>Comparativo entre obras</h3><span class="count">'+(indFvsEscolhida?"FVS selecionada":"todas as FVS")+'</span></div><div class="panel-body"><p class="note" style="margin:0">Carregando as outras obras…</p></div></div>';
   cont.innerHTML=h;
+  ligarRosca(d);
   if(ehControle) renderComparativo();
   if(!(opts&&opts.semAnimar)) contarNumeros(cont);
   const rot=d.sem.map(diaBR);
@@ -4029,6 +4083,70 @@ function renderIndicadores(opts){
     dica:i=>'<b>Semana de '+nomeSem(i)+'</b><br>'+d.concSem[i]+(d.concSem[i]===1?' ficha concluída':' fichas concluídas')+'<br>Acumulado: '+d.acum[i]});
   graficoColunas($("#indGrafRep"),{rotulos:rot,series:[{cor:VZ.b,valores:d.repSem},{cor:VZ.a,valores:d.corSem}],
     dica:i=>'<b>Semana de '+nomeSem(i)+'</b><br><i style="background:'+VZ.b+'"></i>'+d.repSem[i]+' registradas<br><i style="background:'+VZ.a+'"></i>'+d.corSem[i]+' corrigidas'});
+}
+/* ---- Situação das fichas (rosca) e reinspeções ----
+   Cada ficha prevista = uma FVS numa casa. Cores: azul = concluída, azul com hachura =
+   concluída após reinspeção, laranja = reprovação em aberto, cinzas = em andamento /
+   não iniciada. O nome e a porcentagem estão sempre escritos na tabela ao lado. */
+let indSituAberta="";
+function situacaoGrupos(d){
+  const escuro=document.body.classList.contains("tema-escuro");
+  const s=d.situ;
+  return [
+    {k:"primeira",rot:"Concluídas de primeira",sub:"sem nenhuma reprovação",n:s.primeira.length,lista:s.primeira,cor:VZ.a},
+    {k:"aposReinsp",rot:"Concluídas após reinspeção",sub:"tiveram reprovação já corrigida",n:s.aposReinsp.length,lista:s.aposReinsp,cor:escuro?"#4C93E0":"#5E95E0",hach:true},
+    {k:"reprovAberta",rot:"Com reprovação em aberto",sub:"aguardando reinspeção",n:s.reprovAberta.length,lista:s.reprovAberta,cor:VZ.b},
+    {k:"andamento",rot:"Em andamento",sub:"itens ainda sem resposta",n:s.andamento.length,lista:s.andamento,cor:escuro?"#6B7C85":"#8A99A1"},
+    {k:"naoIniciada",rot:"Não iniciadas",sub:"casas ainda sem a ficha",n:s.naoIniciada,lista:null,cor:escuro?"#2D3F48":"#D5DEE2"}
+  ];
+}
+function roscaSVG(grupos,total){
+  const R=62, E=20, C=2*Math.PI*R, folga=total>0?2:0;
+  let ac=0, arcos="";
+  grupos.forEach(g=>{ if(!g.n||!total) return;
+    const comp=g.n/total*C, vis=Math.max(0,comp-(grupos.filter(x=>x.n).length>1?folga:0));
+    const fill=g.hach?'url(#hachRosca)':g.cor;
+    arcos+='<circle class="rosca-seg" data-k="'+g.k+'" cx="80" cy="80" r="'+R+'" fill="none" stroke="'+fill+'" stroke-width="'+E+'" stroke-dasharray="'+vis+' '+(C-vis)+'" stroke-dashoffset="'+(-ac)+'" transform="rotate(-90 80 80)"/>';
+    ac+=comp; });
+  const conc=grupos[0].n+grupos[1].n, pc=total?Math.round(conc/total*1000)/10:0;
+  return '<svg viewBox="0 0 160 160" class="rosca" role="img" aria-label="'+esc(pc.toLocaleString("pt-BR"))+'% das fichas previstas concluídas">'+
+    '<defs><pattern id="hachRosca" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="'+grupos[1].cor+'"/><rect width="2" height="6" fill="var(--paper)" opacity=".55"/></pattern></defs>'+
+    (total?'':'<circle cx="80" cy="80" r="'+R+'" fill="none" stroke="var(--line2)" stroke-width="'+E+'"/>')+arcos+
+    '<text x="80" y="78" text-anchor="middle" class="rosca-num">'+pc.toLocaleString("pt-BR")+'%</text><text x="80" y="96" text-anchor="middle" class="rosca-rot">concluídas</text></svg>';
+}
+function situacaoHTML(d){
+  const grupos=situacaoGrupos(d), total=grupos.reduce((a,g)=>a+g.n,0);
+  const pct=n=>total?(Math.round(n/total*1000)/10).toLocaleString("pt-BR")+"%":"—";
+  const linhas=grupos.map(g=>{
+    const sw='<i class="sw'+(g.hach?' hach':'')+'" style="--c:'+g.cor+'"></i>';
+    const cel='<span class="situ-rot">'+sw+'<span><b>'+g.rot+'</b><small>'+g.sub+'</small></span></span>';
+    const abre=g.lista&&g.n;
+    return '<tr'+(abre?' class="situ-lin" data-situ="'+g.k+'" tabindex="0" role="button" aria-expanded="'+(indSituAberta===g.k)+'"':'')+' data-k="'+g.k+'"><td>'+cel+'</td><td class="num">'+fmtNum(g.n)+'</td><td class="num">'+pct(g.n)+'</td><td class="seta">'+(abre?'<span>›</span>':'')+'</td></tr>'+
+      (abre&&indSituAberta===g.k?'<tr class="situ-det"><td colspan="4">'+situListaHTML(g)+'</td></tr>':'');
+  }).join("");
+  const fichasAb=new Set(d.abertas.map(x=>x.p.id)).size;
+  const box=(cls,rot,n,sub,ir)=>'<'+(ir?'button type="button" data-irancora="pend"':'div')+' class="reinsp-box2 '+cls+'"><span class="rb-tit">'+rot+'</span><b>'+fmtNum(n)+'</b><small>'+sub+'</small></'+(ir?'button':'div')+'>';
+  return '<div class="ind-grade situ-grade">'+
+    '<div class="panel"><div class="panel-head"><h3>Situação das fichas</h3><span class="count">'+fmtNum(total)+' previstas</span></div><div class="panel-body situ-corpo">'+
+      roscaSVG(grupos,total)+
+      '<div class="situ-tab"><table class="ind-tab"><thead><tr><th>Situação</th><th class="num">Total</th><th class="num">%</th><th></th></tr></thead><tbody>'+linhas+'</tbody></table>'+
+      '<p class="note" style="margin:8px 0 0">Cada ficha prevista é uma FVS numa casa. Toque numa linha para ver as fichas.</p></div>'+
+    '</div></div>'+
+    '<div class="panel"><div class="panel-head"><h3>Reinspeções</h3><span class="count">itens reprovados</span></div><div class="panel-body">'+
+      '<div class="reinsp-boxes">'+
+        box("ab","Aguardando reinspeção",d.abertas.length,"itens reprovados em aberto",d.abertas.length>0)+
+        box("ok","Corrigidas",d.corrigidas,"reprovações com reinspeção aprovada")+
+        box("fi","Fichas afetadas",fichasAb,"fichas com ao menos um item em aberto")+
+      '</div>'+
+      '<p class="note" style="margin:12px 0 0">'+(d.abertas.length?'Toque em “Aguardando reinspeção” para ver a lista no Painel da obra, da mais antiga para a mais nova.':'Nenhum item reprovado aguardando reinspeção nesta seleção.')+'</p>'+
+    '</div></div>'+
+  '</div>';
+}
+function situListaHTML(g){
+  const LIM=40, l=g.lista.slice().sort((a,b)=>(numeroDaCasa(a.p.unidade)||0)-(numeroDaCasa(b.p.unidade)||0)||String(a.m.codigo).localeCompare(String(b.m.codigo)));
+  return '<ul class="situ-lista">'+l.slice(0,LIM).map(({p,m})=>{ const pr=progresso(p,m);
+    return '<li><span><b>Casa '+esc(p.unidade)+'</b> · '+esc(m.codigo||m.titulo)+' <small>'+pr.feitos+' de '+pr.total+' itens</small></span><button type="button" class="icon-btn" data-indabrir="'+esc(p.id)+'">Abrir</button></li>'; }).join("")+'</ul>'+
+    (l.length>LIM?'<p class="note" style="margin:6px 0 0">Mostrando '+LIM+' de '+l.length+'. Use a aba Preenchimentos para filtrar todas.</p>':'');
 }
 /* ---- Comparativo entre obras (só controle): os mesmos números de cada obra lado a lado ---- */
 const compCache={};
@@ -4077,6 +4195,29 @@ async function renderComparativo(){
   h+='<p class="note" style="margin:12px 0 0">Mesmos cálculos da aba, feitos para cada obra. As porcentagens consideram que cada FVS se aplica a todas as casas da obra.</p>';
   el.innerHTML=h;
 }
+function ligarRosca(d){
+  const grupos=situacaoGrupos(d), total=grupos.reduce((a,g)=>a+g.n,0), tip=$("#vzTip");
+  const cont=$("#indConteudo");
+  const realce=k=>{ cont.querySelectorAll(".rosca-seg").forEach(x=>x.classList.toggle("apaga",!!k&&x.dataset.k!==k)); cont.querySelectorAll(".situ-tab tr[data-k]").forEach(x=>x.classList.toggle("on",x.dataset.k===k)); };
+  cont.querySelectorAll(".rosca-seg").forEach(seg=>{
+    const g=grupos.find(x=>x.k===seg.dataset.k);
+    const mostrar=()=>{ realce(g.k); tip.innerHTML='<b>'+g.rot+'</b><br>'+fmtNum(g.n)+' de '+fmtNum(total)+' ('+(Math.round(g.n/total*1000)/10).toLocaleString("pt-BR")+'%)'; tip.classList.add("show");
+      const r=seg.closest("svg").getBoundingClientRect(), t=tip.getBoundingClientRect();
+      tip.style.left=Math.max(8,Math.min(r.left+r.width/2-t.width/2,innerWidth-t.width-8))+"px"; tip.style.top=Math.max(8,r.top-t.height-6)+"px"; };
+    seg.addEventListener("pointerenter",mostrar); seg.addEventListener("pointerdown",mostrar);
+  });
+  const svg=cont.querySelector(".rosca"); if(svg) svg.addEventListener("pointerleave",()=>{ realce(null); tip.classList.remove("show"); });
+  cont.querySelectorAll(".situ-tab tr[data-k]").forEach(tr=>{ tr.addEventListener("pointerenter",()=>realce(tr.dataset.k)); tr.addEventListener("pointerleave",()=>realce(null)); });
+}
+$("#indConteudo").addEventListener("click",async e=>{
+  const ab=e.target.closest("[data-indabrir]");
+  if(ab){ const p=preenchimentos.find(x=>x.id===ab.dataset.indabrir), m=p&&modelos.find(x=>x.id===p.modeloId); if(!p||!m) return; irPara("fill"); await montarFicha(p,m,{retomar:true}); return; }
+  const lin=e.target.closest("[data-situ]");
+  if(lin){ indSituAberta=indSituAberta===lin.dataset.situ?"":lin.dataset.situ; renderIndicadores({semAnimar:true}); return; }
+  const bx=e.target.closest("[data-irancora]");
+  if(bx){ e.stopPropagation(); irPara("painel"); setTimeout(()=>{ const sec=$("#painelPend").closest(".panel"); if(sec) sec.scrollIntoView({behavior:"smooth",block:"start"}); },120); }
+});
+$("#indConteudo").addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-situ]")){ e.preventDefault(); e.target.click(); } });
 $("#painelParadasDias").addEventListener("change",()=>{ if(obra) renderParadas(resumoObra().fichas); });
 $("#indFvs").addEventListener("change",e=>{ indFvsEscolhida=e.target.value; renderIndicadores(); });
 $("#indPeriodo").addEventListener("change",renderIndicadores);
