@@ -7,6 +7,7 @@
 - `index.html` fica na raiz (é o arquivo publicado). Não mover.
 
 ## Código
+- Nome na tela: **Módulo FVS**; o termo na tela é "empresa" (o código, a coleção e os ids continuam `empreiteiras`/`empreiteiraId`). O rodapé do documento (tela e PDF) ainda diz "Controle Documental" — só muda se o usuário autorizar mexer no PDF.
 - Site: um arquivo só (`index.html`), HTML/CSS/JS puro, sem build. Textos em português.
 - Módulo `DB` com 3 modos: `remoto` (backend próprio), `claude` (inativo), `local` (IndexedDB).
 - ID de ficha determinístico: `idFicha(obraId, modeloId, unidade)`; criação com `DB.criar` (PUT `If-None-Match: *`, 409 se já existir).
