@@ -716,6 +716,17 @@ button.pn-card:hover{border-color:var(--ink2)}
 @media (min-width:1200px){main:has(.view.active .impl){max-width:1440px}}
 .impl-faixa .mp{min-height:0}
 .mp.concluida{background:var(--ok);border-color:var(--ok);color:#fff}
+.editor input.falta{border-color:var(--flag);box-shadow:0 0 0 1px var(--flag)}
+.sem-colab{color:var(--ink3)}
+.vtag.obs{background:#5B6B73;color:#fff;border-color:#5B6B73}
+.obs-doc{border-top:1px solid var(--line2);padding:14px 20px 4px}
+.obs-doc.destaque{background:var(--seal-soft)}
+.obs-topo{display:flex;gap:12px;align-items:center}
+.obs-topo b{display:block}
+.obs-topo span{font-size:12.5px;color:var(--ink3)}
+.obs-doc .docs li{opacity:.92}
+.obs-selo{flex:none;font-size:10px;font-weight:700;letter-spacing:.08em;color:#7A2A0E;border:1.5px solid #C0461E;border-radius:3px;padding:3px 6px;transform:rotate(-4deg)}
+body.tema-escuro .obs-selo{color:#F3A47F;border-color:#E8835A}
 .mp.v1,.mp-sw.v1{background:#F6D5C7;border-color:#D98E70;color:#6E260C}
 .mp.v2,.mp-sw.v2{background:#E9A283;border-color:#C0461E;color:#4A1A08}
 .mp.v3,.mp-sw.v3{background:#C0461E;border-color:#9A3515;color:#fff}
@@ -1204,6 +1215,7 @@ table.editor textarea{min-height:60px;resize:vertical}
     <div class="hub-card"><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></span><button type="button" class="hub-tit" data-ir="meus">Preenchimentos</button><span class="hub-desc">Todas as fichas da obra, com filtros por FVS, status e casa</span><span class="hub-num" id="hubNumMeus">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M6 17v-6M11 17V6M16 17v-9M21 17v-4"/></svg></span><button type="button" class="hub-tit" data-ir="relatorio">Relatório</button><span class="hub-desc">Relatório para download e índice de reprovações por item</span><span class="hub-num" id="hubNumRelatorio">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg></span><button type="button" class="hub-tit" data-ir="repo">Repositório</button><span class="hub-desc">Documentos originais das FVS e suas versões</span><span class="hub-num" id="hubNumRepo">—</span></div>
+    <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/><path d="M10 13h4"/></svg></span><button type="button" class="hub-tit" data-ir="obsoleto">Obsoleto</button><span class="hub-desc">Revisões antigas dos documentos, já substituídas</span><span class="hub-num" id="hubNumObs">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span><button type="button" class="hub-tit" data-ir="modelos">Modelos</button><span class="hub-desc">Questionários gerados a partir das FVS</span><span class="hub-num" id="hubNumModelos">—</span></div>
     <div class="hub-card" data-aprova style="display:none"><span class="hub-tag">Engenheiro</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/><path d="M8 17c1.5-2 2.5-2 3 0s2 1.5 3-1"/></svg></span><button type="button" class="hub-tit" data-ir="aprovacao">Aprovação</button><span class="hub-desc">Fichas concluídas para aprovar e assinar pelo gov.br</span><span class="hub-num" id="hubNumAprov">—</span></div>
     <div class="hub-card" data-controle><span class="hub-tag">Controle</span><span class="hub-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg></span><button type="button" class="hub-tit" data-ir="empreiteiras">Empreiteiras</button><span class="hub-desc">Cadastro das empresas da equipe de execução</span><span class="hub-num" id="hubNumEmp">—</span></div>
@@ -1350,6 +1362,7 @@ table.editor textarea{min-height:60px;resize:vertical}
             <span>PDF, DOCX, XLSX, DOC, XLS, ODT, TXT, CSV — vários de uma vez, até 20 MB cada</span>
           </div>
           <input type="file" id="file" multiple hidden accept=".pdf,.docx,.doc,.xlsx,.xls,.odt,.txt,.csv">
+          <input type="file" id="fileSubst" hidden accept=".pdf,.docx,.doc,.xlsx,.xls,.odt,.txt,.csv">
         </div>
       </div>
       <div class="panel">
@@ -1427,8 +1440,21 @@ table.editor textarea{min-height:60px;resize:vertical}
       </div>
       <div class="panel">
         <div class="panel-head"><h3>Empreiteiras cadastradas</h3><span class="count" id="empCount"></span></div>
-        <div class="toolbar" style="padding:12px 20px 0"><input type="search" id="empBusca" placeholder="Buscar empreiteira" aria-label="Buscar empreiteira" style="flex:1 1 240px"></div>
+        <div class="toolbar" style="padding:12px 20px 0"><input type="text" id="empBusca" placeholder="Buscar empreiteira" aria-label="Buscar empreiteira" style="flex:1 1 240px"></div>
         <div id="listaEmp"></div>
+      </div>
+    </section>
+
+    <!-- OBSOLETO -->
+    <section class="view" id="view-obsoleto">
+      <div class="view-head">
+        <h2>Obsoleto</h2>
+        <p>Revisões antigas dos documentos, já substituídas por uma versão mais nova. Ficam guardadas para consulta e auditoria e não devem ser usadas em campo. Acesso só da conta de controle.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Revisões obsoletas</h3><span class="count" id="obsCount"></span></div>
+        <div class="toolbar" style="padding:12px 20px 0"><input type="text" id="obsBusca" placeholder="Buscar pelo nome do documento" aria-label="Buscar documento obsoleto" style="flex:1 1 240px"></div>
+        <div id="listaObs"></div>
       </div>
     </section>
 
@@ -2825,8 +2851,8 @@ async function escolherObra(o){
   relatarAparelho();
   mostrarBoasVindas();
 }
-const VIEWS_CONTROLE=new Set(["repo","modelos","relatorio","db","empreiteiras"]);
-const NOMES_VIEW={inicio:"Início",painel:"Painel da obra",indicadores:"Indicadores",fill:"Preencher ficha",meus:"Preenchimentos",aprovacao:"Aprovação",repo:"Repositório",modelos:"Modelos",relatorio:"Relatório",empreiteiras:"Empreiteiras",db:"Base de dados"};
+const VIEWS_CONTROLE=new Set(["repo","modelos","relatorio","db","empreiteiras","obsoleto"]);
+const NOMES_VIEW={inicio:"Início",painel:"Painel da obra",indicadores:"Indicadores",fill:"Preencher ficha",meus:"Preenchimentos",aprovacao:"Aprovação",repo:"Repositório",obsoleto:"Obsoleto",modelos:"Modelos",relatorio:"Relatório",empreiteiras:"Empreiteiras",db:"Base de dados"};
 // Navegação integrada ao histórico do navegador: o botão voltar do celular
 // volta para a tela anterior do site (e fecha o documento aberto), em vez de sair dele.
 let histViews=["inicio"], navIdx=0, viewAtual="inicio";
@@ -2874,6 +2900,7 @@ function aplicarView(v,scrollY,voltando){
   if(v==="indicadores") renderIndicadores();
   if(v==="db"){ carregarTodosQuestionarios(); renderLog(); renderLixeira(); }
   if(v==="empreiteiras") renderEmpreiteiras();
+  if(v==="obsoleto") renderObsoleto();
   if(v==="aprovacao") renderAprovacao();
   if(typeof esconderTip==="function") esconderTip();
   // a barra Fechar/Salvar/Gerar só faz sentido em Preencher, com uma ficha aberta
@@ -2892,8 +2919,9 @@ window.addEventListener("popstate",e=>{
   aplicarView(v,scrollPorIdx[navIdx]||0,true);
 });
 /* ---------------- Repositório (upload em massa + leitura automática) ---------------- */
-async function receber(files){
+async function receber(files,alvoId){
   if(!ehControle) return toast("Somente a conta de controle pode enviar ou editar documentos.");
+  if(alvoId) files=[...files].slice(0,1);
   let novos=0,vers=0,rep=0,modCriados=0,modAtualizados=0,semLeitura=0,erros=[];
   for(const f of files){
     const ext=extDe(f.name);
@@ -2901,18 +2929,24 @@ async function receber(files){
     if(f.size>CONFIG.tamanhoMaxMB*1048576){erros.push(f.name+": acima de "+CONFIG.tamanhoMaxMB+" MB");continue}
     const hash=await impressaoDigital(f);
     const todos=await DB.listar("documentos");
-    const ex=todos.find(d=>d.nome.toLowerCase()===f.name.toLowerCase());
+    const ex=alvoId?todos.find(d=>d.id===alvoId):todos.find(d=>d.nome.toLowerCase()===f.name.toLowerCase());
     if(ex&&hash&&ex.versoes.some(v=>v.hash===hash)){rep++;await registrar("Envio ignorado (arquivo idêntico)",f.name);continue}
 
     const arquivoId=uid();
     await DB.gravar("arquivos",{id:arquivoId,blob:f});
-    const versao={v:ex?ex.versaoAtual+1:1,arquivoId,tamanho:f.size,hash,enviadoEm:new Date().toISOString(),enviadoPor:user.email};
-    let docId;
-    if(ex){ ex.versaoAtual=versao.v; ex.atualizadoEm=versao.enviadoEm; ex.versoes.push(versao); await DB.gravar("documentos",ex); await registrar("Nova versão (v"+versao.v+")",f.name); vers++; docId=ex.id; }
-    else { docId=uid(); await DB.gravar("documentos",{id:docId,nome:f.name,ext,tipo:f.type||"",versaoAtual:1,criadoEm:versao.enviadoEm,criadoPor:user.email,atualizadoEm:versao.enviadoEm,versoes:[versao]}); await registrar("Documento registrado",f.name); novos++; }
+    const versao={v:ex?ex.versaoAtual+1:1,arquivoId,arquivoNome:f.name,tamanho:f.size,hash,enviadoEm:new Date().toISOString(),enviadoPor:user.email};
+    let docId, docObj;
+    if(ex){
+      // a versão anterior passa a ser obsoleta (fica na aba Obsoleto, só para o controle)
+      const ant=ex.versoes[ex.versoes.length-1]; if(ant){ ant.substituidaEm=versao.enviadoEm; ant.substituidaPor=user.email; if(!ant.arquivoNome) ant.arquivoNome=ex.nome; }
+      if(alvoId&&f.name!==ex.nome&&!ex.nomeOriginal){ ex.nome=f.name; ex.ext=ext; ex.tipo=f.type||ex.tipo; }
+      ex.versaoAtual=versao.v; ex.atualizadoEm=versao.enviadoEm; ex.versoes.push(versao); await DB.gravar("documentos",ex);
+      await registrar(alvoId?"Documento substituído (v"+versao.v+"; v"+(versao.v-1)+" obsoleta)":"Nova versão (v"+versao.v+"; v"+(versao.v-1)+" obsoleta)",f.name); vers++; docId=ex.id; docObj=ex; }
+    else { docId=uid(); docObj={id:docId,nome:f.name,ext,tipo:f.type||"",versaoAtual:1,criadoEm:versao.enviadoEm,criadoPor:user.email,atualizadoEm:versao.enviadoEm,versoes:[versao]}; await DB.gravar("documentos",docObj); await registrar("Documento registrado",f.name); novos++; }
 
     if(EXT_PLANILHA.includes(ext)){
       const lido=await tentarAutoLer(f);
+      if(lido&&lido.revisao){ versao.revisao=lido.revisao; await DB.gravar("documentos",docObj); }
       if(lido && lido.itens.some(i=>!i.secao)){
         const modsAtuais=await DB.listar("modelos");
         const modExistente=modsAtuais.find(m=>m.docId===docId);
@@ -2945,7 +2979,7 @@ async function receber(files){
   await render();
   const p=[];
   if(novos)p.push(novos+(novos===1?" documento registrado":" documentos registrados"));
-  if(vers)p.push(vers+(vers===1?" nova versão":" novas versões"));
+  if(vers)p.push(alvoId?"Documento substituído; a versão anterior foi para Obsoleto":vers+(vers===1?" nova versão (a anterior foi para Obsoleto)":" novas versões (as anteriores foram para Obsoleto)"));
   if(modCriados)p.push(modCriados+" questionário(s) gerado(s) automaticamente");
   if(modAtualizados)p.push(modAtualizados+" questionário(s) atualizado(s)");
   if(rep)p.push(rep+" idêntico(s) ignorado(s)");
@@ -2958,8 +2992,9 @@ async function baixarVersao(docId,v){
   const ver=d.versoes.find(x=>x.v===Number(v))||d.versoes[d.versoes.length-1];
   const a=await DB.obter("arquivos",ver.arquivoId);
   if(!a) return toast("Arquivo não encontrado na base.");
-  await baixarBlob(a.blob, ver.v===d.versaoAtual?d.nome:d.nome.replace(/(\.[^.]+)$/,"_v"+ver.v+"$1"));
-  await registrar("Download (v"+ver.v+")",d.nome); await renderLog();
+  const obs=ver.v!==d.versaoAtual, nomeBase=obs?(ver.arquivoNome||d.nome):d.nome;
+  await baixarBlob(a.blob, obs?nomeBase.replace(/(\.[^.]+)?$/,"_OBSOLETO_v"+ver.v+"$1"):d.nome);
+  await registrar(obs?"Download de revisão obsoleta (v"+ver.v+")":"Download (v"+ver.v+")",d.nome); await renderLog();
 }
 
 /* ---------------- Render geral ---------------- */
@@ -2988,6 +3023,7 @@ async function renderDados(){
   try{ aprovacoes=obra?await DB.listar("aprovacoes",{obraId:String(obra.id)}):[]; }catch(e){ aprovacoes=[]; }
   if(viewAtual==="db") carregarTodosQuestionarios();
   if(viewAtual==="empreiteiras") renderEmpreiteiras();
+  if(viewAtual==="obsoleto") renderObsoleto();
   if(viewAtual==="aprovacao") renderAprovacao();
   renderRepo(); renderModelos(); renderSetup(); renderMeus(); renderDB(); renderTodosQuestionarios(); renderGraficoReprovacoes(); renderPainel(); renderIndicadores(); renderHub(); await renderLog();
 }
@@ -3006,17 +3042,40 @@ function renderRepo(){
     const li=document.createElement("li");
     li.innerHTML='<div class="doc-row"><div class="ext '+classeExt(d.ext)+'">'+d.ext.toUpperCase()+'</div>'+
       '<div class="doc-meta"><b>'+esc(d.nome)+'<span class="vtag">v'+d.versaoAtual+'</span>'+(temModelo?'<span class="vtag">questionário ativo</span>':(EXT_PLANILHA.includes(d.ext)?'<span class="vtag warn">sem leitura automática</span>':''))+'</b><span>'+bytes(u.tamanho)+" · atualizado em "+dataHora(d.atualizadoEm)+(u.enviadoPor?" por "+esc(u.enviadoPor):"")+'</span></div>'+
-      '<div class="row-actions"><button class="icon-btn" data-rendoc="'+d.id+'">Renomear</button><button class="icon-btn" data-hist="'+d.id+'">Histórico</button><button class="icon-btn" data-dl="'+d.id+'">Baixar</button><button class="icon-btn" data-mod="'+d.id+'">'+(temModelo?"Editar questionário":"Criar questionário")+'</button><button class="icon-btn danger" data-rm="'+d.id+'">Remover</button></div></div>'+
+      '<div class="row-actions"><button class="icon-btn" data-rendoc="'+d.id+'">Renomear</button><button class="icon-btn" data-subst="'+d.id+'">Substituir</button><button class="icon-btn" data-hist="'+d.id+'">Histórico</button><button class="icon-btn" data-dl="'+d.id+'">Baixar</button><button class="icon-btn" data-mod="'+d.id+'">'+(temModelo?"Editar questionário":"Criar questionário")+'</button><button class="icon-btn danger" data-rm="'+d.id+'">Remover</button></div></div>'+
       '<div class="hist" id="h-'+d.id+'"></div>';
     let t='<table><thead><tr><th>Versão</th><th>Enviado em</th><th>Responsável</th><th>Tamanho</th><th></th></tr></thead><tbody>';
     [...d.versoes].reverse().forEach(v=>{
-      t+='<tr><td>v'+v.v+'</td><td>'+dataHora(v.enviadoEm)+'</td><td>'+esc(v.enviadoPor||"—")+'</td><td>'+bytes(v.tamanho)+'</td><td><button class="icon-btn" data-dlv="'+d.id+'|'+v.v+'">Baixar</button></td></tr>';
+      const obs=v.v!==d.versaoAtual;
+      t+='<tr><td>v'+v.v+(obs?' <span class="vtag obs">obsoleta</span>':' <span class="vtag">em vigor</span>')+'</td><td>'+dataHora(v.enviadoEm)+'</td><td>'+esc(v.enviadoPor||"—")+'</td><td>'+bytes(v.tamanho)+'</td><td>'+(obs?'<button class="icon-btn" data-irobs="'+d.id+'">Ver no Obsoleto</button>':'<button class="icon-btn" data-dlv="'+d.id+'|'+v.v+'">Baixar</button>')+'</td></tr>';
       if(v.hash) t+='<tr><td></td><td colspan="4" class="hash">SHA-256 '+v.hash+'</td></tr>';
     });
     li.querySelector(".hist").innerHTML=t+'</tbody></table>';
     ul.appendChild(li);
   });
 }
+
+/* ---------------- Obsoleto (conta de controle): versões substituídas ---------------- */
+let obsDestaque=null;
+function renderObsoleto(){
+  const el=$("#listaObs"); if(!el||!ehControle) return;
+  const termo=semAcento($("#obsBusca").value.trim());
+  const grupos=docs.map(d=>({d,velhas:d.versoes.filter(v=>v.v!==d.versaoAtual).sort((a,b)=>b.v-a.v)}))
+    .filter(g=>g.velhas.length&&(!termo||semAcento(g.d.nome).includes(termo)||g.velhas.some(v=>semAcento(v.arquivoNome||"").includes(termo))));
+  const tot=grupos.reduce((a,g)=>a+g.velhas.length,0);
+  $("#obsCount").textContent=tot?tot+(tot===1?" revisão":" revisões")+" em "+grupos.length+(grupos.length===1?" documento":" documentos"):"";
+  if(!grupos.length){ el.innerHTML='<div class="empty"><b>'+(termo?'Nenhum resultado':'Nenhuma revisão obsoleta')+'</b>'+(termo?'Nenhum documento obsoleto corresponde a essa busca.':'Quando um documento for substituído no Repositório (botão “Substituir” ou envio de uma nova versão), a revisão anterior aparece aqui.')+'</div>'; return; }
+  const atual=d=>d.versoes.find(v=>v.v===d.versaoAtual)||d.versoes[d.versoes.length-1];
+  el.innerHTML=grupos.map(({d,velhas})=>{ const a=atual(d);
+    return '<div class="obs-doc'+(obsDestaque===d.id?' destaque':'')+'" id="obs-'+esc(d.id)+'"><div class="obs-topo"><div class="ext '+classeExt(d.ext)+'">'+esc(d.ext.toUpperCase())+'</div><div><b>'+esc(d.nome)+'</b>'+
+      '<span>Em vigor: v'+d.versaoAtual+(a&&a.revisao?' · rev. '+esc(a.revisao):'')+' · enviada em '+esc(dataHora(a.enviadoEm))+'</span></div></div>'+
+      '<ul class="docs">'+velhas.map(v=>'<li><div class="doc-row"><span class="obs-selo">OBSOLETO</span><div class="doc-meta"><b>v'+v.v+(v.revisao?' · rev. '+esc(v.revisao):'')+(v.arquivoNome&&v.arquivoNome!==d.nome?' · '+esc(v.arquivoNome):'')+'</b>'+
+        '<span>Enviada em '+esc(dataHora(v.enviadoEm))+(v.enviadoPor?' por '+esc(v.enviadoPor):'')+(v.substituidaEm?' · substituída em '+esc(dataHora(v.substituidaEm))+(v.substituidaPor?' por '+esc(v.substituidaPor):''):'')+' · '+bytes(v.tamanho)+'</span></div>'+
+        '<div class="row-actions"><button class="icon-btn" data-obsdl="'+esc(d.id)+'|'+v.v+'">Baixar</button></div></div></li>').join("")+'</ul></div>'; }).join("");
+  if(obsDestaque){ const alvo=document.getElementById("obs-"+obsDestaque); if(alvo) setTimeout(()=>alvo.scrollIntoView({behavior:"smooth",block:"start"}),60); obsDestaque=null; }
+}
+$("#obsBusca").addEventListener("input",renderObsoleto);
+$("#listaObs").addEventListener("click",e=>{ const b=e.target.closest("[data-obsdl]"); if(!b||!ehControle) return; const [id,v]=b.dataset.obsdl.split("|"); baixarVersao(id,v); });
 
 /* ---------------- Modelos (conta de controle) ---------------- */
 function renderModelos(){
@@ -3216,6 +3275,7 @@ function statusFicha(p,m){
 }
 function validar(p,m){
   if(!((p.cabecalho&&p.cabecalho.equipe)||[]).some(r=>String(r.nome||"").trim())) return {ok:false,msg:"Informe a equipe de execução (empreiteira)."};
+  if(((p.cabecalho&&p.cabecalho.equipe)||[]).some(r=>ehViva(r.nome)&&!String(r.colaborador||"").trim())) return {ok:false,msg:"Informe o colaborador da Viva Construções na equipe de execução."};
   for(const it of itensRespondiveis(m)){
     const r=p.respostas[it.n];
     if(!r || !r.resultado) return {ok:false,msg:"O item "+it.n+" ainda não tem um resultado selecionado."};
@@ -3319,16 +3379,26 @@ function equipamentosHTML(p){
   return '<div class="panel"><div class="panel-head"><h3>Identificação dos recursos de monitoramento e inspeção</h3><button class="icon-btn" id="btnAddEq">Adicionar equipamento</button></div>'+
     '<div class="panel-body">'+(rows||'<p class="note" style="margin:0">Nenhum equipamento adicionado.</p>')+'</div></div>';
 }
+// equipe própria: a empreiteira é a Viva Construções → pede o nome do colaborador
+const ehViva=nome=>chaveEquipe(nome).includes("viva constru");
+const VIVA_NOME="Viva Construções";
+// nome que vai para a coluna "Nome / empresa": o colaborador da Viva, ou a empresa
+function nomeEquipe(r){ const c=String(r.colaborador||"").trim(); return ehViva(r.nome)&&c?c+" — "+r.nome:(r.nome||""); }
 function opcoesEmpreiteira(r){
   const ativas=empreiteiras.filter(e=>e.ativa!==false||e.id===r.empreiteiraId);
+  const vivaCad=empreiteiras.some(e=>ehViva(e.nome));
   const achou=ativas.some(e=>e.id===r.empreiteiraId)||(!r.empreiteiraId&&ativas.some(e=>chaveEquipe(e.nome)===chaveEquipe(r.nome)));
   return '<option value="">Escolha a empreiteira…</option>'+ativas.map(e=>'<option value="'+esc(e.id)+'"'+((e.id===r.empreiteiraId||(!r.empreiteiraId&&r.nome&&chaveEquipe(e.nome)===chaveEquipe(r.nome)))?' selected':'')+'>'+esc(e.nome)+'</option>').join("")+
-    (r.nome&&!achou?'<option value="__livre" selected>'+esc(r.nome)+' (não cadastrada)</option>':'');
+    (vivaCad?'':'<option value="__viva"'+(!r.empreiteiraId&&ehViva(r.nome)?' selected':'')+'>'+VIVA_NOME+' (equipe própria)</option>')+
+    (r.nome&&!achou&&!(!vivaCad&&ehViva(r.nome))?'<option value="__livre" selected>'+esc(r.nome)+' (não cadastrada)</option>':'');
 }
 function equipeHTML(p){
   const eq=p.cabecalho.equipe;
+  const comViva=eq.some(r=>ehViva(r.nome));
+  const nomesColab=[...new Set(preenchimentos.flatMap(x=>((x.cabecalho&&x.cabecalho.equipe)||[]).map(e=>String(e.colaborador||"").trim())).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR"));
   const rows=eq.map((r,i)=>
     '<tr><td><select data-eqpemp="'+i+'" aria-label="Empreiteira">'+opcoesEmpreiteira(r)+'</select></td>'+
+    (comViva?'<td>'+(ehViva(r.nome)?'<input type="text" value="'+esc(r.colaborador||"")+'" data-eqp="'+i+'|colaborador" list="listaColab" placeholder="Nome do colaborador" aria-label="Colaborador da Viva Construções"'+(String(r.colaborador||"").trim()?'':' class="falta"')+'>':'<span class="sem-colab">—</span>')+'</td>':'')+
     '<td><input type="text" value="'+esc(r.funcao)+'" data-eqp="'+i+'|funcao" placeholder="Função"></td>'+
     '<td><input type="date" value="'+esc(r.dataInicio)+'" data-eqp="'+i+'|dataInicio" aria-label="Data de início"></td>'+
     '<td><input type="date" value="'+esc(r.dataTermino)+'" data-eqp="'+i+'|dataTermino" aria-label="Data de término"></td>'+
@@ -3336,8 +3406,9 @@ function equipeHTML(p){
   ).join("");
   const temEq=eq.some(r=>String(r.nome||"").trim());
   return '<div class="panel'+(temEq?'':' falta-equipe')+'" id="painelEquipe"><div class="panel-head"><div><h3>Equipe de execução <span class="req">*</span></h3><span class="count">Obrigatória para gerar o documento</span></div><button class="icon-btn" id="btnAddEqp">Adicionar empreiteira</button></div>'+
-    '<div class="panel-body"><div class="tbl-wrap"><table class="editor"><thead><tr><th>Empreiteira</th><th>Função</th><th>Data início</th><th>Data término</th><th></th></tr></thead><tbody>'+
+    '<div class="panel-body"><div class="tbl-wrap"><table class="editor"><thead><tr><th>Empreiteira</th>'+(comViva?'<th>Colaborador <span class="req">*</span></th>':'')+'<th>Função</th><th>Data início</th><th>Data término</th><th></th></tr></thead><tbody>'+
     (rows||'<tr><td colspan="5" style="color:var(--flag)">Nenhuma empreiteira informada — toque em “Adicionar empreiteira”.</td></tr>')+'</tbody></table></div>'+
+    (comViva?'<datalist id="listaColab">'+nomesColab.map(n=>'<option value="'+esc(n)+'">').join("")+'</datalist><p class="note" style="margin:10px 0 0">Equipe própria da Viva Construções: informe o nome do colaborador que executou o serviço. No documento ele aparece em “Nome / empresa”.</p>':'')+
     (empreiteiras.some(e=>e.ativa!==false)?'':'<p class="note" style="margin:10px 0 0">Ainda não há empreiteiras cadastradas. O controle cadastra em Início → Empreiteiras.</p>')+
     '<p class="emp-falta">'+(ehControle?'<button type="button" class="linkbtn2" data-empnova="1">+ Cadastrar uma empreiteira nova</button>':'<button type="button" class="linkbtn2" data-emppedir="1">A empreiteira não está na lista? Avise o controle</button>')+'</p>'+
     '<div class="field" style="margin-top:14px"><label for="obsGeral">Observação</label><textarea id="obsGeral" rows="3">'+esc(p.cabecalho.observacao||"")+'</textarea></div>'+
@@ -3880,6 +3951,7 @@ window.addEventListener("beforeunload",e=>{ if(edicao.sujo&&fichaAtiva&&!fichaAt
 function pendenciasFicha(p,m){
   const l=[];
   if(!((p.cabecalho&&p.cabecalho.equipe)||[]).some(r=>String(r.nome||"").trim())) l.push({n:"equipe",tipo:"equipe",txt:"empreiteira não informada"});
+  else if(((p.cabecalho&&p.cabecalho.equipe)||[]).some(r=>ehViva(r.nome)&&!String(r.colaborador||"").trim())) l.push({n:"equipe",tipo:"equipe",txt:"colaborador da Viva Construções não informado"});
   itensRespondiveis(m).forEach(it=>{ const r=p.respostas[it.n];
     if(!r||!r.resultado){ l.push({n:it.n,tipo:"res",txt:"sem resultado"}); return; }
     if(!r.data) l.push({n:it.n,tipo:"data",txt:"sem data da inspeção"});
@@ -4262,7 +4334,7 @@ async function gerarDocumento(p,m){
 
   const equipe=(p.cabecalho&&p.cabecalho.equipe)||[];
   let equipeLinhas = equipe.length
-    ? equipe.map(r=>'<tr><td>'+esc(r.nome||"—")+'</td><td>'+esc(r.funcao||"—")+'</td><td class="c">'+esc(dataBR(r.dataInicio))+'</td><td class="c">'+esc(dataBR(r.dataTermino))+'</td></tr>').join("")
+    ? equipe.map(r=>'<tr><td>'+esc(nomeEquipe(r)||"—")+'</td><td>'+esc(r.funcao||"—")+'</td><td class="c">'+esc(dataBR(r.dataInicio))+'</td><td class="c">'+esc(dataBR(r.dataTermino))+'</td></tr>').join("")
     : '<tr><td colspan="4" style="text-align:center;color:var(--ink2)">Nenhum colaborador informado.</td></tr>';
 
   const ocorrencias=itensRespondiveis(m).filter(it=>{
@@ -4403,6 +4475,7 @@ function renderHub(){
   set("hubNumMeus",'<b>'+r.fichas.length+'</b> '+pl(r.fichas.length,"ficha","fichas")+' nesta obra');
   set("hubNumRelatorio",'<b>'+reprov+'</b> '+pl(reprov,"reprovação registrada","reprovações registradas"));
   set("hubNumRepo",'<b>'+docs.length+'</b> '+pl(docs.length,"documento","documentos"));
+  { const nObs=docs.reduce((a,d)=>a+d.versoes.filter(v=>v.v!==d.versaoAtual).length,0); set("hubNumObs",'<b>'+nObs+'</b> '+pl(nObs,"revisão obsoleta","revisões obsoletas")); }
   set("hubNumModelos",'<b>'+modelos.length+'</b> '+pl(modelos.length,"modelo de FVS","modelos de FVS"));
   set("hubNumDb",esc(DB.motor));
   const nEmp=empreiteiras.filter(e=>e.ativa!==false).length;
@@ -4812,7 +4885,7 @@ const GUIA_PASSOS=[
   {tit:()=>"Reprovou? Foto e tratativa",desc:"Tire a foto do problema: ela sai com data, hora e localização, e dá para desenhar sobre o defeito. Descreva a ação. Até salvar, um R marcado por engano ainda pode ser trocado.",ilus:'<div class="gi-foto"><span class="cam">📷</span><span class="circ"></span></div>'},
   {tit:()=>"Salve a ficha",desc:"O botão Salvar grava a ficha e trava as reprovações. Se esquecer, o sistema salva sozinho a cada 10 minutos. Sem internet, tudo fica no celular e é enviado quando o sinal voltar.",ilus:'<div class="gi-salvar"><span class="ns">● Não salvo</span><i>Salvar •</i></div>'},
   {tit:()=>"Reinspeção",desc:"Depois da correção, abra a ficha de novo: preencha a data e a foto da reinspeção e o item passa sozinho para AR (aprovado após reinspeção).",ilus:'<div class="gi-opts"><span class="r">✕<b>R</b></span><em>→</em><span class="ar">↻<b>AR</b></span></div>'},
-  {so:"controle",tit:()=>"Para a conta de controle",desc:"Em Indicadores: a evolução da obra, as reinspeções pendentes, fichas paradas, envios com problema e o Modo apresentação. No Painel: o mapa das casas. Em Base de dados: a lixeira e o registro de operações com busca.",ilus:'<div class="gi-ctrl"><span>Painel</span><span>Indicadores</span><span>▶ Apresentação</span><span>Lixeira</span></div>'}
+  {so:"controle",tit:()=>"Para a conta de controle",desc:"Em Indicadores: a evolução da obra, as reinspeções pendentes, fichas paradas, envios com problema e o Modo apresentação. No Painel: o mapa das casas. Em Base de dados: a lixeira e o registro de operações com busca. Em Obsoleto: as revisões antigas dos documentos substituídos.",ilus:'<div class="gi-ctrl"><span>Painel</span><span>Indicadores</span><span>▶ Apresentação</span><span>Lixeira</span></div>'}
 ];
 let guiaI=0, guiaLista=[];
 const chaveGuia=()=>"cd_guia_"+(user?user.email.toLowerCase():"");
@@ -4840,6 +4913,9 @@ $("#btnGuia").addEventListener("click",abrirGuia);
 
 // Novidades: a mais recente primeiro. Cada atualização visível para a equipe ganha uma entrada aqui.
 const NOVIDADES=[
+  {data:"2026-10-16.2",titulo:"Colaborador da Viva e aba Obsoleto",itens:[
+    "Quando a empreiteira da equipe de execução é a própria Viva Construções, a ficha pede o nome do colaborador (obrigatório).",
+    "Controle: no Repositório, o botão “Substituir” troca um documento por uma revisão nova; a revisão anterior vai para a nova aba Obsoleto."]},
   {data:"2026-10-16.1",titulo:"Mapa com outras visões e aviso de foto ruim",itens:[
     "No Painel, o mapa pode mostrar as casas pela cobertura de uma FVS, pelas reprovações em aberto ou pelas fichas paradas.",
     "Ao tirar a foto de reprovação ou reinspeção, o sistema avisa se ela ficou muito escura, muito clara ou tremida e oferece tirar outra."]},
@@ -5645,7 +5721,7 @@ async function montarDefinicaoPDF(p,m){
   // equipe de execução
   const equipe=(p.cabecalho&&p.cabecalho.equipe)||[];
   const corpoEquipe=[[th("Nome / empresa"),th("Função"),th("Data início","center"),th("Data término","center")]];
-  if(equipe.length) equipe.forEach(r=>corpoEquipe.push([td(r.nome||"—"),td(r.funcao||"—"),td(dataBR(r.dataInicio),"center"),td(dataBR(r.dataTermino),"center")]));
+  if(equipe.length) equipe.forEach(r=>corpoEquipe.push([td(nomeEquipe(r)||"—"),td(r.funcao||"—"),td(dataBR(r.dataInicio),"center"),td(dataBR(r.dataTermino),"center")]));
   else corpoEquipe.push(vazio("Nenhum colaborador informado.",4));
 
   // tratativas das ocorrências (com as fotos)
@@ -5891,6 +5967,13 @@ const drop=$("#drop"),file=$("#file");
 drop.addEventListener("click",()=>file.click());
 drop.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();file.click()}});
 file.addEventListener("change",()=>{receber(file.files);file.value=""});
+let substAlvo=null;
+$("#fileSubst").addEventListener("change",async e=>{
+  const f=e.target.files[0], d=docs.find(x=>x.id===substAlvo); e.target.value="";
+  if(!f||!d) return;
+  if(!confirm('Substituir "'+d.nome+'" (v'+d.versaoAtual+') por "'+f.name+'"?\n\nA versão atual passa para a aba Obsoleto e deixa de ser usada.')) return;
+  await receber([f],d.id);
+});
 ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over")}));
 ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over")}));
 drop.addEventListener("drop",e=>receber(e.dataTransfer.files));
@@ -5907,6 +5990,8 @@ $("#list").addEventListener("click",async e=>{
   if(t.dataset.dl){ const d=docs.find(x=>x.id===t.dataset.dl); return baixarVersao(d.id,d.versaoAtual); }
   if(t.dataset.dlv){ const [id,v]=t.dataset.dlv.split("|"); return baixarVersao(id,v); }
   if(t.dataset.hist) return $("#h-"+t.dataset.hist).classList.toggle("open");
+  if(t.dataset.subst){ substAlvo=t.dataset.subst; return $("#fileSubst").click(); }
+  if(t.dataset.irobs){ obsDestaque=t.dataset.irobs; return irPara("obsoleto"); }
   if(t.dataset.mod){
     if(!ehControle) return toast("Somente a conta de controle pode editar documentos.");
     const d=docs.find(x=>x.id===t.dataset.mod);
@@ -6087,14 +6172,19 @@ $("#fichaArea").addEventListener("change", async e=>{
     const i=Number(t.dataset.eqpemp), row=p.cabecalho.equipe[i]; if(!row) return;
     if(t.value==="__livre") return;
     const e=empreiteiras.find(x=>x.id===t.value);
-    row.empreiteiraId=e?e.id:""; row.nome=e?e.nome:"";
+    const eraViva=ehViva(row.nome);
+    row.empreiteiraId=e?e.id:""; row.nome=e?e.nome:(t.value==="__viva"?VIVA_NOME:"");
+    if(!ehViva(row.nome)) delete row.colaborador;
     await salvarFicha();
-    const pe=document.getElementById("painelEquipe"); if(pe) pe.classList.toggle("falta-equipe",!p.cabecalho.equipe.some(r=>String(r.nome||"").trim()));
+    const pe=document.getElementById("painelEquipe");
+    if(pe&&(eraViva||ehViva(row.nome))){ const y=scrollY; pe.outerHTML=equipeHTML(p); scrollTo(0,y); if(ehViva(row.nome)){ const c=document.querySelector('[data-eqp="'+i+'|colaborador"]'); if(c) c.focus(); } }
+    else if(pe) pe.classList.toggle("falta-equipe",!p.cabecalho.equipe.some(r=>String(r.nome||"").trim()));
     return;
   }
   if(t.dataset.eqp){
     const [i,campo]=t.dataset.eqp.split("|");
     p.cabecalho.equipe[i][campo]=t.value; await salvarFicha();
+    if(campo==="colaborador"){ t.classList.toggle("falta",!t.value.trim()); }
     return;
   }
   if(t.id==="obsGeral"){ p.cabecalho.observacao=t.value; await salvarFicha(); return; }
