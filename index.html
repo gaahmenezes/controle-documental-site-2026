@@ -285,7 +285,7 @@ body.tema-escuro .impl-rua.h::before{border-top-color:#3A4E58}
 body.tema-escuro .impl-qd,body.tema-escuro .impl-faixa,body.tema-escuro .qd-card{background:var(--paper);border-color:var(--line)}
 body.tema-escuro .impl-qd .qd-nome{color:var(--ink3);border-color:var(--line2)}
 body.tema-escuro .impl-faixa .qd-nome{color:var(--ink3)}
-body.tema-escuro .mp:not(.concluida):not(.reinsp):not(.aberto){background:#22323A;border-color:#2F434D;color:#8EA1A9}
+body.tema-escuro .mp:not(.concluida):not(.reinsp):not(.aberto):not(.v1):not(.v2):not(.v3):not(.pd1):not(.pd2):not(.pd3){background:#22323A;border-color:#2F434D;color:#8EA1A9}
 body.tema-escuro .ind-barra .trilho i{background:#4C93E0}
 body.tema-escuro .ind-barra.rep .trilho i{background:#D9693F}
 body.tema-escuro .btn-retomar,body.tema-escuro .trava-aviso .trava-ico{color:#0E1C24}
@@ -716,6 +716,22 @@ button.pn-card:hover{border-color:var(--ink2)}
 @media (min-width:1200px){main:has(.view.active .impl){max-width:1440px}}
 .impl-faixa .mp{min-height:0}
 .mp.concluida{background:var(--ok);border-color:var(--ok);color:#fff}
+.mp.v1,.mp-sw.v1{background:#F6D5C7;border-color:#D98E70;color:#6E260C}
+.mp.v2,.mp-sw.v2{background:#E9A283;border-color:#C0461E;color:#4A1A08}
+.mp.v3,.mp-sw.v3{background:#C0461E;border-color:#9A3515;color:#fff}
+.mp.pd1,.mp-sw.pd1{background:#F1E6C2;border-color:#C7A74A;color:#5C4508}
+.mp.pd2,.mp-sw.pd2{background:#D9B24A;border-color:#A8851F;color:#3D2E05}
+.mp.pd3,.mp-sw.pd3{background:#7A5D0E;border-color:#5E470A;color:#fff}
+body.tema-escuro .mp.v1,body.tema-escuro .mp-sw.v1{background:#4A2A1F;border-color:#7A3D26;color:#F3C5B0}
+body.tema-escuro .mp.v2,body.tema-escuro .mp-sw.v2{background:#7E3519;border-color:#B5502A;color:#fff}
+body.tema-escuro .mp.v3,body.tema-escuro .mp-sw.v3{background:#E8835A;border-color:#E8835A;color:#1E0B03}
+body.tema-escuro .mp.pd1,body.tema-escuro .mp-sw.pd1{background:#3A3115;border-color:#6B5A22;color:#E8D59A}
+body.tema-escuro .mp.pd2,body.tema-escuro .mp-sw.pd2{background:#6B5418;border-color:#A8841F;color:#fff}
+body.tema-escuro .mp.pd3,body.tema-escuro .mp-sw.pd3{background:#D9B24A;border-color:#D9B24A;color:#1A1405}
+.mapa-leg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink2)}
+.mapa-leg span{display:inline-flex;align-items:center;gap:6px}
+.mapa-leg small{color:var(--ink3)}
+.mp-sw{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid var(--line);background:var(--line2)}
 .mp.reinsp{background:var(--flag);border-color:var(--flag);color:#fff}
 .mp.aberto{background:#F1DFA6;border-color:#B08A1E;color:#5C4508}
 .rep-linha{display:grid;grid-template-columns:210px 1fr 96px;gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line2)}
@@ -1202,10 +1218,17 @@ table.editor textarea{min-height:60px;resize:vertical}
         <p id="painelObra"></p>
       </div>
       <div class="view-head" style="margin:6px 0 14px">
-        <h2 style="font-size:20px">Cobertura da obra</h2>
-        <p>Cada quadrado é uma casa. Toque numa casa para ver todas as FVS dela e abrir ou iniciar a ficha. Considera que cada FVS se aplica a todas as casas da obra.</p>
+        <h2 style="font-size:20px">Mapa da obra</h2>
+        <p>Cada quadrado é uma casa. Veja a cobertura de uma FVS, onde há reprovações em aberto ou onde há fichas paradas. Toque numa casa para ver todas as FVS dela e abrir ou iniciar a ficha.</p>
       </div>
-      <div class="toolbar"><select id="painelFvsSel" aria-label="Escolher a FVS" style="flex:1 1 320px;min-width:0;max-width:100%"></select></div>
+      <div class="toolbar">
+        <select id="painelVisao" aria-label="Ver o mapa por" style="flex:0 1 260px">
+          <option value="cobertura">Ver por: cobertura da FVS</option>
+          <option value="reprov">Ver por: reprovações em aberto</option>
+          <option value="paradas">Ver por: fichas paradas</option>
+        </select>
+        <select id="painelFvsSel" aria-label="Escolher a FVS" style="flex:1 1 320px;min-width:0;max-width:100%"></select>
+      </div>
       <div id="painelCobertura"></div>
     </section>
 
@@ -2370,8 +2393,38 @@ async function carimbarFoto(arq,info){
 // pede a localização já no toque para tirar a foto (assim ela está pronta quando a foto chegar)
 document.addEventListener("pointerdown",e=>{ if(e.target.closest&&e.target.closest("input[data-foto],input[data-reinspfoto]")) pedirLocal(); },true);
 document.addEventListener("click",e=>{ if(e.target.closest&&e.target.closest("input[data-foto],input[data-reinspfoto]")) pedirLocal(); },true);
+/* Confere se a foto ficou escura, estourada ou tremida (só um aviso; a pessoa decide) */
+async function avaliarFoto(arq,lado){
+  try{
+    const url=URL.createObjectURL(arq);
+    const img=await new Promise((ok,erro)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=erro; i.src=url; });
+    URL.revokeObjectURL(url);
+    const L=lado||FOTO_LADO, k=L/Math.max(img.naturalWidth,img.naturalHeight), w=Math.max(8,Math.round(img.naturalWidth*k)), h=Math.max(8,Math.round(img.naturalHeight*k));
+    const cv=document.createElement("canvas"); cv.width=w; cv.height=h;
+    const cx=cv.getContext("2d",{willReadFrequently:true}); cx.drawImage(img,0,0,w,h);
+    const d=cx.getImageData(0,0,w,h).data, g=new Float32Array(w*h);
+    let soma=0; for(let i=0;i<w*h;i++){ const v=0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2]; g[i]=v; soma+=v; }
+    const media=soma/(w*h);
+    // nitidez: detalhe fino (tamanho de análise) comparado ao detalhe grosso (4× menor).
+    // Foto tremida perde o fino e mantém o grosso; parede lisa nítida mantém os dois. Independe do assunto.
+    const lapVar=(v,W,H)=>{ let s1=0,s2=0,n=0; for(let y=1;y<H-1;y++) for(let x=1;x<W-1;x++){ const i=y*W+x, l=v[i-1]+v[i+1]+v[i-W]+v[i+W]-4*v[i]; s1+=l; s2+=l*l; n++; } return n?s2/n-(s1/n)*(s1/n):0; };
+    const F=4, w2=Math.floor(w/F), h2=Math.floor(h/F), g2=new Float32Array(w2*h2);
+    for(let y=0;y<h2;y++) for(let x=0;x<w2;x++){ let t=0; for(let dy=0;dy<F;dy++) for(let dx=0;dx<F;dx++) t+=g[(y*F+dy)*w+x*F+dx]; g2[y*w2+x]=t/(F*F); }
+    const fino=lapVar(g,w,h), grosso=lapVar(g2,w2,h2);
+    const nitidez=grosso<3?9:fino/grosso;   // imagem quase sem contraste: não dá para julgar
+    return {escura:media<FOTO_ESCURA, clara:media>FOTO_CLARA, tremida:media>=FOTO_ESCURA&&media<=FOTO_CLARA&&nitidez<FOTO_NITIDEZ, media, nitidez};
+  }catch(e){ return null; }
+}
+const FOTO_ESCURA=45, FOTO_CLARA=238, FOTO_NITIDEZ=0.2, FOTO_LADO=640;
 async function fotoDoCampo(arqBruto,n,tipo){
   let arq=await prepararFoto(arqBruto); if(!arq) return null;
+  const q=await avaliarFoto(arq);
+  if(q&&(q.escura||q.clara||q.tremida)){
+    const prob=q.escura?"muito escura":q.clara?"muito clara (estourada)":"tremida ou fora de foco";
+    const v=await perguntar("A foto ficou "+prob.split(" (")[0],"A foto parece "+prob+". Ela vai para o documento da FVS; se não der para ver bem o item, vale tirar outra.",
+      [{rot:"Usar assim",valor:"usar"},{rot:"Tirar outra",valor:"outra",primario:true}]);
+    if(v!=="usar") return {outra:v==="outra"};
+  }
   const m=fichaAtiva&&fichaAtiva.m, p=fichaAtiva&&fichaAtiva.p;
   toast("Obtendo a localização para a foto…");
   const c=await carimbarFoto(arq,{obra:obra?"Obra "+obra.id+" "+obra.nome:"",casa:p?"Casa "+p.unidade:"",item:(m?(m.codigo||"")+" ":"")+"item "+n+(tipo==="reinspecao"?" · reinspeção":" · reprovação")});
@@ -4292,7 +4345,7 @@ function diasDesde(iso){
    Responde "como está a obra e o que preciso resolver agora?": indicadores,
    reinspeções pendentes (itens, não fichas) e cobertura por FVS com mapa das casas.
    A lista de fichas e os filtros ficam na aba Preenchimentos. */
-let painelFvsEscolhida=null, painelFiltroSt="";
+let painelFvsEscolhida=null, painelFiltroSt="", painelVisao="cobertura";
 const PRIO_STATUS={concluida:1,aberto:2,reinsp:3};
 const ROT_STATUS={concluida:"Concluída",aberto:"Em aberto",reinsp:"Aguardando reinspeção",sem:"Sem ficha"};
 function numeroDaCasa(u){ const s=String(u==null?"":u).trim(); return /^\d+$/.test(s)?parseInt(s,10):null; }
@@ -4481,9 +4534,11 @@ function renderCobertura(cobertura){
     return;
   }
   sel.style.display="";
+  if(painelVisao!=="cobertura") return renderMapaProblemas(cobertura);
+  delete $("#painelCobertura").dataset.visao;
   const anterior=painelFvsEscolhida;
   sel.innerHTML=cobertura.map(({m})=>'<option value="'+esc(m.id)+'">'+esc(m.codigo?m.codigo+" — "+m.titulo:m.titulo)+'</option>').join("");
-  painelFvsEscolhida=cobertura.some(x=>x.m.id===anterior)?anterior:cobertura[0].m.id;
+  painelFvsEscolhida=cobertura.some(x=>x.m.id===anterior&&anterior)?anterior:cobertura[0].m.id;
   sel.value=painelFvsEscolhida;
 
   const pct=n=>(n/obra.casas*100).toFixed(2);
@@ -4510,6 +4565,53 @@ function renderCobertura(cobertura){
     '</div></div>';
 }
 $("#painelFvsSel").addEventListener("change",e=>{ painelFvsEscolhida=e.target.value; renderPainel(); });
+let painelFvsCob=null;   // a FVS escolhida na cobertura volta quando a pessoa retorna a essa visão
+$("#painelVisao").addEventListener("change",e=>{
+  if(painelVisao==="cobertura") painelFvsCob=painelFvsEscolhida;
+  painelVisao=e.target.value; painelFiltroSt=""; delete $("#painelCobertura").dataset.filtro;
+  painelFvsEscolhida=painelVisao==="cobertura"?painelFvsCob:"";
+  renderPainel(); });
+/* Mapa por reprovações em aberto ou por fichas paradas: todas as FVS ou uma só; cor mais forte = mais itens / mais dias */
+function renderMapaProblemas(cobertura){
+  const cont=$("#painelCobertura"), sel=$("#painelFvsSel"), reprov=painelVisao==="reprov";
+  const anterior=painelFvsEscolhida;
+  sel.innerHTML='<option value="">Todas as FVS</option>'+cobertura.map(({m})=>'<option value="'+esc(m.id)+'">'+esc(m.codigo?m.codigo+" — "+m.titulo:m.titulo)+'</option>').join("");
+  painelFvsEscolhida=cobertura.some(x=>x.m.id===anterior)?anterior:"";
+  sel.value=painelFvsEscolhida;
+  const fvs=painelFvsEscolhida, base=resumoObra(), porCasa={};
+  const nomeM=m=>m.codigo||m.titulo;
+  if(reprov){
+    base.pend.filter(x=>!fvs||x.m.id===fvs).forEach(({p,m,dias})=>{ const n=numeroDaCasa(p.unidade); if(!n) return;
+      const c=porCasa[n]=porCasa[n]||{v:0,fvs:{},dias:0}; c.v++; c.fvs[nomeM(m)]=(c.fvs[nomeM(m)]||0)+1; if(dias>c.dias) c.dias=dias; });
+  } else {
+    fichasParadas(base.fichas.filter(x=>!fvs||x.m.id===fvs),7).forEach(({p,m,dias})=>{ const n=numeroDaCasa(p.unidade); if(!n) return;
+      const c=porCasa[n]=porCasa[n]||{v:0,fvs:{},dias:0}; c.v++; c.fvs[nomeM(m)]=dias; if(dias>c.dias) c.dias=dias; });
+  }
+  const nivel=c=>!c?0:reprov?(c.v>=4?3:c.v>=2?2:1):(c.dias>=30?3:c.dias>=15?2:1);
+  const casasN=Object.keys(porCasa).length, totItens=Object.values(porCasa).reduce((a,c)=>a+c.v,0);
+  const impl=IMPLANTACAO[String(obra.id)], quadraDe=impl?quadrasPorCasa(impl):{};
+  const pref=reprov?"v":"pd";
+  const botaoCasa=(n,ordem)=>{
+    const c=porCasa[n], nv=nivel(c), q=quadraDe[n];
+    const det=c?Object.entries(c.fvs).map(([k,v])=>reprov?k+": "+v+(v===1?" item":" itens"):k+": parada há "+v+" dias").join(" · "):"";
+    const resumo=c?(reprov?c.v+(c.v===1?" item aguardando reinspeção":" itens aguardando reinspeção")+" · o mais antigo há "+c.dias+(c.dias===1?" dia":" dias"):c.v+(c.v===1?" ficha parada":" fichas paradas")+" · a mais antiga há "+c.dias+" dias"):(reprov?"Nenhuma reprovação em aberto":"Nenhuma ficha parada");
+    const rot="Casa "+n+(q?" (Quadra "+q+")":"")+" — "+resumo+(det?" — "+det:"");
+    return '<button type="button" class="mp'+(nv?' '+pref+nv:'')+'" style="--d:'+Math.min((ordem||n)*2,720)+'ms" data-pncasa="'+n+'" data-pnmodelo="'+esc(fvs||"")+'"'+(q?' data-quadra="'+esc(q)+'"':'')+' data-pntxt="'+esc(resumo)+'" data-pndet="'+esc(det)+'" aria-label="'+esc(rot)+'">'+n+'</button>';
+  };
+  let casas=""; if(!impl) for(let n=1;n<=obra.casas;n++) casas+=botaoCasa(n);
+  const faixas=reprov?[["v1","1 item"],["v2","2 ou 3 itens"],["v3","4 itens ou mais"]]:[["pd1","7 a 14 dias"],["pd2","15 a 29 dias"],["pd3","30 dias ou mais"]];
+  const cont1=k=>Object.values(porCasa).filter(c=>pref+nivel(c)===k).length;
+  const fvsNome=fvs?(cobertura.find(x=>x.m.id===fvs)||{m:{}}).m:null;
+  cont.dataset.visao=painelVisao;
+  cont.innerHTML='<div class="panel"><div class="panel-head"><h3>'+(reprov?'Reprovações em aberto':'Fichas paradas')+'</h3><span class="count">'+(fvsNome?esc(fvsNome.codigo||fvsNome.titulo)+' · ':'todas as FVS · ')+
+      (casasN?casasN+(casasN===1?' casa':' casas')+' · '+totItens+(reprov?(totItens===1?' item':' itens'):(totItens===1?' ficha':' fichas')):(reprov?'nenhuma casa':'nenhuma casa'))+'</span></div>'+
+    '<div class="panel-body">'+
+      '<div class="mapa-leg" aria-label="Legenda">'+faixas.map(([k,t])=>'<span><i class="mp-sw '+k+'"></i>'+t+' <small>('+cont1(k)+(cont1(k)===1?' casa':' casas')+')</small></span>').join("")+'<span><i class="mp-sw"></i>'+(reprov?'sem reprovação em aberto':'sem ficha parada')+'</span></div>'+
+      '<p class="note" style="margin:8px 0 12px">'+(reprov?'Cor mais forte = mais itens reprovados aguardando reinspeção na casa.':'Fichas em andamento sem nova inspeção há 7 dias ou mais. Cor mais forte = parada há mais tempo.')+'</p>'+
+      (casasN?'':'<p class="note" style="margin:0 0 12px"><b>'+(reprov?'Nenhuma reprovação em aberto':'Nenhuma ficha parada')+'</b> '+(fvsNome?'nesta FVS.':'nesta obra.')+'</p>')+
+      (impl?mapaImplantacao(impl,botaoCasa,n=>!!porCasa[n],reprov?"com reprovação em aberto":"com ficha parada"):'<div class="mapa">'+casas+'</div>')+
+    '</div></div>';
+}
 $("#painelCobertura").addEventListener("click",e=>{
   const b=e.target.closest("[data-pnfiltro]"); if(!b) return;
   const st=b.dataset.pnfiltro; painelFiltroSt=(st&&st!==painelFiltroSt)?st:"";
@@ -4738,6 +4840,9 @@ $("#btnGuia").addEventListener("click",abrirGuia);
 
 // Novidades: a mais recente primeiro. Cada atualização visível para a equipe ganha uma entrada aqui.
 const NOVIDADES=[
+  {data:"2026-10-16.1",titulo:"Mapa com outras visões e aviso de foto ruim",itens:[
+    "No Painel, o mapa pode mostrar as casas pela cobertura de uma FVS, pelas reprovações em aberto ou pelas fichas paradas.",
+    "Ao tirar a foto de reprovação ou reinspeção, o sistema avisa se ela ficou muito escura, muito clara ou tremida e oferece tirar outra."]},
   {data:"2026-10-15.3",titulo:"Indicadores reorganizados",itens:[
     "Reinspeções pendentes, envios com problema e fichas paradas agora ficam em Indicadores, em “Pendências da obra”, logo depois de Evolução e desempenho.",
     "O Painel da obra ficou só com o mapa das casas e a cobertura de cada FVS.",
@@ -5382,7 +5487,7 @@ function quadrasPorCasa(impl){
   impl.pares.forEach(pp=>[pp.esq,pp.dir].forEach(q=>q.cima.concat(q.baixo).forEach(n=>r[n]=q.nome)));
   return r;
 }
-function mapaImplantacao(impl,botao,concluida){
+function mapaImplantacao(impl,botao,concluida,rotuloConta){
   let ordem=0;
   const fila=(lista,col)=>'<div class="fila" style="grid-template-columns:repeat('+col+',minmax(0,1fr))">'+lista.map(n=>botao(n,++ordem)).join("")+'</div>';
   const quadra=(q,colIni,colFim)=>'<div class="impl-qd" style="grid-column:'+colIni+'/'+colFim+'">'+fila(q.cima,q.cima.length)+'<div class="qd-nome">QUADRA '+esc(q.nome)+'</div>'+fila(q.baixo,q.baixo.length)+'</div>';
@@ -5403,7 +5508,7 @@ function mapaImplantacao(impl,botao,concluida){
   const cartao=(nome,frentes)=>{
     const todas=frentes.reduce((t,f)=>t.concat(f[1]),[]);
     const feitas=todas.filter(n=>concluida&&concluida(n)).length;
-    return '<section class="qd-card"><div class="qd-card-head"><b>Quadra '+esc(nome)+'</b><span>'+feitas+' de '+todas.length+' concluídas</span></div>'+frentes.map(f=>frente(f[0],f[1])).join("")+'</section>';
+    return '<section class="qd-card"><div class="qd-card-head"><b>Quadra '+esc(nome)+'</b><span>'+feitas+' de '+todas.length+' '+(rotuloConta||'concluídas')+'</span></div>'+frentes.map(f=>frente(f[0],f[1])).join("")+'</section>';
   };
   let cel=cartao(impl.faixa.nome,[[impl.faixa.rua.replace(/^RUA/,"Rua"),impl.faixa.casas]]);
   impl.pares.forEach(pp=>[pp.esq,pp.dir].forEach(q=>{ cel+=cartao(q.nome,[[q.ruaCima,q.cima],[q.ruaBaixo,q.baixo]]); }));
@@ -5418,6 +5523,11 @@ function ultimaInspecao(p){
   let u=""; Object.values(p.respostas||{}).forEach(r=>{ if(r&&r.data&&r.data>u) u=r.data; }); return u;
 }
 function conteudoTipCasa(el){
+  if(el.dataset.pntxt!=null){
+    const det=el.dataset.pndet?'<dl>'+el.dataset.pndet.split(" · ").map(x=>{ const i=x.indexOf(": "); return '<dt>'+esc(x.slice(0,i))+'</dt><dd>'+esc(x.slice(i+2))+'</dd>'; }).join("")+'</dl>':'';
+    return '<div class="tip-top"><b>Casa '+esc(el.dataset.pncasa)+'</b><span>'+(el.dataset.quadra?"Quadra "+esc(el.dataset.quadra):"")+'</span></div>'+
+      '<div class="tip-st">'+esc(el.dataset.pntxt)+'</div>'+det+'<div class="tip-acao">Clique para ver as FVS da casa</div>';
+  }
   const m=modelos.find(x=>x.id===el.dataset.pnmodelo); if(!m) return "";
   const n=el.dataset.pncasa, cod=(el.dataset.quadra?"Quadra "+esc(el.dataset.quadra)+" · ":"")+esc(m.codigo||m.titulo);
   if(!el.dataset.pnficha){
@@ -5943,7 +6053,7 @@ $("#fichaArea").addEventListener("change", async e=>{
   }
   if(t.dataset.foto){
     const n=t.dataset.foto, f=await fotoDoCampo(t.files[0],n,"reprovacao");
-    if(f) await trocarFotoItem(n,f.arquivo,"reprovacao",f); else t.value="";
+    if(f&&f.arquivo) await trocarFotoItem(n,f.arquivo,"reprovacao",f); else { t.value=""; if(f&&f.outra) t.click(); }
     return;
   }
   if(t.dataset.trat){
@@ -5965,7 +6075,7 @@ $("#fichaArea").addEventListener("change", async e=>{
   }
   if(t.dataset.reinspfoto){
     const n=t.dataset.reinspfoto, f=await fotoDoCampo(t.files[0],n,"reinspecao");
-    if(f) await trocarFotoItem(n,f.arquivo,"reinspecao",f); else t.value="";
+    if(f&&f.arquivo) await trocarFotoItem(n,f.arquivo,"reinspecao",f); else { t.value=""; if(f&&f.outra) t.click(); }
     return;
   }
   if(t.dataset.eq){
