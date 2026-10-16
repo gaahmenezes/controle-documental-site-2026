@@ -4391,7 +4391,7 @@ async function gerarDocumento(p,m){
       '<div class="assin-col"><span class="assin-space">&nbsp;</span><span class="assin-linha"></span><span class="assin-caption">Assinatura do engenheiro responsável</span></div>'+
       '<div class="assin-col estreita"><span class="assin-space">&nbsp;</span><span class="assin-linha"></span><span class="assin-caption">Data</span></div>'+
     '</div>'+
-    '<div class="legenda">Documento gerado em '+dataHora(new Date().toISOString())+' pelo Controle Documental — reproduz o documento original preenchido conforme as respostas do questionário.</div>'+
+    '<div class="legenda">Documento gerado em '+dataHora(new Date().toISOString())+' pelo Módulo FVS — reproduz o documento original preenchido conforme as respostas do questionário.</div>'+
   '</div>';
   ov.classList.add("show");
   marcarHistorico({cd:1,idx:navIdx,overlay:1},false);
@@ -5781,7 +5781,7 @@ async function montarDefinicaoPDF(p,m){
       h4("Recebimento do serviço"),
       assin("Assinatura do responsável pela ficha"),
       assin("Assinatura do engenheiro responsável"),
-      {text:"Documento gerado em "+dataHora(new Date().toISOString())+" pelo Controle Documental — reproduz o documento original preenchido conforme as respostas do questionário.",fontSize:7,color:tinta2,margin:[0,14,0,0]}
+      {text:"Documento gerado em "+dataHora(new Date().toISOString())+" pelo Módulo FVS — reproduz o documento original preenchido conforme as respostas do questionário.",fontSize:7,color:tinta2,margin:[0,14,0,0]}
     ]
   };
 }
