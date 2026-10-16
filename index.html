@@ -969,6 +969,14 @@ table.editor textarea{min-height:60px;resize:vertical}
 /* documento gerado */
 #overlay{position:fixed;inset:0;background:rgba(14,28,36,.55);display:none;z-index:50;overflow:auto;padding:24px}
 #overlay.show{display:block;animation:fundoEntra .2s ease both}
+.pdf-assinado{max-width:1000px;margin:0 auto;background:var(--paper);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.pdf-ass-topo{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.pdf-ass-topo b{color:var(--ink)}
+.pdf-ass-topo small{flex-basis:100%;color:var(--ink3);font-size:12px}
+.selo-ass{font-size:11.5px;font-weight:700;color:#fff;background:var(--ok);border-radius:999px;padding:3px 10px}
+.pdf-ass-quadro{display:block;width:100%;height:calc(100vh - 190px);min-height:420px;border:0;background:#525659}
+.pdf-ass-nota{margin:0;padding:8px 16px 12px;font-size:12px;color:var(--ink3)}
+.folha-acoes .btn-ov{display:inline-flex;align-items:center;text-decoration:none;border:1px solid #fff;background:transparent;color:#fff;padding:9px 16px;border-radius:var(--radius);font-size:inherit}
 #overlay.show .folha,#overlay.show .folha-acoes{animation:telaEntra .26s cubic-bezier(.2,.7,.3,1) both}
 @keyframes fundoEntra{from{background:rgba(14,28,36,0)}to{background:rgba(14,28,36,.55)}}
 .folha{background:#fff;max-width:1000px;margin:0 auto;padding:36px 40px;border-radius:2px}
@@ -4794,7 +4802,7 @@ function renderAprovacao(){
   if(!lista.length){ el.innerHTML='<div class="panel empty"><b>Nada aqui</b>'+({aguardando:"Nenhuma ficha concluída aguardando aprovação.",aprovada:"Nenhuma ficha aprovada esperando a assinatura.",assinada:"Nenhuma ficha assinada ainda.",devolvida:"Nenhuma ficha devolvida para correção."})[aprovAba]+'</div>'; return; }
   el.innerHTML='<div class="panel"><ul class="docs">'+lista.map(({p,m,a,st,alterada})=>{
     const id=esc(p.id), u=ultimaAtividade(p);
-    let info='', acoes='<button class="icon-btn" data-aprovver="'+id+'">Ver documento</button>';
+    let info='', acoes=st==="assinada"?'<button class="icon-btn" data-aprovver="'+id+'">Ver documento assinado</button>':'<button class="icon-btn" data-aprovver="'+id+'">Ver documento</button>';
     if(st==="aguardando"){ info=alterada?'<span class="aprov-alerta">A ficha foi alterada depois da aprovação de '+esc((a&&a.aprovadoPor)||"")+' — revise de novo.</span>':(a&&a.status==="devolvida"?'<span>Corrigida depois da devolução.</span>':'');
       acoes+='<button class="icon-btn" data-aprovdev="'+id+'">Devolver</button><button class="icon-btn primario" data-aprovok="'+id+'">Aprovar</button>'; }
     if(st==="aprovada"){ info='<span>Aprovada por '+esc(a.aprovadoPor||"—")+' em '+esc(dataHora(a.aprovadoEm))+'.</span>'+
@@ -4831,12 +4839,37 @@ $("#aprovEngLista").addEventListener("click",async e=>{
   obra.engenheiros=engenheirosDaObra().filter(x=>x!==b.dataset.engrem); await DB.gravar("obras",obra);
   await registrar("Engenheiro responsável removido",b.dataset.engrem+" · obra "+obra.id); renderAprovacao();
 });
+let urlAssinado=null;
+async function verPDFAssinado(p,m,a){
+  const arq=await DB.obter("arquivos",a.assinadoArquivo.id);
+  if(!arq||!arq.blob) return toast("Arquivo assinado não encontrado.");
+  const blob=arq.blob.type==="application/pdf"?arq.blob:new Blob([arq.blob],{type:"application/pdf"});
+  if(urlAssinado) URL.revokeObjectURL(urlAssinado);
+  urlAssinado=URL.createObjectURL(blob);
+  const nome=a.assinadoArquivo.nome||((m.codigo||"FVS")+" - casa "+p.unidade+" - assinada.pdf");
+  const ov=$("#overlay");
+  ov.innerHTML='<div class="folha-acoes"><button id="ovFechar">Fechar</button><a class="btn-ov" id="ovNovaAba" href="'+urlAssinado+'" target="_blank" rel="noopener">Abrir em nova aba</a><button class="p" id="ovBaixarAss">Baixar PDF assinado</button></div>'+
+    '<div class="pdf-assinado"><div class="pdf-ass-topo"><span class="selo-ass">✓ Assinado no gov.br</span><b>'+esc(m.codigo||m.titulo)+' · casa '+esc(p.unidade)+'</b>'+
+      '<small>Aprovada por '+esc(a.aprovadoPor||"—")+(a.aprovadoEm?' em '+esc(dataHora(a.aprovadoEm)):'')+' · PDF assinado anexado'+(a.assinadoPor?' por '+esc(a.assinadoPor):'')+(a.assinadoEm?' em '+esc(dataHora(a.assinadoEm)):'')+'</small></div>'+
+      '<iframe class="pdf-ass-quadro" src="'+urlAssinado+'#view=FitH" title="PDF assinado"></iframe>'+
+      '<p class="pdf-ass-nota">Se o PDF não aparecer aqui (alguns celulares não mostram PDF dentro da página), toque em “Abrir em nova aba” ou “Baixar PDF assinado”.</p></div>';
+  ov.classList.add("show");
+  marcarHistorico({cd:1,idx:navIdx,overlay:1},false);
+  $("#ovFechar").addEventListener("click",()=>{ if(history.state&&history.state.overlay) history.back(); else ov.classList.remove("show"); });
+  $("#ovBaixarAss").addEventListener("click",()=>baixarBlob(blob,nome));
+  await registrar("PDF assinado visualizado",(m.codigo||m.titulo)+" · casa "+p.unidade);
+}
 $("#aprovLista").addEventListener("click",async e=>{
   const alvo=e.target.closest("[data-aprovver],[data-aprovok],[data-aprovdev],[data-aprovbaixar]"); if(!alvo) return;
   if(!podeAprovar()) return toast("A aprovação é feita pelos engenheiros responsáveis da obra.");
   const id=alvo.dataset.aprovver||alvo.dataset.aprovok||alvo.dataset.aprovdev||alvo.dataset.aprovbaixar;
   const p=preenchimentos.find(x=>x.id===id), m=p&&modelos.find(x=>x.id===p.modeloId); if(!p||!m) return;
-  if(alvo.dataset.aprovver) return gerarDocumento(p,m);
+  if(alvo.dataset.aprovver){
+    // ficha já assinada: mostra o PDF assinado que foi anexado, não o documento sem assinatura
+    const a=aprovacoes.find(x=>x.id===p.id);
+    if(a&&situacaoAprovacao(p,a)==="assinada"&&a.assinadoArquivo) return verPDFAssinado(p,m,a);
+    return gerarDocumento(p,m);
+  }
   if(alvo.dataset.aprovok){
     if(!confirm("Aprovar a ficha "+(m.codigo||m.titulo)+" da casa "+p.unidade+"? Depois, baixe o PDF, assine no gov.br e anexe o arquivo assinado.")) return;
     await gravarAprovacao(p,{status:"aprovada",versaoFicha:p.atualizadoEm,aprovadoPor:quemSou(),aprovadoEmail:user.email,aprovadoEm:new Date().toISOString(),motivo:null},"Ficha aprovada pelo engenheiro");
@@ -4913,6 +4946,8 @@ $("#btnGuia").addEventListener("click",abrirGuia);
 
 // Novidades: a mais recente primeiro. Cada atualização visível para a equipe ganha uma entrada aqui.
 const NOVIDADES=[
+  {data:"2026-10-16.4",titulo:"Documento assinado na Aprovação",itens:[
+    "Depois que o PDF assinado no gov.br é anexado, “Ver documento assinado” mostra esse PDF assinado (com opção de abrir em nova aba ou baixar)."]},
   {data:"2026-10-16.3",titulo:"Novo nome: Módulo FVS",itens:[
     "O sistema passa a se chamar Módulo FVS.",
     "Onde estava “empreiteira”, agora está “empresa” (cadastro, equipe de execução e filtros)."]},
